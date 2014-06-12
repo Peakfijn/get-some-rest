@@ -2,6 +2,7 @@
 
 use Illuminate\Support\ServiceProvider;
 use Peakfijn\GetSomeRest\Routing\Router;
+use Peakfijn\GetSomeRest\Http\Response;
 
 class GetSomeRestServiceProvider extends ServiceProvider {
 
@@ -29,6 +30,10 @@ class GetSomeRestServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+		// due to a strange bug, the config is loaded after this function.
+		// so lets force-load it :)
+		$this->boot();
+
 		$this->registerRouter();
 	}
 
@@ -52,6 +57,8 @@ class GetSomeRestServiceProvider extends ServiceProvider {
 		$this->app['router'] = $this->app->share(function( $app )
 		{
 			$router = new Router($app['events'], $app);
+
+			$router->encoders = $this->app['config']->get('get-some-rest::encoders');
 
 			if( $app['env'] == 'testing' )
 			{

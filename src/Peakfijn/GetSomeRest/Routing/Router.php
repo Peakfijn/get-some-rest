@@ -2,9 +2,19 @@
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as IlluminateResponse;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Peakfijn\GetSomeRest\Http\Response;
+use Peakfijn\GetSomeRest\Encoders\JsonEncoder;
 
 class Router extends \Illuminate\Routing\Router {
+
+	/**
+	 * Holds the available encoders.
+	 * 
+	 * @var array
+	 */
+	public $encoders = [];
 
 	/**
 	 * Create a group of API routes.
@@ -39,17 +49,17 @@ class Router extends \Illuminate\Routing\Router {
 
 		try
 		{
-			$response = parent::dispatch($request);
+			$response = Response::makeFromExisting(parent::dispatch($request));
 		}
 		// Only catch HttpExceptions,
 		// other exceptions should still be thrown.
 		// Like the RuntimeException for example.
 		catch( HttpExceptionInterface $exception )
 		{
-			$response = new Response('error');
+			$response = Response::makeFromException($exception);
 		}
 
-		return $response;
+		return $response->finalize($this->getEncoder($request), $request);
 	}
 
 
@@ -62,6 +72,19 @@ class Router extends \Illuminate\Routing\Router {
 	protected function isApiRequest( Request $request )
 	{
 		return !!preg_match('/v[0-9]+/', $request->segment(1));
+	}
+
+	/**
+	 * Get the requested encoder.
+	 * 
+	 * @param  \Illuminate\Http\Request $request
+	 * @return \Peakfijn\GetSomeRest\Contracts\Encoder
+	 */
+	protected function getEncoder( Request $request )
+	{
+		$encoder = array_values($this->encoders)[0];
+
+		return new $encoder;
 	}
 
 }
