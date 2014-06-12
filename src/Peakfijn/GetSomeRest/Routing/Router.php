@@ -59,7 +59,10 @@ class Router extends \Illuminate\Routing\Router {
 			$response = Response::makeFromException($exception);
 		}
 
-		return $response->finalize($this->getEncoder($request), $request);
+		return $response->finalize(
+			$this->getEncoder($request),
+			$request
+		);
 	}
 
 

@@ -60,7 +60,7 @@ class XmlEncoder extends Encoder {
 			if( is_numeric($key) )
 			{
 				// make string key...
-				$key = "unknownNode_". (string) $key;
+				$key = "object". (string) $key;
 			}
 
 			// replace anything not alpha numeric
