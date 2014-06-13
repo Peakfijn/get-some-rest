@@ -4,11 +4,18 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as IlluminateResponse;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Peakfijn\GetSomeRest\Http\Response;
-use Peakfijn\GetSomeRest\Encoders\JsonEncoder;
-use Peakfijn\GetSomeRest\Exceptions\UnsupportedResponseFormatException;
+use Peakfijn\GetSomeRest\Exceptions\UnsupportedEncoderException;
 
 class Router extends \Illuminate\Routing\Router {
+
+	/**
+	 * Holds the available mutators.
+	 * 
+	 * @var array
+	 */
+	public $mutators = [];
 
 	/**
 	 * Holds the available encoders.
@@ -71,10 +78,12 @@ class Router extends \Illuminate\Routing\Router {
 		// Like the RuntimeException for example.
 		catch( HttpExceptionInterface $exception )
 		{
+			// $response = new Response('error');
 			$response = Response::makeFromException($exception);
 		}
 
 		return $response->finalize(
+			$this->getMutator($request),
 			$this->getEncoder($request),
 			$request
 		);
@@ -160,12 +169,25 @@ class Router extends \Illuminate\Routing\Router {
 
 		if( !empty($extension) && $this->failUnsupportedExtension )
 		{
-			throw new UnsupportedResponseFormatException();
+			throw new UnsupportedEncoderException($extension);
 		}
 
 		$encoder = array_values($this->encoders)[0];
 
 		return new $encoder;
+	}
+
+	/**
+	 * Get the requested mutator.
+	 * 
+	 * @param  \Illuminate\Http\Request $request
+	 * @return \Peakfijn\GetSomeRest\Contracts\Mutator
+	 */
+	protected function getMutator( Request $request )
+	{
+		$mutator = array_values($this->mutators)[0];
+
+		return new $mutator;
 	}
 
 }

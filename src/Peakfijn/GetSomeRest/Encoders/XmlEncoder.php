@@ -19,14 +19,12 @@ class XmlEncoder extends Encoder {
 	/**
 	 * Get the encoded content.
 	 *
-	 * @param  mixed  $data
+	 * @param  array  $data
 	 * @param  \Illuminate\Http\Request $request
 	 * @return string
 	 */
-	public function getContent( $data, Request $request )
+	public function getContent( array $data, Request $request )
 	{
-		$data = $this->toArray($data);
-
 		return $this->toXml($data);
 	}
 

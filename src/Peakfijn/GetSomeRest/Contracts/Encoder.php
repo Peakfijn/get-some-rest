@@ -15,27 +15,10 @@ abstract class Encoder {
 	/**
 	 * Get the encoded content.
 	 *
-	 * @param  mixed  $data
+	 * @param  array  $data
 	 * @param  \Illuminate\Http\Request $request
 	 * @return string
 	 */
-	public abstract function getContent( $data, Request $request );
-
-	/**
-	 * Try to convert the given data to an array.
-	 * 
-	 * @param  mixed $data
-	 * @return array
-	 */
-	protected function toArray( $data )
-	{
-		if( is_array($data) )
-			return $data;
-
-		if( $data instanceof ArrayableInterface )
-			return $data->toArray();
-
-		return (array) $data;
-	}
+	public abstract function getContent( array $data, Request $request );
 
 }

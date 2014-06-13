@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Response as IlluminateResponse;
 use Peakfijn\GetSomeRest\Contracts\Encoder;
+use Peakfijn\GetSomeRest\Contracts\Mutator;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -10,13 +11,17 @@ class Response extends IlluminateResponse {
 	/**
 	 * Finalize the response by encoding the "original" content.
 	 *
+	 * @param  \PEakfijn\GetSomeRest\Contracts\Mutator $mutator
 	 * @param  \Peakfijn\GetSomeRest\Contracts\Encoder $encoder
 	 * @param  \Symfony\Component\HttpFoundation\Request $request
 	 * @return \Peakfijn\GetSomeRest\Http\Request
 	 */
-	public function finalize( Encoder $encoder, Request $request )
+	public function finalize( Mutator $mutator, Encoder $encoder, Request $request )
 	{
-		$this->setContent($encoder->getContent($this->getOriginalContent(), $request));
+		$content = $mutator->getContent($this,    $request);
+		$content = $encoder->getContent($content, $request);
+
+		$this->setContent($content);
 		$this->headers->set('content-type', $encoder->getContentType());
 
 		return $this;

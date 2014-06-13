@@ -4,6 +4,23 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
+	| Mutators
+	|--------------------------------------------------------------------------
+	|
+	| Every project has it's own needs for the responses of the API.
+	| With a Mutator you can create your own custom response.
+	|
+	| Note, the first mutator will be used as default.
+	|
+	*/
+
+	'mutators' => array(
+		'meta'  => '\Peakfijn\GetSomeRest\Mutators\MetaMutator',
+		'plain' => '\Peakfijn\GetSomeRest\Mutators\PlainMutator',
+	),
+
+	/*
+	|--------------------------------------------------------------------------
 	| Encoders
 	|--------------------------------------------------------------------------
 	|

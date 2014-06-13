@@ -37,6 +37,7 @@ class GetSomeRestServiceProvider extends ServiceProvider {
 		// now load every part of the package
 		$this->registerRouter();
 		$this->registerEncoders();
+		$this->registerMutators();
 	}
 
 	/**
@@ -72,7 +73,7 @@ class GetSomeRestServiceProvider extends ServiceProvider {
 	}
 
 	/**
-	 * Register the encoders
+	 * Register the encoders.
 	 * 
 	 * @return void
 	 */
@@ -84,6 +85,19 @@ class GetSomeRestServiceProvider extends ServiceProvider {
 		$router->encoders = $config->get('get-some-rest::encoders');
 		$router->extensionAliases = $config->get('get-some-rest::extensions');
 		$router->failUnsupportedExtension = !!$config->get('get-some-rest::fail_on_unknown_extension');
+	}
+
+	/**
+	 * Register the mutators.
+	 * 
+	 * @return void
+	 */
+	protected function registerMutators()
+	{
+		$router = $this->app['router'];
+		$config = $this->app['config'];
+
+		$router->mutators = $config->get('get-some-rest::mutators');
 	}
 
 }
