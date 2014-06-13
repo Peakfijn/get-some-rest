@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Peakfijn\GetSomeRest\Contracts\Mutator;
 use Peakfijn\GetSomeRest\Http\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class MetaMutator extends Mutator {
 
@@ -16,7 +17,7 @@ class MetaMutator extends Mutator {
 	public function getContent( Response $response, Request $request )
 	{
 		$result  = $this->toArray($response->getOriginalContent());
-		$content = $this->getBasics($response, $request);
+		$content = $this->getBasics($response->getStatusCode());
 
 		if( $this->isAssociative($result) )
 		{
@@ -29,16 +30,15 @@ class MetaMutator extends Mutator {
 	/**
 	 * Get the basic meta structure.
 	 * 
-	 * @param  Response $response [description]
-	 * @param  Request  $request  [description]
+	 * @param  int  $code
 	 * @return array
 	 */
-	protected function getBasics( Response $response, Request $request )
+	protected function getBasics( $code )
 	{
 		return [
-			'success' => true,
-			'code'    => $response->getStatusCode(),
-			'message' => 'ok'
+			'success' => !$this->isErrorCode($code),
+			'code'    => $code,
+			'message' => strtolower(SymfonyResponse::$statusTexts[$code]),
 		];
 	}
 
@@ -78,6 +78,17 @@ class MetaMutator extends Mutator {
 	protected function isAssociative( array $array )
 	{
 		return array_keys($array) !== range(0, count($array) - 1);
+	}
+
+	/**
+	 * Check if the given status code is an error.
+	 * 
+	 * @param  int  $code
+	 * @return boolean
+	 */
+	protected function isErrorCode( $code )
+	{
+		return substr((string) $code, 0, 1) != '2';
 	}
 
 }
