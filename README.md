@@ -3,4 +3,4 @@ Get Some REST
 
 A package to give your Laravel project some REST.
 
-Information comming soon!
+Information coming soon!
