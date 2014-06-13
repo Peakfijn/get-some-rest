@@ -1,6 +1,6 @@
 {
     "name": "peakfijn/get-some-rest",
-    "description": "",
+    "description": "A package to give your Laravel project some REST.",
     "keywords": ["Laravel", "Peakfijn", "Restful", "API", "Rest"],
     "license": "MIT",
     "homepage": "http://github.com/peakfijn/get-some-rest",
