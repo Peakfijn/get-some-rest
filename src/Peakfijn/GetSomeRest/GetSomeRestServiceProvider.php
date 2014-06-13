@@ -34,7 +34,9 @@ class GetSomeRestServiceProvider extends ServiceProvider {
 		// so lets force-load it :)
 		$this->boot();
 
+		// now load every part of the package
 		$this->registerRouter();
+		$this->registerEncoders();
 	}
 
 	/**
@@ -58,7 +60,7 @@ class GetSomeRestServiceProvider extends ServiceProvider {
 		{
 			$router = new Router($app['events'], $app);
 
-			$router->encoders = $this->app['config']->get('get-some-rest::encoders');
+			$router->pattern('apiExtensions', $app['config']->get('get-some-rest::extension'));
 
 			if( $app['env'] == 'testing' )
 			{
@@ -67,6 +69,21 @@ class GetSomeRestServiceProvider extends ServiceProvider {
 
 			return $router;
 		});
+	}
+
+	/**
+	 * Register the encoders
+	 * 
+	 * @return void
+	 */
+	protected function registerEncoders()
+	{
+		$router = $this->app['router'];
+		$config = $this->app['config'];
+
+		$router->encoders = $config->get('get-some-rest::encoders');
+		$router->extensionAliases = $config->get('get-some-rest::extensions');
+		$router->failUnsupportedExtension = !!$config->get('get-some-rest::fail_on_unknown_extension');
 	}
 
 }

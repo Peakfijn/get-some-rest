@@ -6,6 +6,7 @@ use Illuminate\Http\Response as IlluminateResponse;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Peakfijn\GetSomeRest\Http\Response;
 use Peakfijn\GetSomeRest\Encoders\JsonEncoder;
+use Peakfijn\GetSomeRest\Exceptions\UnsupportedResponseFormatException;
 
 class Router extends \Illuminate\Routing\Router {
 
@@ -15,6 +16,20 @@ class Router extends \Illuminate\Routing\Router {
 	 * @var array
 	 */
 	public $encoders = [];
+
+	/**
+	 * Holds the aliases for response formats.
+	 * 
+	 * @var array
+	 */
+	public $extensionAliases = [];
+
+	/**
+	 * Fail when an extension was supplied with an unsupported format.
+	 *
+	 * @var boolean
+	 */
+	public $failUnsupportedExtension = true;
 
 	/**
 	 * Create a group of API routes.
@@ -65,6 +80,36 @@ class Router extends \Illuminate\Routing\Router {
 		);
 	}
 
+	/**
+	 * Create a new route instance.
+	 * 
+	 * @param  array|string $methods
+	 * @param  string       $uri
+	 * @param  mixed        $action
+	 * @return \Illuminate\Routing\Route
+	 */
+	public function createRoute( $methods, $uri, $action )
+	{
+		if( $this->isApiLastGroup() )
+		{
+			$uri = $this->suffix($uri);
+		}
+
+		return parent::createRoute($methods, $uri, $action);
+	}
+
+	/**
+	 * Suffix the given URI with the possible API formats.
+	 * Copied, and adjusted, from the "prefix" function.
+	 *  
+	 * @param  string $uri
+	 * @return string
+	 */
+	protected function suffix( $uri )
+	{
+		return trim(trim($uri, '/') . '{apiExtensions?}', '/') ?: '/';
+	}
+
 
 	/**
 	 * Detect if the given request is meant for an API route.
@@ -78,6 +123,22 @@ class Router extends \Illuminate\Routing\Router {
 	}
 
 	/**
+	 * Check if the last group was an API group.
+	 * Copied, and adjusted, from the "getLastGropPrefix" function.
+	 * 
+	 * @return boolean
+	 */
+	protected function isApiLastGroup()
+	{
+		if( count($this->groupStack) > 0 )
+		{
+			return array_get(last($this->groupStack), 'api', false);
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get the requested encoder.
 	 * 
 	 * @param  \Illuminate\Http\Request $request
@@ -85,6 +146,23 @@ class Router extends \Illuminate\Routing\Router {
 	 */
 	protected function getEncoder( Request $request )
 	{
+		$extension = pathinfo(last($request->segments()), PATHINFO_EXTENSION);
+
+		if( array_key_exists($extension, $this->extensionAliases) )
+		{
+			$extension = $this->extensionAliases[$extension];
+		}
+
+		if( array_key_exists($extension, $this->encoders) )
+		{
+			return new $this->encoders[$extension];
+		}
+
+		if( !empty($extension) && $this->failUnsupportedExtension )
+		{
+			throw new UnsupportedResponseFormatException();
+		}
+
 		$encoder = array_values($this->encoders)[0];
 
 		return new $encoder;
