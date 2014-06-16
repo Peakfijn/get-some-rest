@@ -34,6 +34,7 @@ return array(
 	'encoders' => array(
 		'json' => '\Peakfijn\GetSomeRest\Encoders\JsonEncoder',
 		'yaml' => '\Peakfijn\GetSomeRest\Encoders\YamlEncoder',
+		'jsonp' => '\Peakfijn\GetSomeRest\Encoders\JsonpEncoder',
 		'xml'  => '\Peakfijn\GetSomeRest\Encoders\XmlEncoder',
 	),
 
