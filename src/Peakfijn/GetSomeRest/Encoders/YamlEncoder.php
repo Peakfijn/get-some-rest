@@ -13,7 +13,7 @@ class YamlEncoder extends Encoder {
 	 */
 	public function getContentType()
 	{
-		return 'application/yaml';
+		return 'text/x-yaml';
 	}
 
 	/**
