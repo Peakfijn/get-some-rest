@@ -65,8 +65,8 @@ class Router extends \Illuminate\Routing\Router {
 	 * The routes will be prefixed with the given version.
 	 * Please do not use an API group within another API group.
 	 * 
-	 * @param  mixed   $settings  Should match pattern /v[0-9]+/
-	 * @param  Closure $callback
+	 * @param  array|string $settings  Should match pattern /v[0-9]+/
+	 * @param  Closure      $callback
 	 * @return coid
 	 */
 	public function api( $settings, Closure $callback )
@@ -75,9 +75,14 @@ class Router extends \Illuminate\Routing\Router {
 		{
 			$settings = ['version' => $settings, 'prefix' => $settings];
 		}
-		else if( array_key_exists('prefix', $settings) )
+
+		if( isset($settings['prefix']) && !empty($settings['prefix']) )
 		{
-			$settings['prefix'] = $settings['version'] .'/'. $settings['prefix'];
+			$settings['prefix'] = $settings['prefix'] .'/'. $settings['version'];
+		}
+		else
+		{
+			$settings['prefix'] = $settings['version'];
 		}
 
 		$settings['api'] = true;
