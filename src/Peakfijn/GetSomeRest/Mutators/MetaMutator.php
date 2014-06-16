@@ -3,7 +3,6 @@
 use Illuminate\Http\Request;
 use Peakfijn\GetSomeRest\Contracts\Mutator;
 use Peakfijn\GetSomeRest\Http\Response;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class MetaMutator extends Mutator {
 
@@ -17,7 +16,12 @@ class MetaMutator extends Mutator {
 	public function getContent( Response $response, Request $request )
 	{
 		$result  = $this->toArray($response->getOriginalContent());
-		$content = $this->getBasics($response->getStatusCode());
+		$content = $this->getBasics($response);
+
+		if( empty($result) || is_string($response->getOriginalContent()) )
+		{
+			return $content;
+		}
 
 		if( $this->isAssociative($result) )
 		{
@@ -30,15 +34,15 @@ class MetaMutator extends Mutator {
 	/**
 	 * Get the basic meta structure.
 	 * 
-	 * @param  int  $code
+	 * @param  Response $response
 	 * @return array
 	 */
-	protected function getBasics( $code )
+	protected function getBasics( Response $response )
 	{
 		return [
-			'success' => !$this->isErrorCode($code),
-			'code'    => $code,
-			'message' => strtolower(SymfonyResponse::$statusTexts[$code]),
+			'success' => !$this->isErrorCode($response->getStatusCode()),
+			'code'    => $response->getStatusCode(),
+			'message' => $this->getMessage($response),
 		];
 	}
 
@@ -89,6 +93,28 @@ class MetaMutator extends Mutator {
 	protected function isErrorCode( $code )
 	{
 		return substr((string) $code, 0, 1) != '2';
+	}
+
+	/**
+	 * Get a proper message from the response, or status code.
+	 * 
+	 * @param  Response $response
+	 * @return string
+	 */
+	protected function getMessage( Response $response )
+	{
+		$message = null;
+
+		if( $response->hasException() )
+			$message = $response->getException()->getMessage();
+
+		if( is_string($response->getOriginalContent()) )
+			$message = $response->getOriginalContent();
+
+		if( empty($message) )
+			$message = strtolower($response->getStatusText());
+
+		return $message;
 	}
 
 }

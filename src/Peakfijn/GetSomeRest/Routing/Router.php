@@ -3,10 +3,13 @@
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as IlluminateResponse;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Peakfijn\GetSomeRest\Http\Response;
 use Peakfijn\GetSomeRest\Exceptions\UnsupportedEncoderException;
+use Peakfijn\GetSomeRest\Exceptions\NotFoundResourceException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Router extends \Illuminate\Routing\Router {
 
@@ -36,20 +39,50 @@ class Router extends \Illuminate\Routing\Router {
 	 *
 	 * @var boolean
 	 */
-	public $failUnsupportedExtension = true;
+	public $failUnsupportedEncoder = true;
+
+	/**
+	 * The default actions for an api resourceful controller.
+	 * 
+	 * @var array
+	 */
+	protected $resourceApiDefaults = ['index', 'store', 'show', 'update', 'destroy'];
+
+	/**
+	 * These are some of the basic status code, related to the http method used.
+	 * 
+	 * @var array
+	 */
+	public static $verbs_status_codes = [
+		'POST'   => 201, /* Always used for creating */
+		'PUT'    => 204, /* Update something */
+		'PATCH'  => 204, /* Same as PUT */
+		'DELETE' => 204, /* Delete something */
+	];
 
 	/**
 	 * Create a group of API routes.
 	 * The routes will be prefixed with the given version.
 	 * Please do not use an API group within another API group.
 	 * 
-	 * @param  string  $version  Should match pattern /v[0-9]+/
+	 * @param  mixed   $settings  Should match pattern /v[0-9]+/
 	 * @param  Closure $callback
 	 * @return coid
 	 */
-	public function api( $version, Closure $callback )
+	public function api( $settings, Closure $callback )
 	{
-		return $this->group(['api' => true, 'prefix' => $version], $callback);
+		if( !is_array($settings) )
+		{
+			$settings = ['version' => $settings, 'prefix' => $settings];
+		}
+		else if( array_key_exists('prefix', $settings) )
+		{
+			$settings['prefix'] = $settings['version'] .'/'. $settings['prefix'];
+		}
+
+		$settings['api'] = true;
+
+		return $this->group($settings, $callback);
 	}
 
 	/**
@@ -78,8 +111,12 @@ class Router extends \Illuminate\Routing\Router {
 		// Like the RuntimeException for example.
 		catch( HttpExceptionInterface $exception )
 		{
-			// $response = new Response('error');
 			$response = Response::makeFromException($exception);
+		}
+		// Also catch the FindOrFail exception for Eloquent by default.
+		catch( ModelNotFoundException $exception )
+		{
+			$response = Response::makeFromException(new NotFoundResourceException($exception->getModel()));
 		}
 
 		return $response->finalize(
@@ -105,6 +142,51 @@ class Router extends \Illuminate\Routing\Router {
 		}
 
 		return parent::createRoute($methods, $uri, $action);
+	}
+
+	/**
+	 * Create a response instance from the given value.
+	 * It also tries to apply the correct status code based on the method.
+	 *
+	 * @param  \Symfony\Component\HttpFoundation\Request  $request
+	 * @param  mixed  $response
+	 * @return \Illuminate\Http\Response
+	 */
+	protected function prepareResponse( $request, $response )
+	{
+		if( !$response instanceof SymfonyResponse )
+		{
+			$status_code = 200;
+
+			if( array_key_exists($request->getMethod(), static::$verbs_status_codes) )
+			{
+				$status_code = static::$verbs_status_codes[$request->getMethod()];
+			}
+
+			$response = new Response($response, $status_code);
+		}
+
+		return $response->prepare($request);
+	}
+
+	/**
+	 * Get the applicable resource methods.
+	 * If it's an API route, the 'create' & 'edit' methods will be removed by default.
+	 *
+	 * @param  array  $defaults
+	 * @param  array  $options
+	 * @return array
+	 */
+	protected function getResourceMethods( $defaults, $options )
+	{
+		$methods = parent::getResourceMethods($defaults, $options);
+
+		if( $this->isApiLastGroup() )
+		{
+			return array_intersect($methods, $this->resourceApiDefaults);
+		}
+
+		return $methods;
 	}
 
 	/**
@@ -167,7 +249,7 @@ class Router extends \Illuminate\Routing\Router {
 			return new $this->encoders[$extension];
 		}
 
-		if( !empty($extension) && $this->failUnsupportedExtension )
+		if( !empty($extension) && $this->failUnsupportedEncoder )
 		{
 			throw new UnsupportedEncoderException($extension);
 		}
