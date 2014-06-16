@@ -111,13 +111,13 @@ class Response extends IlluminateResponse {
 	 */
 	public static function makeFromException( HttpExceptionInterface $exception )
 	{
-		$content = '';
+		$content = $exception->getMessage();
 
 		if( $exception instanceof RestException )
 		{
 			$content = $exception->getContent();
 		}
-
+		
 		$response = new static(
 			$content,
 			$exception->getStatusCode(),
