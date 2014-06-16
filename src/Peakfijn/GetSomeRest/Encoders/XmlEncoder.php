@@ -48,7 +48,7 @@ class XmlEncoder extends Encoder {
 
 		if( $xml == null )
 		{
-			$xml = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><$rootNodeName />");
+			$xml = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><!DOCTYPE $rootNodeName><$rootNodeName />");
 		}
 
 		// loop through the data passed in.
@@ -58,7 +58,7 @@ class XmlEncoder extends Encoder {
 			if( is_numeric($key) )
 			{
 				// make string key...
-				$key = "object". (string) $key;
+				$key = "item". (string) $key;
 			}
 
 			// replace anything not alpha numeric
