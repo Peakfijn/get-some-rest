@@ -6,6 +6,7 @@ use Peakfijn\GetSomeRest\Contracts\Mutator;
 use Peakfijn\GetSomeRest\Contracts\RestException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Response extends IlluminateResponse {
 
@@ -79,13 +80,24 @@ class Response extends IlluminateResponse {
 	/**
 	 * Create a new response from an existing Illuminate response.
 	 * 
-	 * @param  Illuminate\Http\Response $response
+	 * @param  \Symfony\Component\HttpFoundation\Response $response
 	 * @return \Peakfijn\GetSomeRest\Http\Response
 	 */
-	public static function makeFromExisting( IlluminateResponse $response )
+	public static function makeFromExisting( SymfonyResponse $response )
 	{
+		$content = '';
+
+		if( $response instanceof IlluminateResponse )
+		{
+			$content = $response->getOriginalContent();
+		}
+		else
+		{
+			$content = $response->getContent();
+		}
+
 		return new static(
-			$response->getOriginalContent(),
+			$content,
 			$response->getStatusCode(),
 			$response->headers->all()
 		);
