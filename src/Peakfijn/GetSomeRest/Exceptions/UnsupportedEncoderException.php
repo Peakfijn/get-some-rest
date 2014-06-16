@@ -1,22 +1,22 @@
 <?php namespace Peakfijn\GetSomeRest\Exceptions;
 
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Peakfijn\GetSomeRest\Contracts\RestException;
 
-class UnsupportedEncoderException extends HttpException {
+class UnsupportedEncoderException extends RestException {
 
 	/**
 	 * This exception is thrown when an unsupported response format was requested.
 	 *
-	 * @param string     $message  The internal exception message
+	 * @param string $encoder (default: null)
 	 */
-	public function __construct( $requested = null )
+	public function __construct( $encoder = null )
 	{
-		if( !empty($requested) )
+		if( !empty($encoder) )
 		{
-			$requested = 'Unsupported format "'. $requested .'" requested.';
+			$encoder = 'Unsupported format "'. $encoder .'" requested.';
 		}
 
-		parent::__construct(406, $requested, null, array(), 0);
+		parent::__construct(406, $encoder);
 	}
 
 }
