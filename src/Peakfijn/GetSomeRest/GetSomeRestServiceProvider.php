@@ -84,7 +84,7 @@ class GetSomeRestServiceProvider extends ServiceProvider {
 
 		$router->encoders = $config->get('get-some-rest::encoders');
 		$router->extensionAliases = $config->get('get-some-rest::extensions');
-		$router->failUnsupportedExtension = !!$config->get('get-some-rest::fail_on_unknown_extension');
+		$router->failUnsupportedEncoder = !!$config->get('get-some-rest::fail_on_unknown_encoder');
 	}
 
 	/**

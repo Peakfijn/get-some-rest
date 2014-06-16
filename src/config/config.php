@@ -59,7 +59,7 @@ return array(
 	|
 	*/
 
-	'fail_on_unknown_extension' => true,
+	'fail_on_unknown_encoder' => false,
 
 	/*
 	|--------------------------------------------------------------------------
