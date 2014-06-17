@@ -21,14 +21,14 @@ trait ResourceValidatingTrait {
 	 */
 	public function validate()
 	{
-		if( !isset($this->rules) )
+		if( !isset($this->rules) || !is_array($this->rules) || empty($this->rules) )
 		{
 			return false;
 		}
 
 		$validator = Validator::make($this->getAttributes(), $this->rules);
 
-		if( $validator->passes() ) 
+		if( $validator->passes() )
 		{
 			return true;
 		}
