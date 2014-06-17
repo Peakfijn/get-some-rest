@@ -23,7 +23,7 @@ class MetaMutator extends Mutator {
 			return $content;
 		}
 
-		if( $this->isAssociative($result) )
+		if( $this->isAssociativeArray($result) )
 		{
 			return array_merge($content, $this->getSingle($result));
 		}
@@ -79,7 +79,7 @@ class MetaMutator extends Mutator {
 	 * @param  array  $array
 	 * @return boolean
 	 */
-	protected function isAssociative( array $array )
+	protected function isAssociativeArray( array $array )
 	{
 		return array_keys($array) !== range(0, count($array) - 1);
 	}
