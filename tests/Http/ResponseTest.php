@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Response as IlluminateResponse;
 use Peakfijn\GetSomeRest\Http\Response;
 use Peakfijn\GetSomeRest\Exceptions\NotFoundResourceException;
 
@@ -14,20 +15,10 @@ class ResponseTest extends TestCase {
 	 */
 	public function testCreatesInstanceFromExistingResponse()
 	{
-		$response = Mockery::mock('Illuminate\Http\Response');
-		$response->headers = $this->mockMessageBag();
-		
-		$response
-			->shouldReceive('getOriginalContent')
-			->once()
-			->andReturn('test');
+		$existing = IlluminateResponse::create('created', 201);
+		$response = Response::makeFromExisting($existing);
 
-		$response
-			->shouldReceive('getStatusCode')
-			->once()
-			->andReturn(200);
-
-		Response::makeFromExisting($response);
+		$this->assertEquals($existing->getStatusCode(), $response->getStatusCode());
 	}
 
 	/**
