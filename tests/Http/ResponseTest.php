@@ -1,6 +1,7 @@
 <?php
 
 use Peakfijn\GetSomeRest\Http\Response;
+use Peakfijn\GetSomeRest\Exceptions\NotFoundResourceException;
 
 class ResponseTest extends TestCase {
 
@@ -38,24 +39,10 @@ class ResponseTest extends TestCase {
 	 */
 	public function testCreatesInstanceFromExistingException()
 	{
-		$exception = Mockery::mock('Peakfijn\GetSomeRest\Contracts\RestException');
+		$exception = new NotFoundResourceException('Test');
+		$response  = Response::makeFromException($exception);
 
-		$exception
-			->shouldReceive('getContent')
-			->once()
-			->andReturn('test');
-
-		$exception
-			->shouldReceive('getStatusCode')
-			->once()
-			->andReturn(200);
-
-		$exception
-			->shouldReceive('getHeaders')
-			->once()
-			->andReturn([]);
-
-		Response::makeFromException($exception);
+		$this->assertEquals($exception->getStatusCode(), $response->getStatusCode());
 	}
 
 	/**
@@ -66,24 +53,8 @@ class ResponseTest extends TestCase {
 	 */
 	public function testCreatesInstanceFromExistingExceptionAlsoAddsExceptionToResponse()
 	{
-		$exception = Mockery::mock('Peakfijn\GetSomeRest\Contracts\RestException');
-
-		$exception
-			->shouldReceive('getContent')
-			->once()
-			->andReturn('test');
-
-		$exception
-			->shouldReceive('getStatusCode')
-			->once()
-			->andReturn(200);
-
-		$exception
-			->shouldReceive('getHeaders')
-			->once()
-			->andReturn([]);
-
-		$response = Response::makeFromException($exception);
+		$exception = new NotFoundResourceException('Test');
+		$response  = Response::makeFromException($exception);
 
 		$this->assertTrue($response->hasException());
 	}
