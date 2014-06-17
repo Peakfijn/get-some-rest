@@ -39,7 +39,7 @@ class Router extends \Illuminate\Routing\Router {
 	 *
 	 * @var boolean
 	 */
-	public $failUnsupportedEncoder = true;
+	public $failUnsupportedEncoder = false;
 
 	/**
 	 * The default actions for an api resourceful controller.
@@ -71,9 +71,9 @@ class Router extends \Illuminate\Routing\Router {
 	 */
 	public function api( $settings, Closure $callback )
 	{
-		if( !is_array($settings) )
+		if( is_string($settings) )
 		{
-			$settings = ['version' => $settings, 'prefix' => $settings];
+			$settings = ['version' => $settings];
 		}
 
 		if( isset($settings['prefix']) && !empty($settings['prefix']) )
@@ -188,7 +188,7 @@ class Router extends \Illuminate\Routing\Router {
 
 		if( $this->isApiLastGroup() )
 		{
-			return array_intersect($methods, $this->resourceApiDefaults);
+			$methods = array_intersect($methods, $this->resourceApiDefaults);
 		}
 
 		return $methods;
@@ -209,13 +209,14 @@ class Router extends \Illuminate\Routing\Router {
 
 	/**
 	 * Detect if the given request is meant for an API route.
+	 * There can be a prefix defined...
 	 * 
 	 * @param  \Illuminate\Http\Request $request
 	 * @return boolean
 	 */
 	protected function isApiRequest( Request $request )
 	{
-		return !!preg_match('/v[0-9]+/', $request->segment(1));
+		return !!preg_match('/v[0-9]+/', $request->segment(1)) || !!preg_match('/v[0-9]+/', $request->segment(2));
 	}
 
 	/**
