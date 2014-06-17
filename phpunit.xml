@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="vendor/autoload.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false"
-         syntaxCheck="false"
+		 backupStaticAttributes="false"
+		 bootstrap="tests/bootstrap.php"
+		 colors="true"
+		 convertErrorsToExceptions="true"
+		 convertNoticesToExceptions="true"
+		 convertWarningsToExceptions="true"
+		 processIsolation="false"
+		 stopOnFailure="false"
+		 syntaxCheck="false"
 >
-    <testsuites>
-        <testsuite name="Package Test Suite">
-            <directory suffix=".php">./tests/</directory>
-        </testsuite>
-    </testsuites>
+	<testsuites>
+		<testsuite name="all">
+			<directory suffix="Test.php">./tests/</directory>
+		</testsuite>
+
+		<testsuite name="encoders">
+			<directory suffix="Test.php">./tests/Encoders/</directory>
+		</testsuite>
+
+		<testsuite name="http">
+			<directory suffix="Test.php">./tests/Http/</directory>
+		</testsuite>
+
+		<testsuite name="routing">
+			<directory suffix="Test.php">./tests/Routing/</directory>
+		</testsuite>
+	</testsuites>
 </phpunit>

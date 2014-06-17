@@ -32,10 +32,10 @@ return array(
 	*/
 
 	'encoders' => array(
-		'json' => '\Peakfijn\GetSomeRest\Encoders\JsonEncoder',
-		'yaml' => '\Peakfijn\GetSomeRest\Encoders\YamlEncoder',
+		'json'  => '\Peakfijn\GetSomeRest\Encoders\JsonEncoder',
 		'jsonp' => '\Peakfijn\GetSomeRest\Encoders\JsonpEncoder',
-		'xml'  => '\Peakfijn\GetSomeRest\Encoders\XmlEncoder',
+		'yaml'  => '\Peakfijn\GetSomeRest\Encoders\YamlEncoder',
+		'xml'   => '\Peakfijn\GetSomeRest\Encoders\XmlEncoder',
 	),
 
 	/*
