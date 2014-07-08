@@ -50,7 +50,7 @@ trait ResourceFilteringScopeTrait {
 
 			if( !in_array($attribute, $attributes) )
 			{
-				if( !method_exists($this, $relation) && !in_array($relation, array_keys($attributes)) )
+				if( !method_exists($this, $relation) && !in_array($relation, $attributes) )
 				{
 					continue;
 				}
@@ -106,7 +106,7 @@ trait ResourceFilteringScopeTrait {
 	 */
 	protected function getFilterableAttributes()
 	{
-		return $this->getArrayableItems($this->attributes);
+		return array_keys($this->getArrayableAttributes());
 	}
 
 	/**
