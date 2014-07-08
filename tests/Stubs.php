@@ -116,9 +116,9 @@ class ResourceFilteringScopeStub extends ResourceStub {
 	 * @param  mixed $value (Default: null)
 	 * @return array
 	 */
-	public function getArrayableItems( $value = null )
+	public function getArrayableAttributes( $value = null )
 	{
-		return array_keys($this->attributes);
+		return $this->attributes;
 	}
 
 	/**
