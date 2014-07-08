@@ -1,10 +1,9 @@
 <?php
 
 use Peakfijn\GetSomeRest\Usables\ResourceValidatingTrait;
+use Peakfijn\GetSomeRest\Usables\ResourceFilteringScopeTrait;
 
-class ResourceValidatingStub {
-
-	use ResourceValidatingTrait;
+class ResourceStub {
 
 	/**
 	 * The model's attributes.
@@ -12,28 +11,20 @@ class ResourceValidatingStub {
 	 * @var array
 	 */
 	public $attributes = [
-		'id'   => 1,
-		'name' => 'Cedric'
+		'id'    => 1,
+		'name'  => 'Cedric',
+		'email' => 'cedric@peakfijn.nl',
 	];
 
 	/**
-	 * The model's attributes with their validation rules.
+	 * Set default attributes on instantiating.
 	 * 
-	 * @var array
+	 * @param array $attributes (Default: null)
 	 */
-	public $rules = [
-		'id'   => 'Numeric',
-		'name' => 'Required'
-	];
-
-	/**
-	 * Get the attributes of the object.
-	 * 
-	 * @return array
-	 */
-	public function getAttributes()
+	public function __construct( array $attributes = null )
 	{
-		return $this->attributes;
+		if( !is_null($attributes) )
+			$this->attributes = $attributes;
 	}
 
 	/**
@@ -60,6 +51,84 @@ class ResourceValidatingStub {
 	public function __set( $key, $value )
 	{
 		$this->attributes[$key] = $value;
+	}
+
+}
+
+class ResourceQueryStub {
+
+	/**
+	 * The mock to use.
+	 * 
+	 * @var \Mockery\Mock
+	 */
+	public $mock;
+
+	/**
+	 * Allow a Mocked object to be used.
+	 * 
+	 * @param \Mockery\Mock $mock
+	 */
+	public function __construct( $mock )
+	{
+		$this->mock = $mock;
+	}
+
+	/**
+	 * Fake the whereHas function so the closure is called.
+	 * 
+	 * @param  string  $attribute
+	 * @param  Closure $closure
+	 * @return void
+	 */
+	public function whereHas( $attribute, Closure $closure )
+	{
+		call_user_func($closure, $this->mock);
+	}
+
+}
+
+class ResourceValidatingStub extends ResourceStub {
+
+	use ResourceValidatingTrait;
+
+	/**
+	 * The model's attributes with their validation rules.
+	 * 
+	 * @var array
+	 */
+	public $rules = [
+		'id'    => 'Numeric',
+		'name'  => 'Required',
+		'email' => 'Required|Email',
+	];
+
+}
+
+class ResourceFilteringScopeStub extends ResourceStub {
+
+	use ResourceFilteringScopeTrait;
+
+	/**
+	 * Get all arrayable items.
+	 * It's actually a replacement for the Eloquent version.
+	 *
+	 * @param  mixed $value (Default: null)
+	 * @return array
+	 */
+	public function getArrayableItems( $value = null )
+	{
+		return array_keys($this->attributes);
+	}
+
+	/**
+	 * Define a fake relation to check if the relation is allowed.
+	 * 
+	 * @return void
+	 */
+	public function fakeRelation()
+	{
+		return;
 	}
 
 }

@@ -26,7 +26,7 @@ trait ResourceValidatingTrait {
 			return false;
 		}
 
-		$validator = Validator::make($this->getAttributes(), $this->rules);
+		$validator = Validator::make($this->attributes, $this->rules);
 
 		if( $validator->passes() )
 		{
