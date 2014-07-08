@@ -50,7 +50,7 @@ trait ResourceFilteringScopeTrait {
 
 			if( !in_array($attribute, $attributes) )
 			{
-				if( !method_exists($this, $relation) && !in_array($relation, $attributes) )
+				if( !method_exists($this, $relation) && !in_array($relation, array_keys($attributes)) )
 				{
 					continue;
 				}
