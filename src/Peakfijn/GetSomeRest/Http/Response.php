@@ -112,7 +112,7 @@ class Response extends IlluminateResponse {
 	 */
 	public function hasPagination()
 	{
-		return !empty($this->pagination);
+		return !is_null($this->pagination);
 	}
 
 	/**

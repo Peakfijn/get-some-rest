@@ -80,9 +80,9 @@ class Pagination {
 	 * @param  mixed $offset
 	 * @return \Peakfijn\GetSomeRest\Http\Response
 	 */
-	public static function respond( $data, $count = 0, $limit = 0, $offset = 0 )
+	public static function make( $data, $count = 0, $limit = 0, $offset = 0 )
 	{
-		return static::respondFromExisting(new Response($data), $count, $limit, $offset);
+		return static::makeFromResponse(new Response($data), $count, $limit, $offset);
 	}
 
 	/**
@@ -94,15 +94,14 @@ class Pagination {
 	 * @param  mixed $offset
 	 * @return \Peakfijn\GetSomeRest\Http\Response
 	 */
-	public static function respondFromExisting( SymfonyResponse $response, $count = 0, $limit = 0, $offset = 0 )
+	public static function makeFromResponse( SymfonyResponse $response, $count = 0, $limit = 0, $offset = 0 )
 	{
 		if( !$response instanceof Response )
 		{
 			$response = Response::makeFromExisting($response);
 		}
 
-		$pagination = new static($count, $limit, $offset);
-		$response->setPagination($pagination);
+		$response->setPagination(new static($count, $limit, $offset));
 
 		return $response;
 	}

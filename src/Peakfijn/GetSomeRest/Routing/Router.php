@@ -109,7 +109,12 @@ class Router extends \Illuminate\Routing\Router {
 
 		try
 		{
-			$response = Response::makeFromExisting(parent::dispatch($request));
+			$response = parent::dispatch($request);
+
+			if( !$response instanceof Response )
+			{
+				$response = Response::makeFromExisting($response);
+			}
 		}
 		// Only catch HttpExceptions,
 		// other exceptions should still be thrown.
