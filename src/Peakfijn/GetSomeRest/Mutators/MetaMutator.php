@@ -31,7 +31,7 @@ class MetaMutator extends Mutator {
 
 		if( $response->hasPagination() )
 		{
-			return array_merge($content, $this->getMultiple($result), $this->getPagination($response->getPagination()));
+			return array_merge($content, $this->getPagination($response->getPagination()), $this->getMultiple($result));
 		}
 
 		return array_merge($content, $this->getMultiple($result));
