@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Peakfijn\GetSomeRest\Contracts\Mutator;
 use Peakfijn\GetSomeRest\Http\Response;
+use Peakfijn\GetSomeRest\Http\Pagination;
 
 class MetaMutator extends Mutator {
 
@@ -26,6 +27,11 @@ class MetaMutator extends Mutator {
 		if( $this->isAssociativeArray($result) )
 		{
 			return array_merge($content, $this->getSingle($result));
+		}
+
+		if( $response->hasPagination() )
+		{
+			return array_merge($content, $this->getMultiple($result), $this->getPagination($response->getPagination()));
 		}
 
 		return array_merge($content, $this->getMultiple($result));
@@ -55,7 +61,7 @@ class MetaMutator extends Mutator {
 	protected function getSingle( array $result )
 	{
 		return [
-			'result' => $result
+			'result' => $result,
 		];
 	}
 
@@ -68,7 +74,22 @@ class MetaMutator extends Mutator {
 	protected function getMultiple( array $result )
 	{
 		return [
-			'results' => $result
+			'results' => $result,
+		];
+	}
+
+	/**
+	 * Get the meta structure for pagination descriptions.
+	 * 
+	 * @param  Pagination  $pagination
+	 * @return array
+	 */
+	protected function getPagination( Pagination $pagination )
+	{
+		return [
+			'count'  => $pagination->getCount(),
+			'offset' => $pagination->getOffset(),
+			'limit'  => $pagination->getLimit(),
 		];
 	}
 

@@ -4,6 +4,7 @@ use Illuminate\Http\Response as IlluminateResponse;
 use Peakfijn\GetSomeRest\Contracts\Encoder;
 use Peakfijn\GetSomeRest\Contracts\Mutator;
 use Peakfijn\GetSomeRest\Contracts\RestException;
+use Peakfijn\GetSomeRest\Http\Pagination;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -18,9 +19,16 @@ class Response extends IlluminateResponse {
 	protected $exception;
 
 	/**
+	 * May contain the pagination information about the response.
+	 * 
+	 * @var \Peakfijn\GetSomeRest\Http\Pagination
+	 */
+	protected $pagination;
+
+	/**
 	 * Finalize the response by mutating & encoding the "original" content.
 	 *
-	 * @param  \PEakfijn\GetSomeRest\Contracts\Mutator $mutator
+	 * @param  \Peakfijn\GetSomeRest\Contracts\Mutator $mutator
 	 * @param  \Peakfijn\GetSomeRest\Contracts\Encoder $encoder
 	 * @param  \Symfony\Component\HttpFoundation\Request $request
 	 * @return \Peakfijn\GetSomeRest\Http\Request
@@ -75,6 +83,36 @@ class Response extends IlluminateResponse {
 	public function getException()
 	{
 		return $this->exception;
+	}
+
+	/**
+	 * Set the pagination object that describes the main pagination info.
+	 *
+	 * @param \Peakfijn\GetSomeRest\Http\Pagination $pagination
+	 */
+	public function setPagination( Pagination $pagination )
+	{
+		$this->pagination = $pagination;
+	}
+
+	/**
+	 * Get the Pagination object.
+	 * 
+	 * @return \Peakfijn\GetSomeRest\Http\Pagination|null
+	 */
+	public function getPagination()
+	{
+		return $this->pagination;
+	}
+
+	/**
+	 * Check if the pagination info was given.
+	 * 
+	 * @return boolean
+	 */
+	public function hasPagination()
+	{
+		return !empty($this->pagination);
 	}
 
 	/**
