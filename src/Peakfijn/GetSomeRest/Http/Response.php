@@ -123,22 +123,18 @@ class Response extends IlluminateResponse {
 	 */
 	public static function makeFromExisting( SymfonyResponse $response )
 	{
-		$content = '';
-
-		if( $response instanceof IlluminateResponse )
+		if( $response instanceof Response )
 		{
-			$content = $response->getOriginalContent();
-		}
-		else
-		{
-			$content = $response->getContent();
+			return $response;
 		}
 
-		return new static(
-			$content,
+		$new = new static(
+			($response instanceof IlluminateResponse)? $response->getOriginalContent(): $response->getContent(),
 			$response->getStatusCode(),
 			$response->headers->all()
 		);
+
+		return $new;
 	}
 
 	/**
@@ -149,15 +145,8 @@ class Response extends IlluminateResponse {
 	 */
 	public static function makeFromException( HttpExceptionInterface $exception )
 	{
-		$content = $exception->getMessage();
-
-		if( $exception instanceof RestException )
-		{
-			$content = $exception->getContent();
-		}
-		
 		$response = new static(
-			$content,
+			($exception instanceof RestException)? $exception->getContent(): $exception->getMessage(),
 			$exception->getStatusCode(),
 			$exception->getHeaders()
 		);

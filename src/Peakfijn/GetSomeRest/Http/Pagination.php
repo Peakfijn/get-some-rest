@@ -96,11 +96,7 @@ class Pagination {
 	 */
 	public static function makeFromResponse( SymfonyResponse $response, $count = 0, $limit = 0, $offset = 0 )
 	{
-		if( !$response instanceof Response )
-		{
-			$response = Response::makeFromExisting($response);
-		}
-
+		$response = Response::makeFromExisting($response);
 		$response->setPagination(new static($count, $limit, $offset));
 
 		return $response;
