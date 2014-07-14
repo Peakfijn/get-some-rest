@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Response as IlluminateResponse;
 use Peakfijn\GetSomeRest\Http\Response;
+use Peakfijn\GetSomeRest\Http\Pagination;
 use Peakfijn\GetSomeRest\Exceptions\NotFoundResourceException;
 
 class ResponseTest extends TestCase {
@@ -19,6 +20,24 @@ class ResponseTest extends TestCase {
 		$response = Response::makeFromExisting($existing);
 
 		$this->assertEquals($existing->getStatusCode(), $response->getStatusCode());
+	}
+
+	/**
+	 * When a response is created, with pagination, it should copy the pagination to the new instance.
+	 * 
+	 * @return [type] [description]
+	 */
+	public function testCreatesInstanceFromExistingResponseAlsoAddsPaginationToResponse()
+	{
+		$existing   = new Response();
+		$pagination = new Pagination(30, 50, 0);
+
+		$existing->setPagination($pagination);
+
+		$response = Response::makeFromExisting($existing);
+
+		$this->assertTrue($response->hasPagination());
+		$this->assertInstanceOf('\Peakfijn\GetSomeRest\Http\Pagination', $response->getPagination());
 	}
 
 	/**
