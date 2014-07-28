@@ -28,7 +28,7 @@ trait ResourceFilteringScopeTrait {
 	public function scopeFilter( $query, array $values = array() )
 	{
 		// all allowed attributes
-		$attributes = array_keys($this->getArrayableAttributes());
+		$attributes = array_keys($this->getArrayableItems(array_merge($this->attributes, array_flip($this->visible))));
 
 		// itterate over the provided queries
 		foreach( $values as $key => $value )

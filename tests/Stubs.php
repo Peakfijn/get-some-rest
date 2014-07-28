@@ -17,6 +17,17 @@ class ResourceStub {
 	];
 
 	/**
+	 * All visible attributes.
+	 * 
+	 * @var array
+	 */
+	public $visible = [
+		'id',
+		'name',
+		'email',
+	];
+
+	/**
 	 * Set default attributes on instantiating.
 	 * 
 	 * @param array $attributes (Default: null)
@@ -110,27 +121,27 @@ class ResourceFilteringScopeStub extends ResourceStub {
 	use ResourceFilteringScopeTrait;
 
 	/**
-	 * The model's attributes.
-	 *
+	 * All visible attributes.
+	 * 
 	 * @var array
 	 */
-	public $attributes = [
-		'id'    => 1,
-		'name'  => 'Cedric',
-		'email' => 'cedric@peakfijn.nl',
-		'fakeRelation' => null, // must be added so it's visible
+	public $visible = [
+		'id',
+		'name',
+		'email',
+		'fakeRelation', // add visible relation for filtering
 	];
 
 	/**
 	 * Get all arrayable items.
 	 * It's actually a replacement for the Eloquent version.
 	 *
-	 * @param  mixed $value (Default: null)
+	 * @param  array $value
 	 * @return array
 	 */
-	public function getArrayableAttributes( $value = null )
+	public function getArrayableItems( array $value )
 	{
-		return $this->attributes;
+		return array_merge($this->attributes, array_flip($this->visible));
 	}
 
 	/**
