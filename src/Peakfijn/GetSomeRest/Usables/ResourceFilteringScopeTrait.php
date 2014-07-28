@@ -1,18 +1,8 @@
 <?php namespace Peakfijn\GetSomeRest\Usables;
 
-trait ResourceFilteringScopeTrait {
+use Bycedric\Inquiry\Facades\Inquiry;
 
-	/**
-	 * All allowed operators with their SQL method equivalent.
-	 * 
-	 * @var array
-	 */
-	private $operators = [
-		'=' => '=', 
-		'>' => '>',
-		'<' => '<',
-		'|' => 'LIKE',
-	];
+trait ResourceFilteringScopeTrait {
 
 	/**
 	 * Restrict the resource to the given filters.
@@ -20,103 +10,84 @@ trait ResourceFilteringScopeTrait {
 	 * 
 	 *   - Scope on the (single) relation!
 	 *     Use "-" as delimeter between the resource name and attribute.
-	 *     > /v1/items?article-drug_amount=1000mg
+	 *     > /v1/items?article:drug_amount=1000mg
 	 *
 	 *   - Use different operators!
 	 *     Use one of the operators as first character in the value.
-	 *     > /v1/items?article-cost=>5
-	 *     > /v1/items?article-cost=<20
-	 *     > /v1/items?article-name=|panadol
+	 *     > /v1/items?article:cost=]5
+	 *     > /v1/items?article:cost=[20
+	 *     > /v1/items?article:name=~panadol
+	 *     
+	 *   - It now uses byCedric/Inquiry package!
 	 * 
 	 * @param  \Illuminate\Database\Eloquent\Builder $query
 	 * @param  array  $values  (default: array())
 	 * @param  string $relation_delimeter  (default: -)
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
-	public function scopeFilter( $query, array $values = array(), $relation_delimeter = '-' )
+	public function scopeFilter( $query, array $values = array() )
 	{
-		$attributes = $this->getFilterableAttributes();
+		// all allowed attributes
+		$attributes = array_keys($this->getArrayableAttributes());
 
-		foreach( $values as $attribute => $value )
+		// itterate over the provided queries
+		foreach( $values as $key => $value )
 		{
-			$relation = null;
-			$relation_attribute = null;
-			
-			if( strpos($attribute, $relation_delimeter) !== false )
-			{
-				list($relation, $relation_attribute) = explode($relation_delimeter, $attribute);
-				$relation = camel_case($relation);
-			}
+			// set some main variables
+			$inquiry  = Inquiry::get($key);
+			$operator = $inquiry->getOperator();
+			$relation = false;
+			$method   = null;
 
-			if( !in_array($attribute, $attributes) )
+			// check if the key is a filterable attribute
+			if( !in_array($inquiry->getKey(), $attributes) )
 			{
-				if( !method_exists($this, $relation) && !in_array($relation, $attributes) )
+				// if it doesn't has a relation, it's definitly not the good attribute
+				if( !$inquiry->swap()->hasRelation() )
+				{
+					continue;
+				}
+
+				// get the relation, with the key (func:attr) as main value
+				$relation = $inquiry->swap()->getRelation();
+				$method   = camel_case($relation->getRelated());
+
+				// check if the relation is allowed
+				if( !method_exists($this, $method) || !in_array($method, $attributes) )
 				{
 					continue;
 				}
 			}
 
-			if( !is_null($relation) )
+			// if a relation was provided
+			if( $relation !== false )
 			{
-				$query->whereHas(camel_case($relation), function( $query ) use ( $relation_attribute, $value )
+				// apply relation query
+				$query->whereHas($method, function( $query ) use ( $relation, $operator )
 				{
-					$this->applyFilterableToQuery($query, $relation_attribute, $value);
+					// set some variables
+					$value = $operator->getValue();
+
+					// check if it's a like query
+					if( $operator->getMethod() == 'LIKE' )
+					{
+						$value = '%'. $value .'%';
+					}
+
+					// apply final query
+					$query->where($relation->getValue(), $operator->getMethod(), $value);
 				});
+
+				// query already applied
+				continue;
 			}
-			else
-			{
-				$this->applyFilterableToQuery($query, $attribute, $value);
-			}
-		}
-	}
 
-	/**
-	 * Apply the given values to the query.
-	 * 
-	 * @param  \Illuminate\Database\Eloquent\Builder $query
-	 * @param  string $attribute
-	 * @param  string $value
-	 * @return \Illuminate\Database\Eloquent\Builder
-	 */
-	protected function applyFilterableToQuery( $query, $attribute, $value )
-	{
-		$operators = $this->getFilterableOperators();
-		$operator  = '=';
-		
-		if( in_array($value[0], array_keys($operators)) )
-		{
-			$operator = $value[0];
-			$value    = substr($value, 1);
+			// apply query
+			$query->where($inquiry->getKey(), $operator->getMethod(), $operator->getValue());
 		}
 
-		$method = $operators[$operator];
-		
-		if( $method == 'LIKE' )
-		{
-			$value = '%'. str_replace(' ', '%', $value) .'%';
-		}
-
-		return $query->where($attribute, $method, $value);
-	}
-
-	/**
-	 * Get all attributes that are allowed for filtering.
-	 * 
-	 * @return array
-	 */
-	protected function getFilterableAttributes()
-	{
-		return array_keys($this->getArrayableAttributes());
-	}
-
-	/**
-	 * Get all allowed operators with their query function.
-	 * 
-	 * @return array
-	 */
-	protected function getFilterableOperators()
-	{
-		return $this->operators;
+		// return the query for method chaining
+		return $query;
 	}
 
 }

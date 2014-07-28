@@ -1,6 +1,34 @@
 <?php
 
+use Bycedric\Inquiry\Inquiry;
+use Bycedric\Inquiry\Facades\Inquiry as InquiryFacade;
+
 class ResourceFilteringScopeTraitTest extends TestCase {
+
+	/**
+	 * Mock the Inquiry library.
+	 *
+	 * @param  string $key
+	 * @param  string $value
+	 * @return \Mockery\Mock
+	 */
+	protected function setInquiryMock( $key, $value )
+	{
+		return InquiryFacade::shouldReceive('get')
+			->andReturn(new Inquiry($key, $value));
+	}
+
+	/**
+	 * Clear the possible mocked facades of the Inquiry library.
+	 * 
+	 * @return void
+	 */
+	public function tearDown()
+	{
+		parent::tearDown();
+
+		InquiryFacade::clearResolvedInstances();
+	}
 
 	/**
 	 * Test if a simple attribute can be filtered.
@@ -9,16 +37,16 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	 */
 	public function testResourceAttributeCanBeFiltered()
 	{
+		$this->setInquiryMock('id', 3);
 		$mock = Mockery::mock('Query');
 		
 		$mock
 			->shouldReceive('where')
-			->twice()
+			->once()
 			->andReturn(null);
 
-		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['id' => 3, 'name' => 'Cedric']);
+		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['id' => 3]);//, 'name' => 'Cedric']);
 	}
-
 
 	/**
 	 * Test if an unknown attribute is ignored.
@@ -27,6 +55,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	 */
 	public function testResourceUnknownAttributeIsNotFiltered()
 	{
+		$this->setInquiryMock('unknown', 'empty');
 		$mock = Mockery::mock('Query');
 
 		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['unknown' => 'empty']);
@@ -39,6 +68,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	 */
 	public function testOperatorEqualIsDetectedAndHandled()
 	{
+		$this->setInquiryMock('id', '=3');
 		$mock = Mockery::mock('Query');
 		
 		$mock
@@ -57,6 +87,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	 */
 	public function testOperatorBiggerThanIsDetectedAndHandled()
 	{
+		$this->setInquiryMock('id', ']3');
 		$mock = Mockery::mock('Query');
 		
 		$mock
@@ -65,7 +96,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 			->once()
 			->andReturn(null);
 
-		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['id' => '>3']);
+		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['id' => ']3']);
 	}
 
 	/**
@@ -75,6 +106,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	 */
 	public function testOperatorSmallerThanIsDetectedAndHandled()
 	{
+		$this->setInquiryMock('id', '[3');
 		$mock = Mockery::mock('Query');
 		
 		$mock
@@ -83,7 +115,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 			->once()
 			->andReturn(null);
 
-		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['id' => '<3']);
+		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['id' => '[3']);
 	}
 
 	/**
@@ -93,6 +125,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	 */
 	public function testOperatorLikeIsDetectedAndHandled()
 	{
+		$this->setInquiryMock('name', '~abc');
 		$mock = Mockery::mock('Query');
 		
 		$mock
@@ -101,7 +134,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 			->once()
 			->andReturn(null);
 
-		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['name' => '|abc']);
+		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['name' => '~abc']);
 	}
 
 	/**
@@ -111,6 +144,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	 */
 	public function testResourceRelationCanBeFiltered()
 	{
+		$this->setInquiryMock('fake_relation:name', 'right-hand');
 		$mock = Mockery::mock('Query');
 		
 		$mock
@@ -131,6 +165,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	 */
 	public function testResourceUnknownRelationIsNotFiltered()
 	{
+		$this->setInquiryMock('unknown_relation:name', 'someone');
 		$mock = Mockery::mock('Query');
 
 		(new ResourceFilteringScopeStub())->scopeFilter(
@@ -146,6 +181,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	 */
 	public function testOperatorEqualIsDetectedAndHandledOnRelation()
 	{
+		$this->setInquiryMock('fake_relation:id', '=3');
 		$mock = Mockery::mock('Query');
 		
 		$mock
@@ -156,7 +192,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 
 		(new ResourceFilteringScopeStub())->scopeFilter(
 			new ResourceQueryStub($mock),
-			['fake_relation-id' => '=3']
+			['fake_relation:id' => '=3']
 		);
 	}
 
@@ -167,6 +203,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	 */
 	public function testOperatorBiggerThanIsDetectedAndHandledOnRelation()
 	{
+		$this->setInquiryMock('fake_relation:id', ']3');
 		$mock = Mockery::mock('Query');
 		
 		$mock
@@ -177,7 +214,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 
 		(new ResourceFilteringScopeStub())->scopeFilter(
 			new ResourceQueryStub($mock),
-			['fake_relation-id' => '>3']
+			['fake_relation:id' => ']3']
 		);
 	}
 
@@ -188,6 +225,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	 */
 	public function testOperatorSmallerThanIsDetectedAndHandledOnRelation()
 	{
+		$this->setInquiryMock('fake_relation:id', '[3');
 		$mock = Mockery::mock('Query');
 		
 		$mock
@@ -198,7 +236,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 
 		(new ResourceFilteringScopeStub())->scopeFilter(
 			new ResourceQueryStub($mock),
-			['fake_relation-id' => '<3']
+			['fake_relation:id' => '[3']
 		);
 	}
 
@@ -209,6 +247,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	 */
 	public function testOperatorLikeIsDetectedAndHandledOnRelation()
 	{
+		$this->setInquiryMock('fake_relation:name', '~abc');
 		$mock = Mockery::mock('Query');
 		
 		$mock
@@ -219,7 +258,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 
 		(new ResourceFilteringScopeStub())->scopeFilter(
 			new ResourceQueryStub($mock),
-			['fake_relation-name' => '|abc']
+			['fake_relation:name' => '~abc']
 		);
 	}
 

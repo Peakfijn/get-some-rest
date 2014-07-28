@@ -110,6 +110,18 @@ class ResourceFilteringScopeStub extends ResourceStub {
 	use ResourceFilteringScopeTrait;
 
 	/**
+	 * The model's attributes.
+	 *
+	 * @var array
+	 */
+	public $attributes = [
+		'id'    => 1,
+		'name'  => 'Cedric',
+		'email' => 'cedric@peakfijn.nl',
+		'fakeRelation' => null, // must be added so it's visible
+	];
+
+	/**
 	 * Get all arrayable items.
 	 * It's actually a replacement for the Eloquent version.
 	 *
