@@ -35,9 +35,15 @@ trait ResourceFilteringScopeTrait {
 		{
 			// set some main variables
 			$inquiry  = Inquiry::get($key);
-			$operator = $inquiry->getOperator();
-			$relation = false;
+			$operator = null;
+			$relation = null;
 			$method   = null;
+
+			// check if a valid operator was supplied
+			if( !$inquiry->hasOperator() )
+			{
+				continue;
+			}
 
 			// check if the key is a filterable attribute
 			if( !in_array($inquiry->getKey(), $attributes) )
@@ -59,8 +65,11 @@ trait ResourceFilteringScopeTrait {
 				}
 			}
 
+			// get the operator query
+			$operator = $inquiry->getOperator();
+
 			// if a relation was provided
-			if( $relation !== false )
+			if( $relation !== null )
 			{
 				// apply relation query
 				$query->whereHas($method, function( $query ) use ( $relation, $operator )
