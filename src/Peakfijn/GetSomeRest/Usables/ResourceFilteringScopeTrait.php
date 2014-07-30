@@ -72,19 +72,10 @@ trait ResourceFilteringScopeTrait {
 			if( $relation !== null )
 			{
 				// apply relation query
-				$query->whereHas($method, function( $query ) use ( $relation, $operator )
+				$query->whereHas($method, function( $query ) use ( $operator, $relation )
 				{
-					// set some variables
-					$value = $operator->getValue();
-
-					// check if it's a like query
-					if( $operator->getMethod() == 'LIKE' )
-					{
-						$value = '%'. $value .'%';
-					}
-
 					// apply final query
-					$query->where($relation->getValue(), $operator->getMethod(), $value);
+					$this->applyQuery($query, $relation->getValue(), $operator);
 				});
 
 				// query already applied
@@ -92,11 +83,50 @@ trait ResourceFilteringScopeTrait {
 			}
 
 			// apply query
-			$query->where($inquiry->getKey(), $operator->getMethod(), $operator->getValue());
+			$this->applyQuery($query, $inquiry->getKey(), $operator);
 		}
 
 		// return the query for method chaining
 		return $query;
+	}
+
+	/**
+	 * Apply the inquiry with an optional operator query to the query itself.
+	 * 
+	 * @param  \Illuminate\Database\Eloquent\Builder   $query
+	 * @param  string                                  $attribute
+	 * @param  \Bycedric\Inquiry\Queries\OperatorQuery $operator
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+	private function applyQuery( $query, $attribute, $operator )
+	{
+		// get the value and method
+		$value  = $operator->getValue();
+		$method = $operator->getMethod();
+
+		// check if the value is null
+		if( is_null($value) )
+		{
+			// check if the method or operator is an inverter
+			if( $operator->isNot() )
+			{
+				// applying whereNotNull
+				return $query->whereNotNull($attribute);
+			}
+			
+			// applying whereNull
+			return $query->whereNull($attribute);
+		}
+
+		// check if the method is LIKE
+		if( $method == 'LIKE' )
+		{
+			// add % to the value
+			$value = '%'. str_replace(' ', '%', $value) .'%';
+		}
+
+		// applying query
+		return $query->where($attribute, $method, $value);
 	}
 
 }
