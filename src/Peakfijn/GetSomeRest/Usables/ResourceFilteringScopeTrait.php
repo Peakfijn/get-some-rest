@@ -1,6 +1,7 @@
 <?php namespace Peakfijn\GetSomeRest\Usables;
 
 use Bycedric\Inquiry\Facades\Inquiry;
+use Bycedric\Inquiry\Queries\RangeQuery;
 
 trait ResourceFilteringScopeTrait {
 
@@ -40,7 +41,7 @@ trait ResourceFilteringScopeTrait {
 			$method   = null;
 
 			// check if a valid operator was supplied
-			if( !$inquiry->hasOperator() )
+			if( !$inquiry->hasOperator() && !$inquiry->hasRange() )
 			{
 				continue;
 			}
@@ -65,8 +66,17 @@ trait ResourceFilteringScopeTrait {
 				}
 			}
 
-			// get the operator query
-			$operator = $inquiry->getOperator();
+			// check if the operator is a range query
+			if( $inquiry->hasRange() )
+			{
+				// get the range values
+				$operator = $inquiry->getRange();
+			}
+			else
+			{
+				// get the operator query
+				$operator = $inquiry->getOperator();
+			}
 
 			// if a relation was provided
 			if( $relation !== null )
@@ -95,11 +105,24 @@ trait ResourceFilteringScopeTrait {
 	 * 
 	 * @param  \Illuminate\Database\Eloquent\Builder   $query
 	 * @param  string                                  $attribute
-	 * @param  \Bycedric\Inquiry\Queries\OperatorQuery $operator
+	 * @param  \Bycedric\Inquiry\Queries\Query $operator
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
 	private function applyQuery( $query, $attribute, $operator )
 	{
+		// check if operator is a range query
+		if( $operator instanceof RangeQuery )
+		{
+			// iterate the values and apply to the query for each seperate operator
+			foreach( $operator->getValues() as $value )
+			{
+				$this->applyQuery($query, $attribute, $value);
+			}
+
+			// stop executing
+			return $query;
+		}
+
 		// get the value and method
 		$value  = $operator->getValue();
 		$method = $operator->getMethod();

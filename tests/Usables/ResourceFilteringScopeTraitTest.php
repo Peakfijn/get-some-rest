@@ -138,6 +138,31 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	}
 
 	/**
+	 * Tes tif the range operator is detected and handled.
+	 * 
+	 * @return void
+	 */
+	public function testRangeOperatorIsDetectedAndHandled()
+	{
+		$this->setInquiryMock('id', ']1|[5');
+		$mock = Mockery::mock('Query');
+
+		$mock
+			->shouldReceive('where')
+			->with('id', '>', 1)
+			->once()
+			->andReturn(null);
+
+		$mock
+			->shouldReceive('where')
+			->with('id', '<', 5)
+			->once()
+			->andReturn(null);
+
+		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['id' => ']1|[5']);
+	}
+
+	/**
 	 * Test if a simple relation can be filtered.
 	 * 
 	 * @return void
@@ -259,6 +284,34 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 		(new ResourceFilteringScopeStub())->scopeFilter(
 			new ResourceQueryStub($mock),
 			['fake_relation:name' => '~abc']
+		);
+	}
+
+	/**
+	 * Tes tif the range operator is detected and handled.
+	 * 
+	 * @return void
+	 */
+	public function testRangeOperatorIsDetectedAndHandledOnRelation()
+	{
+		$this->setInquiryMock('fake_relation:id', ']10|[25');
+		$mock = Mockery::mock('Query');
+
+		$mock
+			->shouldReceive('where')
+			->with('id', '>', 10)
+			->once()
+			->andReturn(null);
+
+		$mock
+			->shouldReceive('where')
+			->with('id', '<', 25)
+			->once()
+			->andReturn(null);
+
+		(new ResourceFilteringScopeStub())->scopeFilter(
+			new ResourceQueryStub($mock),
+			['fake_relation:id' => ']10|[25']
 		);
 	}
 
