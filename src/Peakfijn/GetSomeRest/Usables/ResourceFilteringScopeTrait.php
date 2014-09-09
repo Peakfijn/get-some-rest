@@ -103,12 +103,13 @@ trait ResourceFilteringScopeTrait {
 	/**
 	 * Apply the inquiry with an optional operator query to the query itself.
 	 * 
-	 * @param  \Illuminate\Database\Eloquent\Builder   $query
-	 * @param  string                                  $attribute
-	 * @param  \Bycedric\Inquiry\Queries\Query $operator
+	 * @param  \Illuminate\Database\Eloquent\Builder  $query
+	 * @param  string                                 $attribute
+	 * @param  \Bycedric\Inquiry\Queries\Query        $operator
+	 * @param  bool                                   $comparator
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
-	private function applyQuery( $query, $attribute, $operator )
+	private function applyQuery( $query, $attribute, $operator, $comparator = 'and' )
 	{
 		// check if operator is a range query
 		if( $operator instanceof RangeQuery )
@@ -116,7 +117,7 @@ trait ResourceFilteringScopeTrait {
 			// iterate the values and apply to the query for each seperate operator
 			foreach( $operator->getValues() as $value )
 			{
-				$this->applyQuery($query, $attribute, $value);
+				$this->applyQuery($query, $attribute, $value, $operator->isAllSameOperator('=')? 'or': 'and');
 			}
 
 			// stop executing
@@ -134,11 +135,11 @@ trait ResourceFilteringScopeTrait {
 			if( $operator->isNot() )
 			{
 				// applying whereNotNull
-				return $query->whereNotNull($attribute);
+				return $query->whereNotNull($attribute, $comparator);
 			}
 			
 			// applying whereNull
-			return $query->whereNull($attribute);
+			return $query->whereNull($attribute, $comparator);
 		}
 
 		// check if the method is LIKE
@@ -149,7 +150,7 @@ trait ResourceFilteringScopeTrait {
 		}
 
 		// applying query
-		return $query->where($attribute, $method, $value);
+		return $query->where($attribute, $method, $value, $comparator);
 	}
 
 }

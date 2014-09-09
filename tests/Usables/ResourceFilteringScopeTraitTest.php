@@ -45,7 +45,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 			->once()
 			->andReturn(null);
 
-		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['id' => 3]);//, 'name' => 'Cedric']);
+		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['id' => 3]);
 	}
 
 	/**
@@ -73,7 +73,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 		
 		$mock
 			->shouldReceive('where')
-			->with('id', '=', 3)
+			->with('id', '=', 3, 'and')
 			->once()
 			->andReturn(null);
 
@@ -92,7 +92,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 		
 		$mock
 			->shouldReceive('where')
-			->with('id', '>', 3)
+			->with('id', '>', 3, 'and')
 			->once()
 			->andReturn(null);
 
@@ -111,7 +111,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 		
 		$mock
 			->shouldReceive('where')
-			->with('id', '<', 3)
+			->with('id', '<', 3, 'and')
 			->once()
 			->andReturn(null);
 
@@ -130,7 +130,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 		
 		$mock
 			->shouldReceive('where')
-			->with('name', 'LIKE', '%abc%')
+			->with('name', 'LIKE', '%abc%', 'and')
 			->once()
 			->andReturn(null);
 
@@ -144,22 +144,22 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 	 */
 	public function testRangeOperatorIsDetectedAndHandled()
 	{
-		$this->setInquiryMock('id', ']1|[5');
+		$this->setInquiryMock('id', '1|5');
 		$mock = Mockery::mock('Query');
 
 		$mock
 			->shouldReceive('where')
-			->with('id', '>', 1)
+			->with('id', '=', 1, 'or')
 			->once()
 			->andReturn(null);
 
 		$mock
 			->shouldReceive('where')
-			->with('id', '<', 5)
+			->with('id', '=', 5, 'or')
 			->once()
 			->andReturn(null);
 
-		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['id' => ']1|[5']);
+		(new ResourceFilteringScopeStub())->scopeFilter($mock, ['id' => '1|5']);
 	}
 
 	/**
@@ -211,7 +211,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 		
 		$mock
 			->shouldReceive('where')
-			->with('id', '=', 3)
+			->with('id', '=', 3, 'and')
 			->once()
 			->andReturn(null);
 
@@ -233,7 +233,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 		
 		$mock
 			->shouldReceive('where')
-			->with('id', '>', 3)
+			->with('id', '>', 3, 'and')
 			->once()
 			->andReturn(null);
 
@@ -255,7 +255,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 		
 		$mock
 			->shouldReceive('where')
-			->with('id', '<', 3)
+			->with('id', '<', 3, 'and')
 			->once()
 			->andReturn(null);
 
@@ -277,7 +277,7 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 		
 		$mock
 			->shouldReceive('where')
-			->with('name', 'LIKE', '%abc%')
+			->with('name', 'LIKE', '%abc%', 'and')
 			->once()
 			->andReturn(null);
 
@@ -299,13 +299,13 @@ class ResourceFilteringScopeTraitTest extends TestCase {
 
 		$mock
 			->shouldReceive('where')
-			->with('id', '>', 10)
+			->with('id', '>', 10, 'and')
 			->once()
 			->andReturn(null);
 
 		$mock
 			->shouldReceive('where')
-			->with('id', '<', 25)
+			->with('id', '<', 25, 'and')
 			->once()
 			->andReturn(null);
 
