@@ -8,6 +8,10 @@
         {
             "name": "Cedric van Putten",
             "email": "cedric@peakfijn.nl"
+        },
+        {
+            "name": "Robert van Steen",
+            "email": "robert@peakfijn.nl"
         }
     ],
     "require": {
