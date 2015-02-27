@@ -1,4 +1,4 @@
-<?php  namespace Peakfijn\GetSomeRest\Http\Middleware;
+<?php namespace Peakfijn\GetSomeRest\Http\Middleware;
 
 use Closure;
 use Exception;
@@ -23,11 +23,11 @@ class Api implements Middleware {
      * @param  \Closure                 $next
      * @return mixed
      */
-    public function handle ($request, Closure $next)
+    public function handle($request, Closure $next)
     {
         try {
             $response = Response::makeFromIlluminateResponse($next($request));
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             $exception = $this->exceptionFactory->make($exception);
             $response = $exception->getResponse();
         }

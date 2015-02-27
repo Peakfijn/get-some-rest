@@ -2,8 +2,7 @@
 
 use Illuminate\Http\Response as IlluminateResponse;
 
-class Response extends IlluminateResponse
-{
+class Response extends IlluminateResponse {
     /**
      * Mutate the response.
      *
@@ -32,8 +31,7 @@ class Response extends IlluminateResponse
      */
     public static function makeFromIlluminateResponse(IlluminateResponse $response)
     {
-        if( $response instanceof Response )
-        {
+        if ($response instanceof Response) {
             return $response;
         }
 

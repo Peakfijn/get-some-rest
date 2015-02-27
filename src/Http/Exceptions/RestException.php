@@ -11,7 +11,7 @@ class RestException extends Exception implements RestExceptionContract {
      *
      * @return bool
      */
-    public function shouldBeCaught ()
+    public function shouldBeCaught()
     {
         return true;
     }
@@ -21,9 +21,10 @@ class RestException extends Exception implements RestExceptionContract {
      *
      * @return int
      */
-    public function getStatusCode ()
+    public function getStatusCode()
     {
         $code = $this->getCode();
+
         return ($code === 0) ? 500 : $code;
     }
 
@@ -32,7 +33,7 @@ class RestException extends Exception implements RestExceptionContract {
      *
      * @return Peakfijn\GetSomeRest\Http\Response
      */
-    public function getResponse ()
+    public function getResponse()
     {
         return new Response(
             $this->getMessage(),

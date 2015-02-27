@@ -3,8 +3,7 @@
 use Exception;
 use Illuminate\Console\AppNamespaceDetectorTrait;
 
-class ExceptionFactory
-{
+class ExceptionFactory {
 
     use AppNamespaceDetectorTrait;
 
@@ -18,15 +17,13 @@ class ExceptionFactory
      */
     public function make(Exception $thrownException)
     {
-        if($this->hasOverride($thrownException))
-        {
+        if ($this->hasOverride($thrownException)) {
             $exception = $this->resolveOverride($thrownException);
         } else {
             $exception = RestException::makeFromException($thrownException);
         }
 
-        if( ! $exception->shouldBeCaught())
-        {
+        if ( ! $exception->shouldBeCaught()) {
             throw $exception;
         }
 
@@ -56,7 +53,7 @@ class ExceptionFactory
     protected function hasOverride(Exception $exception)
     {
         $override = $this->getOverride($exception);
-        if( ! class_exists($override)) {
+        if ( ! class_exists($override)) {
             return false;
         }
 
@@ -71,6 +68,7 @@ class ExceptionFactory
     protected function resolveOverride(Exception $exception)
     {
         $override = $this->hasOverride($exception);
+
         return new $override($exception);
     }
 }

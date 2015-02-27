@@ -1,4 +1,4 @@
-<?php  namespace Peakfijn\GetSomeRest;
+<?php namespace Peakfijn\GetSomeRest;
 
 use Illuminate\Routing\Console\MiddlewareMakeCommand;
 use Illuminate\Support\ServiceProvider;
@@ -11,13 +11,14 @@ class GetSomeRestServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function register ()
+    public function register()
     {
     }
 
     /**
      *
      */
-    public function boot() {
+    public function boot()
+    {
     }
 }
