@@ -26,7 +26,7 @@ class Api implements Middleware {
     public function handle($request, Closure $next)
     {
         try {
-            $response = Response::makeFromIlluminateResponse($next($request));
+            $response = Response::makeFromResponse($next($request));
         } catch (\Exception $exception) {
             $exception = $this->exceptionFactory->make($exception);
             $response = $exception->getResponse();

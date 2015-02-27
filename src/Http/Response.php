@@ -24,23 +24,43 @@ class Response extends IlluminateResponse {
     }
 
     /**
-     * Create a new response from an existing Illuminate response.
+     * Create a new response from an existing response.
      *
-     * @param IlluminateResponse $response
+     * @param $response
      * @return Peakfijn\GetSomeRest\Http\Response
      */
-    public static function makeFromIlluminateResponse(IlluminateResponse $response)
+    public static function makeFromResponse($response)
     {
         if ($response instanceof Response) {
             return $response;
         }
 
-        $new = new static(
-            ($response instanceof IlluminateResponse) ? $response->getOriginalContent() : $response->getContent(),
+        if ($response instanceof IlluminateResponse) {
+            return self::makeFromIlluminateResponse($response);
+        }
+
+        return self::makeFromMiscResponse($response);
+    }
+
+    /**
+     * @param IlluminateResponse $response
+     * @return static
+     */
+    protected static function makeFromIlluminateResponse(IlluminateResponse $response)
+    {
+        return new static(
+            $response->getOriginalContent(),
             $response->getStatusCode(),
             $response->headers->all()
         );
+    }
 
-        return $new;
+    /**
+     * @param $response
+     * @return static
+     */
+    protected static function makeFromMiscResponse($response)
+    {
+        return new static($response);
     }
 }
