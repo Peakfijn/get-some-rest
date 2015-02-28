@@ -20,5 +20,8 @@ class GetSomeRestServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
+        $this->mergeConfigFrom(
+            __DIR__.'/config/config.php', 'get-some-rest'
+        );
     }
 }
