@@ -3,6 +3,8 @@
 use Illuminate\Http\Response as IlluminateResponse;
 use Peakfijn\GetSomeRest\Contracts\Encoder;
 use Peakfijn\GetSomeRest\Contracts\Mutator;
+use Peakfijn\GetSomeRest\Contracts\RestExceptionContract;
+use Peakfijn\GetSomeRest\Http\Exceptions\RestException;
 
 class Response extends IlluminateResponse {
 
@@ -12,11 +14,29 @@ class Response extends IlluminateResponse {
     protected $input = [];
 
     /**
+     * The exception if the response is actually an exception.
+     *
+     * @var HttpExceptionInterface
+     */
+    protected $exception;
+
+    /**
+     * May contain the pagination information about the response.
+     *
+     * @var \Peakfijn\GetSomeRest\Http\Pagination
+     */
+    protected $pagination;
+
+    /**
+     * The encoder being used by the response.
+     *
      * @var
      */
     protected $encoder;
 
     /**
+     * The mutator being used by the response.
+     *
      * @var
      */
     protected $mutator;
@@ -28,7 +48,7 @@ class Response extends IlluminateResponse {
      */
     public function setInput($input)
     {
-       $this->input = $input;
+        $this->input = $input;
     }
 
     /**
@@ -77,6 +97,62 @@ class Response extends IlluminateResponse {
 
         return $this;
     }
+
+    /**
+     * @param RestExceptionContract $exception
+     */
+    public function setException(RestExceptionContract $exception)
+    {
+        $this->exception = $exception;
+        $this->setContent($exception->getMessage());
+        $this->setStatusCode($exception->getStatusCode());
+    }
+
+    /**
+     * Check if the response has an exception.
+     *
+     * @return bool
+     */
+    public function hasException()
+    {
+        return isset($this->exception);
+    }
+
+    /**
+     * Returns the exception of the response.
+     *
+     * @return HttpExceptionInterface
+     */
+    public function getException()
+    {
+        return $this->exception;
+    }
+
+    /**
+     * Get the status text of the response.
+     *
+     * @return string
+     */
+    public function getStatusText()
+    {
+        return 'status';
+    }
+
+    /**
+     * Check if the response has a pagination
+     *
+     * @return bool
+     */
+    public function hasPagination()
+    {
+        return false;
+    }
+
+    /**
+     * ===============================================================
+     * Static methods
+     * ===============================================================
+     */
 
     /**
      * Create a new response from an existing response.

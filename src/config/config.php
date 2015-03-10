@@ -7,6 +7,9 @@ return [
         'xml'  => '\Peakfijn\GetSomeRest\Encoders\XmlEncoder'
     ],
     'defaultEncoder' => 'json',
-    'mutator'        => '\Peakfijn\GetSomeRest\Mutators\PlainMutator'
+    'mutators'       => [
+        'plain' => '\Peakfijn\GetSomeRest\Mutators\PlainMutator',
+        'meta'  => '\Peakfijn\GetSomeRest\Mutators\MetaMutator'
+    ]
 
 ];
