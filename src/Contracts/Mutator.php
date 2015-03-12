@@ -1,35 +1,16 @@
 <?php namespace Peakfijn\GetSomeRest\Contracts;
 
-use Illuminate\Contracts\Support\Arrayable;
-use Peakfijn\GetSomeRest\Http\Response;
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
-abstract class Mutator {
-
+interface Mutator
+{
     /**
-     * Get the mutated content
+     * Modify the provided response, so the content will be mutate in the desired mutation.
      *
-     * @param Response $response
-     * @return array
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Response $response
+     * @return \Illuminate\Http\Response
      */
-    public abstract function getContent(Response $response);
-
-    /**
-     * Try to convert the given data to an array.
-     *
-     * @param  mixed $data
-     * @return array
-     */
-    protected function toArray($data)
-    {
-        if (is_array($data)) {
-            return $data;
-        }
-
-        if ($data instanceof Arrayable) {
-            return $data->toArray();
-        }
-
-        return (array)$data;
-    }
-
+    public function mutate(Request $request, Response $response);
 }

@@ -1,22 +1,25 @@
 <?php namespace Peakfijn\GetSomeRest\Contracts;
 
-use Peakfijn\GetSomeRest\Http\Response;
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
-abstract class Encoder {
+interface Encoder
+{
+    /**
+     * Modify the provided response, so the content will be encoded in the desired encoding.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Response $response
+     * @return \Illuminate\Http\Response
+     */
+    public function encode(Request $request, Response $response);
 
     /**
-     * Get the encoded content type.
+     * Get the content type for this encoder.
+     * This should be a valid mime type string.
      *
+     * @see    http://www.iana.org/assignments/media-types/media-types.xhtml
      * @return string
      */
-    public abstract function getContentType();
-
-    /**
-     * Get the encoded content.
-     *
-     * @param Response $response
-     * @return string
-     */
-    public abstract function getContent(Response $response);
-
+    public function getContentType();
 }

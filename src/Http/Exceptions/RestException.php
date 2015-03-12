@@ -1,11 +1,11 @@
 <?php namespace Peakfijn\GetSomeRest\Http\Exceptions;
 
-use Exception;
-use Peakfijn\GetSomeRest\Contracts\RestExceptionContract;
-use Peakfijn\GetSomeRest\Http\Response;
+use Peakfijn\GetSomeRest\Contracts\RestException as RestExceptionContract;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class RestException extends Exception implements RestExceptionContract {
-
+class RestException extends HttpException implements RestExceptionContract
+{
     /**
      * Returns if the exception should be caught.
      *
@@ -17,41 +17,18 @@ class RestException extends Exception implements RestExceptionContract {
     }
 
     /**
-     * Get the status code of the exception.
+     * Get a response, from this exception.
      *
-     * @return int
-     */
-    public function getStatusCode()
-    {
-        $code = $this->getCode();
-
-        return ($code === 0) ? 500 : $code;
-    }
-
-    /**
-     * Get the response.
-     *
-     * @return Peakfijn\GetSomeRest\Http\Response
+     * @return \Illuminate\Http\Response
      */
     public function getResponse()
     {
-        return new Response(
-            $this->getMessage(),
-            $this->getStatusCode()
-        );
-    }
+        $message = $this->getMessage();
 
-    /**
-     * Create an instance of RestException from an existing exception.
-     *
-     * @param Exception $exception
-     * @return static
-     */
-    public static function makeFromException(Exception $exception)
-    {
-        return new static(
-            $exception->getMessage(),
-            $exception->getCode()
-        );
+        if (!is_array($message)) {
+            $message = ['errors' => (array)$message];
+        }
+
+        return new Response($message, $this->getStatusCode());
     }
 }

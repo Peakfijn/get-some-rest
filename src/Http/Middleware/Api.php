@@ -1,30 +1,37 @@
 <?php namespace Peakfijn\GetSomeRest\Http\Middleware;
 
 use Closure;
-use Exception;
 use Illuminate\Contracts\Routing\Middleware;
+use Peakfijn\GetSomeRest\Contracts\RestException;
 use Peakfijn\GetSomeRest\Encoders\EncoderFactory;
-use Peakfijn\GetSomeRest\Http\Exceptions\ExceptionFactory;
-use Peakfijn\GetSomeRest\Http\Response;
 use Peakfijn\GetSomeRest\Mutators\MutatorFactory;
 
-class Api implements Middleware {
-
-    protected $exceptionFactory;
+class Api implements Middleware
+{
+    /**
+     * The encoder factory that spawns the requeste encoder.
+     *
+     * @var \Peakfijn\GetSomeRest\Encoders\EncoderFactory
+     */
     protected $encoderFactory;
+
+    /**
+     * The mutator factory that spawns the requested mutator.
+     *
+     * @var \Peakfijn\GetSomeRest\Mutators\MutatorFactory
+     */
     protected $mutatorFactory;
 
     /**
-     * @param ExceptionFactory $exceptionFactory
-     * @param EncoderFactory   $encoderFactory
-     * @param MutatorFactory   $mutatorFactory
+     * Create a new API Middleware instance.
+     *
+     * @param \Peakfijn\GetSomeRest\Encoders\EncoderFactory $encoderFactory
+     * @param \Peakfijn\GetSomeRest\Encoders\MutatorFactory $mutatorFactory
      */
     public function __construct(
-        ExceptionFactory $exceptionFactory,
         EncoderFactory $encoderFactory,
         MutatorFactory $mutatorFactory
     ) {
-        $this->exceptionFactory = $exceptionFactory;
         $this->encoderFactory = $encoderFactory;
         $this->mutatorFactory = $mutatorFactory;
     }
@@ -33,21 +40,29 @@ class Api implements Middleware {
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \Closure                 $next
+     * @param  \Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
+        $mutator = $this->mutatorFactory->make($request);
+        $encoder = $this->encoderFactory->make($request);
+
         try {
-            $response = Response::makeFromResponse($next($request));
-        } catch (\Exception $exception) {
-            $exception = $this->exceptionFactory->make($exception);
-            $response = $exception->getResponse();
+            $response = $next($request);
+        } catch (RestException $error) {
+            if (!$error->shouldBeCaught()) {
+                throw $error;
+            }
+
+            $response = $error->getResponse();
         }
 
-        $response->setMutator($this->mutatorFactory->make());
-        $response->setEncoder($this->encoderFactory->make($request));
+        $response = $mutator->mutate($request, $response);
+        $response = $encoder->encode($request, $response);
 
-        return $response->mutate()->encode();
+        $response->header('Content-Type', $encoder->getContentType());
+
+        return $response;
     }
 }

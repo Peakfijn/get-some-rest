@@ -1,14 +1,37 @@
 <?php namespace Peakfijn\GetSomeRest\Encoders;
 
 use SimpleXMLElement;
-use Peakfijn\GetSomeRest\Http\Response;
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 use Peakfijn\GetSomeRest\Contracts\Encoder;
 
-class XmlEncoder extends Encoder {
+class XmlEncoder implements Encoder
+{
+    /**
+     * Modify the provided response, so the content will be encoded in the desired encoding.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Response $response
+     * @return \Illuminate\Http\Response
+     */
+    public function encode(Request $request, Response $response)
+    {
+        $data = $response->getOriginalContent();
+
+        if (is_array($data)) {
+            $xml = $this->toXml($data);
+            $response->setContent($xml);
+        }
+
+
+        return $response;
+    }
 
     /**
-     * Get the encoded content type.
+     * Get the content type for this encoder.
+     * This should be a valid mime type string.
      *
+     * @see    http://www.iana.org/assignments/media-types/media-types.xhtml
      * @return string
      */
     public function getContentType()
@@ -17,32 +40,14 @@ class XmlEncoder extends Encoder {
     }
 
     /**
-     * Get the encoded content.
-     *
-     * @param Response $response
-     * @return string
-     * @throws InvalidDataFormatException
-     */
-    public function getContent(Response $response)
-    {
-        $data = $response->getOriginalContent();
-
-        if ( ! is_array($data)) {
-            throw new InvalidDataFormatException;
-        }
-
-        return $this->toXml($data);
-    }
-
-    /**
      * The main function for converting to an XML document.
      * Pass in a multi dimensional array and this recursively loops through and builds up an XML document.
      *
-     * @see http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
+     * @see    http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
      * @param  array            $data
-     * @param  string           $rootNodeName What you want the root node to be - defaults to data.
-     * @param  SimpleXMLElement $xml          Should only be used recursively
-     * @return string XML
+     * @param  string           $rootNodeName (default: root)
+     * @param  SimpleXMLElement $xml          (default: null)
+     * @return string
      */
     protected function toXml(array $data, $rootNodeName = 'root', SimpleXMLElement $xml = null)
     {
@@ -66,10 +71,10 @@ class XmlEncoder extends Encoder {
             // replace anything not alpha numeric
             $key = preg_replace('/[^a-z]/i', '', $key);
 
-            // if there is another array found recrusively call this function
+            // if there is another array found recursively call this function
             if (is_array($value)) {
                 $node = $xml->addChild($key);
-                // recrusive call.
+                // reclusive call.
                 $this->toXml($value, $rootNodeName, $node);
             } else {
                 // add single node.
@@ -81,5 +86,4 @@ class XmlEncoder extends Encoder {
         // pass back as string. or simple xml object if you want!
         return $xml->asXML();
     }
-
 }
