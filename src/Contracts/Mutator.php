@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 interface Mutator
 {
     /**
-     * Modify the provided response, so the content will be mutate in the desired mutation.
+     * Modify the provided response, so the content will be mutate in the
+     * desired mutation.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Illuminate\Http\Response $response

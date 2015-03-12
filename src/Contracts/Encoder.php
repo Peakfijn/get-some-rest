@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 interface Encoder
 {
     /**
-     * Modify the provided response, so the content will be encoded in the desired encoding.
+     * Modify the provided response, so the content will be encoded in the
+     * desired encoding.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Illuminate\Http\Response $response

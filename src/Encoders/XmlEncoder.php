@@ -8,7 +8,8 @@ use Peakfijn\GetSomeRest\Contracts\Encoder;
 class XmlEncoder implements Encoder
 {
     /**
-     * Modify the provided response, so the content will be encoded in the desired encoding.
+     * Modify the provided response, so the content will be encoded in the
+     * desired encoding.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Illuminate\Http\Response $response
@@ -41,7 +42,8 @@ class XmlEncoder implements Encoder
 
     /**
      * The main function for converting to an XML document.
-     * Pass in a multi dimensional array and this recursively loops through and builds up an XML document.
+     * Pass in a multi dimensional array and this recursively loops through and
+     * builds up an XML document.
      *
      * @see    http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
      * @param  array            $data
@@ -49,8 +51,11 @@ class XmlEncoder implements Encoder
      * @param  SimpleXMLElement $xml          (default: null)
      * @return string
      */
-    protected function toXml(array $data, $rootNodeName = 'root', SimpleXMLElement $xml = null)
-    {
+    protected function toXml(
+        array $data,
+        $rootNodeName = 'root',
+        SimpleXMLElement $xml = null
+    ) {
         // turn off compatibility mode as simple xml throws a wobbly if you don't.
         if (ini_get('zend.ze1_compatibility_mode') == 1) {
             ini_set('zend.ze1_compatibility_mode', 0);

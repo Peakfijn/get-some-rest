@@ -7,11 +7,12 @@ use Peakfijn\GetSomeRest\Contracts\Encoder;
 class JsonEncoder implements Encoder
 {
     /**
-     * Get the data from the response and morph it to a string.
+     * Modify the provided response, so the content will be encoded in the
+     * desired encoding.
      *
-     * @param  \Peakfijn\GetSomeRest\Http\Request  $request
-     * @param  \Peakfijn\GetSomeRest\Http\Response $response
-     * @return \Peakfijn\GetSomeRest\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Response $response
+     * @return \Illuminate\Http\Response
      */
     public function encode(Request $request, Response $response)
     {
