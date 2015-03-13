@@ -1,10 +1,12 @@
 <?php namespace Peakfijn\GetSomeRest\Http\Middleware;
 
 use Closure;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Routing\Middleware;
 use Peakfijn\GetSomeRest\Contracts\RestException;
 use Peakfijn\GetSomeRest\Encoders\EncoderFactory;
 use Peakfijn\GetSomeRest\Mutators\MutatorFactory;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Api implements Middleware
 {
@@ -56,6 +58,10 @@ class Api implements Middleware
             }
 
             $response = $error->getResponse();
+        } catch (HttpException $error) {
+            $response = response($error->getMessage(), $error->getStatusCode());
+        } catch (ModelNotFoundException $error) {
+            $response = response('Could not find the requested "'. $error->getModel() .'".', 404);
         }
 
         $response = $mutator->mutate($request, $response);

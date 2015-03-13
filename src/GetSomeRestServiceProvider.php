@@ -3,6 +3,7 @@
 use Illuminate\Routing\Console\MiddlewareMakeCommand;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;
+use Peakfijn\GetSomeRest\Http\Request;
 
 class GetSomeRestServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,22 @@ class GetSomeRestServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->bind('Peakfijn\GetSomeRest\Http\Request', function($app)
+        {
+            $request = $app->make('request');
 
+            $rest = new Request(
+                $request->query->all(),
+                $request->request->all(),
+                $request->attributes->all(),
+                $request->cookies->all(),
+                $request->files->all(),
+                $request->server->all(),
+                $request->content
+            );
+
+            return $rest;
+        });
     }
 
     /**
@@ -26,5 +42,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__ . '/config/config.php', 'get-some-rest'
         );
+
+
     }
 }
