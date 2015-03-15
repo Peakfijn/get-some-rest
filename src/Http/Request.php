@@ -95,7 +95,7 @@ class Request extends IlluminateRequest
         if ($first && $resource = $this->getValidResourceClass($first)) {
             $this->resourceName = $resource;
             $this->resourceId = !empty($last)? $last: null;
-        } else if ($last && $resource = $this->getValidResourceClass($last)) {
+        } elseif ($last && $resource = $this->getValidResourceClass($last)) {
             $this->resourceName = $resource;
         }
     }
