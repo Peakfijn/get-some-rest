@@ -2,4 +2,11 @@
 composer.phar
 composer.lock
 .DS_Store
+
+# Editor
 .idea
+*.swp
+*.swo
+.phpcomplete_extended
+
+
