@@ -64,6 +64,10 @@ class Api implements Middleware
             $response = response('Could not find the requested "'. $error->getModel() .'".', 404);
         }
 
+        if (! $response instanceof Response) {
+            $response = response($response);
+        }
+
         $response = $mutator->mutate($request, $response);
         $response = $encoder->encode($request, $response);
 
