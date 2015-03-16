@@ -66,17 +66,17 @@ class Request extends IlluminateRequest
      */
     public function resource()
     {
-        if ($this->resourceName) {
-            $resource = app($this->resourceName);
-
-            if ($this->resourceId) {
-                $resource = $resource->findOrFail($this->resourceId);
-            }
-
-            return $resource;
+        if (! $this->resourceName) {
+            throw new ResourceUnknownException();
         }
 
-        throw new ResourceUnknownException();
+        $resource = app($this->resourceName);
+
+        if ($this->resourceId) {
+            $resource = $resource->findOrFail($this->resourceId);
+        }
+
+        return $resource;
     }
 
     /**
