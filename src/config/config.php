@@ -2,10 +2,46 @@
 
 return [
 
+    /*
+    |--------------------------------------------------------------------------
+    | Resources
+    |--------------------------------------------------------------------------
+    |
+    | An API consists from multiple components, especially from resources. A
+    | resource is a (data) model built to execute REST actions upon.
+    |
+    */
+
     'resources' => [
+
+        /*
+        |----------------------------------------------------------------------
+        | Resources - Namespace
+        |----------------------------------------------------------------------
+        |
+        | The default namespace to search for resources. Note, this should be
+        | equal to your applications name(space). If you have moved your
+        | resources, please set the correct namespace.
+        |
+        */
+
         'namespace' => '',
-        'aliases' => [
-        ]
+
+        /*
+        |----------------------------------------------------------------------
+        | Resources - Aliases
+        |----------------------------------------------------------------------
+        |
+        | When you have some external, or not singular & camelcased, models
+        | define an alias. For example:
+        | [
+        |   snake_cased => '\Project\Snake_cased'
+        |   notmine     => '\Externa\NotMine'
+        | ]
+        |
+        */
+
+        'aliases' => [ ]
     ],
 
     /*

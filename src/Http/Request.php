@@ -1,5 +1,6 @@
 <?php namespace Peakfijn\GetSomeRest\Http;
 
+use RuntimeException;
 use Illuminate\Http\Request as IlluminateRequest;
 use Peakfijn\GetSomeRest\Http\Exceptions\ResourceUnknownException;
 
@@ -118,12 +119,24 @@ class Request extends IlluminateRequest
     /**
      * Get a valid resource class from the provided name.
      * If the response is null, the name is invalid.
+     * It also checks the _raw_ name for defined aliases.
      *
+     * @throws \RuntimeException
      * @param  string $name
      * @return string|null
      */
     private function getValidResourceClass($name)
     {
+        $aliases = config('get-some-rest.resources.aliases');
+
+        if (array_key_exists($name, $aliases)) {
+            if (! class_exists($aliases[$name])) {
+                throw new RuntimeException('A resource alias was found, but the class does not exists.');
+            }
+
+            return $aliases[$name];
+        }
+
         $name = $this->getCleanResourceName($name);
         $namespace = config('get-some-rest.resources.namespace');
 
