@@ -28,10 +28,11 @@ trait ResourceUpdateTrait
         $resource = $request->resource();
         $resource->fill($request->input());
 
-        if ($resource->save()) {
-            return $resource;
+        if (! $resource->save()) {
+            throw new ResourceSaveException();
         }
+        
+        return $resource;
 
-        throw new ResourceSaveException();
     }
 }

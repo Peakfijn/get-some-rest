@@ -12,7 +12,7 @@ trait ResourceDestroyTrait
      */
     public function destroy()
     {
-        return $this->getResourceDestroy();
+        return $this->destroyResource();
     }
 
     /**
@@ -21,14 +21,14 @@ trait ResourceDestroyTrait
      * @throws \Peakfijn\GetSomeRest\Http\Exceptions\ResourceDestroyException
      * @return mixed
      */
-    protected function getResourceDestroy()
+    protected function destroyResource()
     {
         $resource = app('Peakfijn\GetSomeRest\Http\Request')->resource();
 
-        if ($resource->delete()) {
-            return $resource;
+        if (! $resource->delete()) {
+            throw new ResourceDestroyException();
         }
 
-        throw new ResourceDestroyException();
+        return $resource;
     }
 }
