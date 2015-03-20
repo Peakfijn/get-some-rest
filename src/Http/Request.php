@@ -26,7 +26,7 @@ class Request extends IlluminateRequest
      * This method also re-initializes all properties.
      *
      * @param array  $query      The GET parameters
-     * @param array  $request    The POST parameters
+     * @param array  $request    The POST parameters*
      * @param array  $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
      * @param array  $cookies    The COOKIE parameters
      * @param array  $files      The FILES parameters
@@ -62,16 +62,12 @@ class Request extends IlluminateRequest
      * If an id was supplied within the URL, that resource will be returned.
      *
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     * @throws \Peakfijn\GetSomeRest\Http\Exceptions\ResourceUnknownException
+     *
      * @return object
      */
     public function resource()
     {
-        if (! $this->resourceName) {
-            throw new ResourceUnknownException();
-        }
-
-        $resource = app($this->resourceName);
+        $resource = app($this->resourceName());
 
         if ($this->resourceId) {
             $resource = $resource->findOrFail($this->resourceId);
@@ -79,6 +75,74 @@ class Request extends IlluminateRequest
 
         return $resource;
     }
+
+    /**
+     * Get the name of the requested resource.
+     * Note, this includes the namespace.
+     *
+     * @throws \Peakfijn\GetSomeRest\Http\Exceptions\ResourceUnknownException
+     * @return string
+     */
+    public function resourceName()
+    {
+        if (! $this->resourceName) {
+            throw new ResourceUnknownException();
+        }
+
+        return $this->resourceName;
+    }
+
+    /**
+     * Get the name of the reqested resource.
+     * Note, this does NOT include the namespace.
+     *
+     * @return string
+     */
+    public function resourceBaseName()
+    {
+        return class_basename($this->resourceName());
+    }
+
+    /**
+     * Get the fully event name/path that will be called when an action occured.
+     * Note, please use the past tense of the rest action.
+     *
+     * @return string
+     */
+    public function resourceEventName()
+    {
+        $actions = config('get-some-rest.resources.events');
+        $namespace = config('get-some-rest.resources.namespace');
+
+        $resource = $this->resourceBaseName();
+        $action = $actions[$this->action()];
+
+        return $namespace .'\\Events\\'. $resource .'Is'. ucfirst($action);
+    }
+
+    /**
+     * Get the requested rest action.
+     * It will be one of the following values:
+     *   - index
+     *   - show
+     *   - store
+     *   - update
+     *   - destroy
+     *
+     * @return string
+     */
+    public function action()
+    {
+        $method = $this->method();
+
+        switch ($method) {
+            case 'GET': return empty($this->resourceId)? 'index': 'show';
+            case 'POST': return 'store';
+            case 'PUT': return 'update';
+            case 'DELETE': return 'destroy';
+        }
+    }
+
 
     /**
      * Try to extract the resource information from a rest full url.

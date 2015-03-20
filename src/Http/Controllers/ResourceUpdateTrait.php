@@ -1,7 +1,6 @@
 <?php namespace Peakfijn\GetSomeRest\Http\Controllers;
 
 use Peakfijn\GetSomeRest\Http\Exceptions\ResourceSaveException;
-use Peakfijn\GetSomeRest\Http\Request;
 
 trait ResourceUpdateTrait
 {
@@ -31,7 +30,9 @@ trait ResourceUpdateTrait
         if (! $resource->save()) {
             throw new ResourceSaveException();
         }
-        
+
+        event($request->resourceEventName(), [$resource]);
+
         return $resource;
 
     }

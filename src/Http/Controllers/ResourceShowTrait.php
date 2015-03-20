@@ -19,6 +19,11 @@ trait ResourceShowTrait
      */
     protected function showResource()
     {
-        return app('Peakfijn\GetSomeRest\Http\Request')->resource();
+        $request = app('Peakfijn\GetSomeRest\Http\Request');
+        $resource = $request->resource();
+
+        event($request->resourceEventName(), [$resource]);
+
+        return $resource;
     }
 }

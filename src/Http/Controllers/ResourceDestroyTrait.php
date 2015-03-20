@@ -1,7 +1,6 @@
 <?php namespace Peakfijn\GetSomeRest\Http\Controllers;
 
 use Peakfijn\GetSomeRest\Http\Exceptions\ResourceDestroyException;
-use Peakfijn\GetSomeRest\Http\Request;
 
 trait ResourceDestroyTrait
 {
@@ -23,11 +22,14 @@ trait ResourceDestroyTrait
      */
     protected function destroyResource()
     {
-        $resource = app('Peakfijn\GetSomeRest\Http\Request')->resource();
+        $request = app('Peakfijn\GetSomeRest\Http\Request');
+        $resource = $request->resource();
 
         if (! $resource->delete()) {
             throw new ResourceDestroyException();
         }
+
+        event($request->resourceEventName(), [$resource]);
 
         return $resource;
     }

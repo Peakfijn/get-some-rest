@@ -1,7 +1,6 @@
 <?php namespace Peakfijn\GetSomeRest\Http\Controllers;
 
 use Peakfijn\GetSomeRest\Http\Exceptions\ResourceSaveException;
-use Peakfijn\GetSomeRest\Http\Request;
 
 trait ResourceStoreTrait
 {
@@ -21,19 +20,19 @@ trait ResourceStoreTrait
      * @throws \Peakfijn\GetSomeRest\Http\Exceptions\ResourceSaveException
      * @return mixed
      */
-    protected function storeResource($resource = null)
+    protected function storeResource()
     {
-        if ($resource == null) {
-            $request = app('Peakfijn\GetSomeRest\Http\Request');
+        $request = app('Peakfijn\GetSomeRest\Http\Request');
 
-            $resource = $request->resource();
-            $resource->fill($request->input());
-        }
+        $resource = $request->resource();
+        $resource->fill($request->input());
 
         if (! $resource->save()) {
             throw new ResourceSaveException();
         }
-        
+
+        event($request->resourceEventName(), [$resource]);
+
         return $resource;
 
     }

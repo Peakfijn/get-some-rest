@@ -41,7 +41,35 @@ return [
         |
         */
 
-        'aliases' => [ ]
+        'aliases' => [ ],
+
+        /*
+        |----------------------------------------------------------------------
+        | Resources - Events
+        |----------------------------------------------------------------------
+        |
+        | When an action is executed on a specific resource, an event is fired
+        | automatically. The name of the event is defined as following:
+        |
+        |   {NAMESPACE}\Events\{RESOURCE}Is{ACTION}
+        |
+        | Here you can change the action name to your desired value.
+        | For example, when requesting a single resource through a get action
+        | this event is fired.
+        |
+        |   MyNamespace\Events\ResourceIsShowed
+        |
+        | Also, the resource itself is passed as event payload.
+        |
+        */
+
+        'events' => [
+            'index'     => 'indexed',
+            'show'      => 'showed',
+            'store'     => 'stored',
+            'update'    => 'updated',
+            'destroy'   => 'destroyed'
+        ]
     ],
 
     /*

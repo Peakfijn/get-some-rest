@@ -19,6 +19,11 @@ trait ResourceIndexTrait
      */
     protected function indexResource()
     {
-        return app('Peakfijn\GetSomeRest\Http\Request')->resource()->get();
+        $request = app('Peakfijn\GetSomeRest\Http\Request');
+        $resources = $request->resource()->get();
+
+        event($request->resourceEventName(), [$resources]);
+
+        return $resources;
     }
 }
