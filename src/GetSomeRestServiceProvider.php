@@ -2,8 +2,9 @@
 
 use Illuminate\Routing\Console\MiddlewareMakeCommand;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Routing\Router;
 use Peakfijn\GetSomeRest\Http\Request;
+use Peakfijn\GetSomeRest\Http\Url\Url;
+use Peakfijn\GetSomeRest\Http\Url\Resolvers\ResourceResolver;
 
 class GetSomeRestServiceProvider extends ServiceProvider
 {
@@ -14,22 +15,55 @@ class GetSomeRestServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('Peakfijn\GetSomeRest\Http\Request', function($app)
+        $this->app->bind('Peakfijn\GetSomeRest\Http\Request', function ($app)
         {
-            $request = $app->make('request');
+            $origin = $app->make('request');
 
-            $rest = new Request(
-                $request->query->all(),
-                $request->request->all(),
-                $request->attributes->all(),
-                $request->cookies->all(),
-                $request->files->all(),
-                $request->server->all(),
-                $request->content
+            $request = new Request(
+                $origin->query->all(),
+                $origin->request->all(),
+                $origin->attributes->all(),
+                $origin->cookies->all(),
+                $origin->files->all(),
+                $origin->server->all(),
+                $origin->content
             );
 
-            return $rest;
+            return $request;
         });
+
+        $this->app->bind('Peakfijn\GetSomeRest\Http\Url\Resolvers\ResourceResolver', function ($app)
+        {
+            $config = $app['config'];
+
+            return new ResourceResolver(
+                $app['Illuminate\Container\Container'],
+                $config['get-some-rest.namespace'],
+                $config['get-some-rest.aliases']
+            );
+        });
+
+        $this->app->bind('Peakfijn\GetSomeRest\Http\Url\Url', function ($app)
+        {
+            return new Url(
+                $app['Illuminate\Http\Request'],
+                $app['Peakfijn\GetSomeRest\Http\Url\Resolvers\ResourceResolver']
+            );
+        });
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return [
+            'Peakfijn\GetSomeRest\Http\Request',
+            'Peakfijn\GetSomeRest\Http\Url\Url',
+            'Peakfijn\GetSomeRest\Http\Url\Resolvers\ResourceResolver'
+        ];
     }
 
     /**
@@ -39,12 +73,40 @@ class GetSomeRestServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $config = $this->app['config'];
+        $configFile = __DIR__ .'/config/config.php';
+
+        $this->mergeConfigFrom($configFile, 'get-some-rest');
         $this->publishes([
-            __DIR__ . '/config/config.php' => config_path('get-some-rest.php')
+            $configFile => config_path('get-some-rest.php')
         ]);
 
-        $this->mergeConfigFrom(
-            __DIR__ . '/config/config.php', 'get-some-rest'
-        );
+        if ($config->get('get-some-rest.generate-routes', false)) {
+            $this->bindResourceRoutes(
+                $this->app['router'],
+                $config->get('get-some-rest.route-controller'),
+                $config->get('get-some-rest.route-settings')
+            );
+        }
+    }
+
+    /**
+     * Register the resource route, that covers all resource actions.
+     *
+     * @param  \Illuminate\Routing\Router $router
+     * @param  string                     $controller
+     * @param  array                      $settings (default: [])
+     * @return void
+     */
+    protected function bindResourceRoutes($router, $controller, array $settings = array())
+    {
+        $router->group($settings, function ($router) use ($controller)
+        {
+            $router->get('/{resource}',                $controller .'@index');
+            $router->post('/{resource}',               $controller .'@store');
+            $router->get('/{resource}/{id}/{scopes?}', $controller .'@show')->where('scopes', '(.*)');
+            $router->put('/{resource}/{id}',           $controller .'@update');
+            $router->delete('/{resource}/{id}',        $controller .'@destroy');
+        });
     }
 }
