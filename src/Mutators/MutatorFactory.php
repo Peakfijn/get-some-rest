@@ -29,7 +29,7 @@ class MutatorFactory implements Factory
     public function __construct(Config $config)
     {
         $this->mutators = $config->get('get-some-rest.mutators');
-        $this->default = $config->get('get-some-rest.defaultMutator');
+        $this->default = $config->get('get-some-rest.default-mutator');
     }
 
     /**

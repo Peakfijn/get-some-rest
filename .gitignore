@@ -1,12 +1,14 @@
 /vendor
+/report
+/build
 composer.phar
 composer.lock
 .DS_Store
+phpunit.xml
 
 # Editor
 .idea
 *.swp
 *.swo
 .phpcomplete_extended
-
 

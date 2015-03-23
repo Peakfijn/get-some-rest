@@ -29,7 +29,7 @@ class EncoderFactory implements Factory
     public function __construct(Config $config)
     {
         $this->encoders = $config->get('get-some-rest.encoders');
-        $this->default = $config->get('get-some-rest.defaultEncoder');
+        $this->default = $config->get('get-some-rest.default-encoder');
     }
 
     /**
