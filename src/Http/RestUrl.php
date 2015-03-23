@@ -1,7 +1,5 @@
 <?php namespace Peakfijn\GetSomeRest\Http;
 
-use Illuminate\Http\Request;
-
 class RestUrl
 {
     /**
@@ -94,11 +92,11 @@ class RestUrl
             $resource = $this->getResource($segment);
             $isPlural = $this->isPluralString($segment);
 
-            if ($usePlural && !$isPlural || !$usePlural && $isPlural) {
-                break;
-            }
-
             if (!empty($resource)) {
+                if ($usePlural && !$isPlural || !$usePlural && $isPlural) {
+                    break;
+                }
+
                 return array_slice($segments, array_search($segment, $segments));
             }
         }

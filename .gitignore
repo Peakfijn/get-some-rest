@@ -1,10 +1,7 @@
 /vendor
-/report
-/build
 composer.phar
 composer.lock
 .DS_Store
-phpunit.xml
 
 # Editor
 .idea
@@ -12,3 +9,7 @@ phpunit.xml
 *.swo
 .phpcomplete_extended
 
+# PHPUnit
+/report
+/build
+phpunit.xml

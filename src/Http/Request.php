@@ -3,9 +3,17 @@
 use RuntimeException;
 use Illuminate\Http\Request as IlluminateRequest;
 use Peakfijn\GetSomeRest\Http\Exceptions\ResourceUnknownException;
+use Peakfijn\GetSomeRest\Http\RestUrl;
 
 class Request extends IlluminateRequest
 {
+    /**
+     * The Rest URL parser.
+     *
+     * @var \Peakfijn\GetSomeRest\Http\RestUrl
+     */
+    protected $restUrl;
+
     /**
      * The resource class, if requested.
      *
@@ -54,7 +62,12 @@ class Request extends IlluminateRequest
             $content
         );
 
-        $this->initializeRestInformation();
+        $this->restUrl = new RestUrl(
+            $this->segments(),
+            config('get-some-rest.plural'),
+            config('get-some-rest.namespace'),
+            config('get-some-rest.aliases')
+        );
     }
 
     /**
@@ -69,8 +82,8 @@ class Request extends IlluminateRequest
     {
         $resource = app($this->resourceName());
 
-        if ($this->resourceId) {
-            $resource = $resource->findOrFail($this->resourceId);
+        if ($id = $this->restUrl->resourceId()) {
+            $resource = $resource->findOrFail($id);
         }
 
         return $resource;
@@ -85,11 +98,11 @@ class Request extends IlluminateRequest
      */
     public function resourceName()
     {
-        if (! $this->resourceName) {
+        if (! $this->restUrl->resourceClass()) {
             throw new ResourceUnknownException();
         }
 
-        return $this->resourceName;
+        return $this->restUrl->resourceClass();
     }
 
     /**
@@ -100,7 +113,7 @@ class Request extends IlluminateRequest
      */
     public function resourceBaseName()
     {
-        return class_basename($this->resourceName());
+        return $this->restUrl->resourceName();
     }
 
     /**
@@ -111,8 +124,8 @@ class Request extends IlluminateRequest
      */
     public function resourceEventName()
     {
-        $actions = config('get-some-rest.resources.events');
-        $namespace = config('get-some-rest.resources.namespace');
+        $actions = config('get-some-rest.events');
+        $namespace = config('get-some-rest.namespace');
 
         $resource = $this->resourceBaseName();
         $action = $actions[$this->action()];
@@ -134,78 +147,13 @@ class Request extends IlluminateRequest
     public function action()
     {
         $method = $this->method();
+        $id = $this->restUrl->resourceId();
 
         switch ($method) {
-            case 'GET': return empty($this->resourceId)? 'index': 'show';
+            case 'GET': return empty($id)? 'index': 'show';
             case 'POST': return 'store';
             case 'PUT': return 'update';
             case 'DELETE': return 'destroy';
-        }
-    }
-
-
-    /**
-     * Try to extract the resource information from a rest full url.
-     *
-     * @return void
-     */
-    private function initializeRestInformation()
-    {
-        $segments = $this->segments();
-        $information = array_slice($segments, -2, 2);
-
-        $first = array_key_exists(0, $information)? $information[0]: null;
-        $last = array_key_exists(1, $information)? $information[1]: null;
-
-        if ($first && $resource = $this->getValidResourceClass($first)) {
-            $this->resourceName = $resource;
-            $this->resourceId = !empty($last)? $last: null;
-        } elseif ($last && $resource = $this->getValidResourceClass($last)) {
-            $this->resourceName = $resource;
-        }
-    }
-
-    /**
-     * Get the cleaned resource name.
-     *
-     * @param  string $name
-     * @return string
-     */
-    private function getCleanResourceName($name)
-    {
-        $name = camel_case($name);
-        $name = ucfirst($name);
-        $name = str_singular($name);
-
-        return $name;
-    }
-
-    /**
-     * Get a valid resource class from the provided name.
-     * If the response is null, the name is invalid.
-     * It also checks the _raw_ name for defined aliases.
-     *
-     * @throws \RuntimeException
-     * @param  string $name
-     * @return string|null
-     */
-    private function getValidResourceClass($name)
-    {
-        $aliases = config('get-some-rest.resources.aliases');
-
-        if (array_key_exists($name, $aliases)) {
-            if (! class_exists($aliases[$name])) {
-                throw new RuntimeException('A resource alias was found, but the class does not exists.');
-            }
-
-            return $aliases[$name];
-        }
-
-        $name = $this->getCleanResourceName($name);
-        $namespace = config('get-some-rest.resources.namespace');
-
-        if (class_exists($namespace .'\\'. $name)) {
-            return $namespace .'\\'. $name;
         }
     }
 }
