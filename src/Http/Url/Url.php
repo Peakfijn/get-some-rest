@@ -74,16 +74,6 @@ class Url
     }
 
     /**
-     * Get the main resource class, without namespace.
-     *
-     * @return string|null
-     */
-    public function resourceName()
-    {
-        return class_basename($this->resourceClass);
-    }
-
-    /**
      * Get the main resource identifier.
      *
      * @return string|int|null

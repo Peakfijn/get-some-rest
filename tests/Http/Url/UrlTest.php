@@ -8,7 +8,6 @@ use Peakfijn\GetSomeRest\Http\Url\Url;
 // CONTENTS
 //
 // testResourceClassReadsAndReturnsProperty
-// testResourceNameOnlyReturnsClassName
 // testResourceIdReadsAndReturnsProperty
 // testParseExtractsAndSavesResource
 // testParseExtractsResourceAndIdentifier
@@ -86,22 +85,6 @@ class UrlTest extends AbstractUnitTest
         $this->assertEquals(
             'Peakfijn\GetSomeRest\Tests\Stubs\Resource',
             $instance->resourceClass()
-        );
-    }
-
-    public function testResourceNameOnlyReturnsClassName()
-    {
-        $instance = $this->getInstance();
-
-        $this->setInternalProperty(
-            $instance,
-            'resourceClass',
-            'Peakfijn\GetSomeRest\Tests\Stubs\Resource'
-        );
-
-        $this->assertEquals(
-            'Resource',
-            $instance->resourceName()
         );
     }
 

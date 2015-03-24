@@ -90,16 +90,11 @@ class Request extends IlluminateRequest
      * Get the name of the reqested resource.
      * Note, this does NOT include the namespace.
      *
-     * @throws \Peakfijn\GetSomeRest\Http\Exceptions\ResourceUnknownException
      * @return string
      */
     public function resourceName()
     {
-        if (! $name = $this->restUrl->resourceName()) {
-            throw new ResourceUnknownException();
-        }
-
-        return $name;
+        return class_basename($this->resourceClass());
     }
 
     /**
