@@ -23,12 +23,9 @@ class RestException extends HttpException implements RestExceptionContract
      */
     public function getResponse()
     {
-        $message = $this->getMessage();
-
-        if (!is_array($message)) {
-            $message = ['errors' => (array)$message];
-        }
-
-        return new Response($message, $this->getStatusCode());
+        return new Response(
+            $this->getMessage(),
+            $this->getStatusCode()
+        );
     }
 }

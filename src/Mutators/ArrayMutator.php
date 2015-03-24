@@ -1,28 +1,31 @@
 <?php namespace Peakfijn\GetSomeRest\Mutators;
 
-use Illuminate\Http\Response;
-use Illuminate\Http\Request;
 use Illuminate\Contracts\Support\Arrayable;
 use Peakfijn\GetSomeRest\Contracts\Mutator;
+use Symfony\Component\HttpFoundation\Request;
 
-class ArrayMutator implements Mutator
+class ArrayMutator extends Mutator
 {
     /**
      * Get the mutated content
      *
-     * @param  \Illuminate\Http\Response $response
+     * @param  \Symfony\Component\HttpFoundation\Request $request
+     * @param  integer                                   $status
+     * @param  mixed                                     $data
      * @return array
      */
-    public function mutate(Request $request, Response $response)
+    public function mutate(Request $request, $status, $data)
     {
-        $data = $response->getOriginalContent();
-
         if ($data instanceof Arrayable) {
             $data = $data->toArray();
         }
 
-        $response->setContent((array)$data);
+        $data = (array) $data;
 
-        return $response;
+        if ($this->isErrorStatus($status)) {
+            return ['errors' => $data];
+        }
+
+        return $data;
     }
 }

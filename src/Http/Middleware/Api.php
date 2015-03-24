@@ -3,11 +3,12 @@
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Routing\Middleware;
-use Illuminate\Http\Response;
+use Peakfijn\GetSomeRest\Http\Response;
 use Peakfijn\GetSomeRest\Contracts\RestException;
 use Peakfijn\GetSomeRest\Encoders\EncoderFactory;
 use Peakfijn\GetSomeRest\Mutators\MutatorFactory;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Api implements Middleware
 {
@@ -65,14 +66,14 @@ class Api implements Middleware
             $response = response('Could not find the requested "'. $error->getModel() .'".', 404);
         }
 
-        if (! $response instanceof Response) {
-            $response = response($response);
+        if ($response instanceof SymfonyResponse) {
+            $response = Response::makeFromExisting($response);
+        } else {
+            $response = new Response($response);
         }
 
-        $response = $mutator->mutate($request, $response);
-        $response = $encoder->encode($request, $response);
-
-        $response->header('Content-Type', $encoder->getContentType());
+        $response->setMutator($mutator);
+        $response->setEncoder($encoder);
 
         return $response;
     }

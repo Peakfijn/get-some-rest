@@ -1,19 +1,17 @@
 <?php namespace Peakfijn\GetSomeRest\Contracts;
 
-use Illuminate\Http\Response;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Request;
 
 interface Encoder
 {
     /**
-     * Modify the provided response, so the content will be encoded in the
-     * desired encoding.
+     * Encode the data, and return the encoded string.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Http\Response $response
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request $request
+     * @param  mixed                    $data
+     * @return string
      */
-    public function encode(Request $request, Response $response);
+    public function encode(Request $request, $data);
 
     /**
      * Get the content type for this encoder.

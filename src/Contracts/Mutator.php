@@ -1,17 +1,29 @@
 <?php namespace Peakfijn\GetSomeRest\Contracts;
 
-use Illuminate\Http\Response;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Request;
 
-interface Mutator
+abstract class Mutator
 {
     /**
-     * Modify the provided response, so the content will be mutate in the
-     * desired mutation.
+     * Mutate the data.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Http\Response $response
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request $request
+     * @param  integer                  $status
+     * @param  mixed                    $data
+     * @return mixed
      */
-    public function mutate(Request $request, Response $response);
+    abstract public function mutate(Request $request, $status, $data);
+
+    /**
+     * Check if the status code is an error.
+     *
+     * @param  integer  $status
+     * @return boolean
+     */
+    public function isErrorStatus($status)
+    {
+        $status = (string) $status;
+
+        return (int) $status[0] >= 4;
+    }
 }
