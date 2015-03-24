@@ -19,15 +19,27 @@ class ResourceResolver implements Resolver
     protected $aliases;
 
     /**
+     * Use only plural resource names.
+     *
+     * @var boolean
+     */
+    protected $usePlural;
+
+    /**
      * Create a new resource resolver.
      *
-     * @param string $namespace
-     * @param array  $aliases    (default: [])
+     * @param string  $namespace
+     * @param array   $aliases    (default: [])
+     * @param boolean $plural     (default: true)
      */
-    public function __construct($namespace, array $aliases = array())
-    {
+    public function __construct(
+        $namespace,
+        array $aliases = array(),
+        $plural = true
+    ) {
         $this->namespace = $namespace;
         $this->aliases = $aliases;
+        $this->usePlural = !!$plural;
     }
 
     /**
@@ -57,6 +69,12 @@ class ResourceResolver implements Resolver
      */
     public function resolve($resource)
     {
+        $isPlural = str_plural($resource) == $resource;
+
+        if ($this->usePlural && !$isPlural || !$this->usePlural && $isPlural) {
+            return;
+        }
+
         if ($alias = $this->getAlias($resource)) {
             return $alias;
         }
@@ -134,5 +152,15 @@ class ResourceResolver implements Resolver
     public function getAliases()
     {
         return $this->aliases;
+    }
+
+    /**
+     * Check if the resolver is only using plural or singular names.
+     *
+     * @return boolean
+     */
+    public function usingPlural()
+    {
+        return $this->usePlural;
     }
 }

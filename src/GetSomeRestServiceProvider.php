@@ -38,7 +38,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
 
             return new ResourceResolver(
                 $config['get-some-rest.namespace'],
-                $config['get-some-rest.aliases']
+                $config['get-some-rest.aliases'],
+                $config['get-some-rest.plural']
             );
         });
 
