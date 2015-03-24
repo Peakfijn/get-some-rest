@@ -14,4 +14,9 @@ class RestController extends Controller
         ResourceStoreTrait,
         ResourceUpdateTrait,
         ResourceDestroyTrait;
+
+    public function __construct()
+    {
+        $this->middleware('Peakfijn\GetSomeRest\Http\Middleware\Api');
+    }
 }

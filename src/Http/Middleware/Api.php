@@ -3,6 +3,7 @@
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Routing\Middleware;
+use Illuminate\Http\Response;
 use Peakfijn\GetSomeRest\Contracts\RestException;
 use Peakfijn\GetSomeRest\Encoders\EncoderFactory;
 use Peakfijn\GetSomeRest\Mutators\MutatorFactory;
