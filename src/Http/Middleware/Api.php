@@ -1,9 +1,12 @@
 <?php namespace Peakfijn\GetSomeRest\Http\Middleware;
 
 use Closure;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Routing\Middleware;
 use Illuminate\Http\Response;
+use League\OAuth2\Server\Exception\OAuthException;
+use Peakfijn\GetSomeRest\Auth\Guard;
 use Peakfijn\GetSomeRest\Contracts\RestException;
 use Peakfijn\GetSomeRest\Encoders\EncoderFactory;
 use Peakfijn\GetSomeRest\Mutators\MutatorFactory;
@@ -29,22 +32,27 @@ class Api implements Middleware
      * Create a new API Middleware instance.
      *
      * @param \Peakfijn\GetSomeRest\Encoders\EncoderFactory $encoderFactory
-     * @param \Peakfijn\GetSomeRest\Encoders\MutatorFactory $mutatorFactory
+     * @param \Peakfijn\GetSomeRest\Mutators\MutatorFactory $mutatorFactory
+     * @param \Peakfijn\GetSomeRest\Auth\Guard              $guard
      */
     public function __construct(
         EncoderFactory $encoderFactory,
-        MutatorFactory $mutatorFactory
+        MutatorFactory $mutatorFactory,
+        Guard $guard
     ) {
         $this->encoderFactory = $encoderFactory;
         $this->mutatorFactory = $mutatorFactory;
+        $this->guard = $guard;
     }
 
     /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \Closure $next
+     * @param  \Closure                 $next
      * @return mixed
+     * @throws \Exception
+     * @throws \Peakfijn\GetSomeRest\Contracts\RestException
      */
     public function handle($request, Closure $next)
     {
@@ -52,6 +60,7 @@ class Api implements Middleware
         $encoder = $this->encoderFactory->make($request);
 
         try {
+            $this->guard->resource->isValidRequest(false);
             $response = $next($request);
         } catch (RestException $error) {
             if (!$error->shouldBeCaught()) {
@@ -59,6 +68,8 @@ class Api implements Middleware
             }
 
             $response = $error->getResponse();
+        } catch (OAuthException $error) {
+            $response = response($error->getMessage(), $error->httpStatusCode);
         } catch (HttpException $error) {
             $response = response($error->getMessage(), $error->getStatusCode());
         } catch (ModelNotFoundException $error) {

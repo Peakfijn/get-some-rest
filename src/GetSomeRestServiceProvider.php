@@ -76,10 +76,16 @@ class GetSomeRestServiceProvider extends ServiceProvider
         $config = $this->app['config'];
         $configFile = __DIR__ .'/config/config.php';
 
+        // Publish config
         $this->mergeConfigFrom($configFile, 'get-some-rest');
         $this->publishes([
             $configFile => config_path('get-some-rest.php')
         ]);
+
+        // Publish migrations
+        $this->publishes([
+            __DIR__.'/database/migrations/' => base_path('/database/migrations')
+        ], 'migrations');
 
         if ($config->get('get-some-rest.generate-routes', false)) {
             $this->bindResourceRoutes(
