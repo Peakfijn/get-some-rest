@@ -3,30 +3,16 @@
 use RuntimeException;
 use Illuminate\Http\Request as IlluminateRequest;
 use Peakfijn\GetSomeRest\Http\Exceptions\ResourceUnknownException;
-use Peakfijn\GetSomeRest\Http\RestUrl;
+use Peakfijn\GetSomeRest\Http\Url\Url;
 
 class Request extends IlluminateRequest
 {
     /**
      * The Rest URL parser.
      *
-     * @var \Peakfijn\GetSomeRest\Http\RestUrl
+     * @var \Peakfijn\GetSomeRest\Http\Url\Url
      */
     protected $restUrl;
-
-    /**
-     * The resource class, if requested.
-     *
-     * @var string
-     */
-    protected $resourceName;
-
-    /**
-     * The resource id, if requested.
-     *
-     * @var string
-     */
-    protected $resourceId;
 
     /**
      * Sets the parameters for this request.
@@ -62,12 +48,7 @@ class Request extends IlluminateRequest
             $content
         );
 
-        $this->restUrl = new RestUrl(
-            $this->segments(),
-            config('get-some-rest.plural'),
-            config('get-some-rest.namespace'),
-            config('get-some-rest.aliases')
-        );
+        $this->restUrl = app('Peakfijn\GetSomeRest\Http\Url\Url');
     }
 
     /**
@@ -80,7 +61,7 @@ class Request extends IlluminateRequest
      */
     public function resource()
     {
-        $resource = app($this->resourceName());
+        $resource = app($this->resourceClass());
 
         if ($id = $this->restUrl->resourceId()) {
             $resource = $resource->findOrFail($id);
@@ -96,24 +77,29 @@ class Request extends IlluminateRequest
      * @throws \Peakfijn\GetSomeRest\Http\Exceptions\ResourceUnknownException
      * @return string
      */
-    public function resourceName()
+    public function resourceClass()
     {
-        if (! $this->restUrl->resourceClass()) {
+        if (! $class = $this->restUrl->resourceClass()) {
             throw new ResourceUnknownException();
         }
 
-        return $this->restUrl->resourceClass();
+        return $class;
     }
 
     /**
      * Get the name of the reqested resource.
      * Note, this does NOT include the namespace.
      *
+     * @throws \Peakfijn\GetSomeRest\Http\Exceptions\ResourceUnknownException
      * @return string
      */
-    public function resourceBaseName()
+    public function resourceName()
     {
-        return $this->restUrl->resourceName();
+        if (! $name = $this->restUrl->resourceName()) {
+            throw new ResourceUnknownException();
+        }
+
+        return $name;
     }
 
     /**
@@ -127,7 +113,7 @@ class Request extends IlluminateRequest
         $actions = config('get-some-rest.events');
         $namespace = config('get-some-rest.namespace');
 
-        $resource = $this->resourceBaseName();
+        $resource = $this->resourceName();
         $action = $actions[$this->action()];
 
         return $namespace .'\\Events\\'. $resource .'Is'. ucfirst($action);

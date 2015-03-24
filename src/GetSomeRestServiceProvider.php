@@ -17,7 +17,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         $this->app->bind('Peakfijn\GetSomeRest\Http\Request', function ($app)
         {
-            $origin = $app->make('request');
+            $origin = $app['request'];
 
             $request = new Request(
                 $origin->query->all(),
@@ -37,7 +37,6 @@ class GetSomeRestServiceProvider extends ServiceProvider
             $config = $app['config'];
 
             return new ResourceResolver(
-                $app['Illuminate\Container\Container'],
                 $config['get-some-rest.namespace'],
                 $config['get-some-rest.aliases']
             );
@@ -46,7 +45,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
         $this->app->bind('Peakfijn\GetSomeRest\Http\Url\Url', function ($app)
         {
             return new Url(
-                $app['Illuminate\Http\Request'],
+                $app['Illuminate\Http\Request']->segments(),
                 $app['Peakfijn\GetSomeRest\Http\Url\Resolvers\ResourceResolver']
             );
         });
