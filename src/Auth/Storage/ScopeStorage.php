@@ -1,9 +1,11 @@
 <?php namespace Peakfijn\GetSomeRest\Auth\Storage;
 
-use League\OAuth2\Server\AbstractServer;
+use Illuminate\Support\Facades\DB;
+use League\OAuth2\Server\Entity\ScopeEntity;
+use League\OAuth2\Server\Storage\AbstractStorage;
 use League\OAuth2\Server\Storage\ScopeInterface;
 
-class ScopeStorage implements ScopeInterface
+class ScopeStorage extends AbstractStorage implements ScopeInterface
 {
 
     /**
@@ -17,16 +19,17 @@ class ScopeStorage implements ScopeInterface
      */
     public function get($scope, $grantType = null, $clientId = null)
     {
-        // TODO: Implement get() method.
-    }
+        $result = DB::table('oauth_scopes')
+            ->where('id', $scope)
+            ->first();
 
-    /**
-     * Set the server
-     *
-     * @param \League\OAuth2\Server\AbstractServer $server
-     */
-    public function setServer(AbstractServer $server)
-    {
-        // TODO: Implement setServer() method.
+        if (!$result) {
+            return;
+        }
+
+        return (new ScopeEntity($this->server))->hydrate([
+            'id'            =>  $result->id,
+            'description'   =>  $result->description,
+        ]);
     }
 }
