@@ -79,6 +79,29 @@ return [
 
     /*
     |----------------------------------------------------------------------
+    | OAuth
+    |----------------------------------------------------------------------
+    |
+    | You can enable OAuth2 by setting the 'oauth' value to true.
+    | If OAuth2 is enabled, all the requests must be valid.
+    | You can use the default grant implementations by Get-Some-Rest or define
+    | your own implementation.
+    | You can also set which grants should be enabled.
+    |
+    | Right now the following Grants are supported:
+    | - password
+    */
+
+    'oauth' => true,
+
+    'grants' => [
+        'password' => '\Peakfijn\GetSomeRest\Auth\Grants\PasswordGrantImplementation'
+    ],
+
+    'enabledGrants' => ['password'],
+
+    /*
+    |----------------------------------------------------------------------
     | Resources - Generate Routes
     |----------------------------------------------------------------------
     |

@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class Api implements Middleware
 {
     /**
-     * The encoder factory that spawns the requeste encoder.
+     * The encoder factory that spawns the requested encoder.
      *
      * @var \Peakfijn\GetSomeRest\Encoders\EncoderFactory
      */
@@ -61,7 +61,9 @@ class Api implements Middleware
         $encoder = $this->encoderFactory->make($request);
 
         try {
-            $this->shield->resource->isValidRequest(false);
+            if(config('get-some-rest.oauth')) {
+                $this->shield->resource->isValidRequest(false);
+            }
             $response = $next($request);
         } catch (RestException $error) {
             if (!$error->shouldBeCaught()) {
