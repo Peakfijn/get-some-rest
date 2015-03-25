@@ -2,6 +2,14 @@
 
 use Illuminate\Routing\Console\MiddlewareMakeCommand;
 use Illuminate\Support\ServiceProvider;
+use Peakfijn\GetSomeRest\Auth\Guard;
+use Peakfijn\GetSomeRest\Auth\Shield;
+use Peakfijn\GetSomeRest\Auth\Storage\AccessTokenStorage;
+use Peakfijn\GetSomeRest\Auth\Storage\AuthCodeStorage;
+use Peakfijn\GetSomeRest\Auth\Storage\ClientStorage;
+use Peakfijn\GetSomeRest\Auth\Storage\RefreshTokenStorage;
+use Peakfijn\GetSomeRest\Auth\Storage\ScopeStorage;
+use Peakfijn\GetSomeRest\Auth\Storage\SessionStorage;
 use Peakfijn\GetSomeRest\Http\Request;
 use Peakfijn\GetSomeRest\Http\Url\Url;
 use Peakfijn\GetSomeRest\Http\Url\Resolvers\ResourceResolver;
@@ -48,6 +56,18 @@ class GetSomeRestServiceProvider extends ServiceProvider
             return new Url(
                 $app['Illuminate\Http\Request'],
                 $app['Peakfijn\GetSomeRest\Http\Url\Resolvers\ResourceResolver']
+            );
+        });
+
+        $this->app->singleton('Peakfijn\GetSomeRest\Auth\Shield', function ()
+        {
+            return new Shield(
+                new SessionStorage(),
+                new AccessTokenStorage(),
+                new RefreshTokenStorage(),
+                new ClientStorage(),
+                new ScopeStorage(),
+                new AuthCodeStorage()
             );
         });
     }
@@ -104,7 +124,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
      * @param  array                      $settings (default: [])
      * @return void
      */
-    protected function bindResourceRoutes($router, $controller, array $settings = array())
+    protected function bindResourceRoutes($router, $controller, array $settings = [])
     {
         $router->group($settings, function ($router) use ($controller)
         {
