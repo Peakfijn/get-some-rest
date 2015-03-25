@@ -1,19 +1,26 @@
 <?php namespace Peakfijn\GetSomeRest\Auth;
 
 use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\ResourceServer;
+use League\OAuth2\Server\Storage\AccessTokenInterface;
+use League\OAuth2\Server\Storage\AuthCodeInterface;
+use League\OAuth2\Server\Storage\ClientInterface;
+use League\OAuth2\Server\Storage\RefreshTokenInterface;
+use League\OAuth2\Server\Storage\ScopeInterface;
+use League\OAuth2\Server\Storage\SessionInterface;
 
-class Guard
+class Shield
 {
-    public function __construct()
+    public function __construct(
+        SessionInterface $sessionStorage,
+        AccessTokenInterface $accessTokenStorage,
+        RefreshTokenInterface $refreshTokenStorage,
+        ClientInterface $clientStorage,
+        ScopeInterface $scopeStorage,
+        AuthCodeInterface $authCodeStorage
+    )
     {
-        $sessionStorage = new Storage\SessionStorage();
-        $accessTokenStorage = new Storage\AccessTokenStorage();
-        $refreshTokenStorage = new Storage\RefreshTokenStorage();
-        $clientStorage = new Storage\ClientStorage();
-        $scopeStorage = new Storage\ScopeStorage();
-        $authCodeStorage = new Storage\AuthCodeStorage();
-
         $this->resource = new ResourceServer(
             $sessionStorage,
             $accessTokenStorage,
@@ -29,7 +36,7 @@ class Guard
             ->setScopeStorage($scopeStorage)
             ->setAuthCodeStorage($authCodeStorage);
 
-        $passwordGrant = new \League\OAuth2\Server\Grant\PasswordGrant();
+        $passwordGrant = new PasswordGrant();
         $passwordGrant->setVerifyCredentialsCallback(function ($username, $password) {
             $user = \App\User::whereEmail($username)->first();
             if($user && \Hash::check($password, $user->password)) {

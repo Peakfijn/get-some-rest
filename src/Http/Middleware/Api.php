@@ -7,6 +7,7 @@ use Illuminate\Contracts\Routing\Middleware;
 use Illuminate\Http\Response;
 use League\OAuth2\Server\Exception\OAuthException;
 use Peakfijn\GetSomeRest\Auth\Guard;
+use Peakfijn\GetSomeRest\Auth\Shield;
 use Peakfijn\GetSomeRest\Contracts\RestException;
 use Peakfijn\GetSomeRest\Encoders\EncoderFactory;
 use Peakfijn\GetSomeRest\Mutators\MutatorFactory;
@@ -33,16 +34,16 @@ class Api implements Middleware
      *
      * @param \Peakfijn\GetSomeRest\Encoders\EncoderFactory $encoderFactory
      * @param \Peakfijn\GetSomeRest\Mutators\MutatorFactory $mutatorFactory
-     * @param \Peakfijn\GetSomeRest\Auth\Guard              $guard
+     * @param \Peakfijn\GetSomeRest\Auth\Shield             $shield
      */
     public function __construct(
         EncoderFactory $encoderFactory,
         MutatorFactory $mutatorFactory,
-        Guard $guard
+        Shield $shield
     ) {
         $this->encoderFactory = $encoderFactory;
         $this->mutatorFactory = $mutatorFactory;
-        $this->guard = $guard;
+        $this->shield = $shield;
     }
 
     /**
@@ -60,7 +61,7 @@ class Api implements Middleware
         $encoder = $this->encoderFactory->make($request);
 
         try {
-            $this->guard->resource->isValidRequest(false);
+            $this->shield->resource->isValidRequest(false);
             $response = $next($request);
         } catch (RestException $error) {
             if (!$error->shouldBeCaught()) {
