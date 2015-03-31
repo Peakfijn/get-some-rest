@@ -63,7 +63,10 @@ class Api implements Middleware
         } catch (HttpException $error) {
             $response = response($error->getMessage(), $error->getStatusCode());
         } catch (ModelNotFoundException $error) {
-            $response = response('Could not find the requested "'. $error->getModel() .'".', 404);
+            $response = response(
+                'Could not find the requested "'. $error->getModel() .'".',
+                404
+            );
         }
 
         if ($response instanceof SymfonyResponse) {

@@ -1,7 +1,6 @@
 <?php namespace Peakfijn\GetSomeRest\Http;
 
 use Illuminate\Http\Response as IlluminateResponse;
-use Illuminate\Contracts\Support\Renderable;
 use Peakfijn\GetSomeRest\Contracts\Encoder;
 use Peakfijn\GetSomeRest\Contracts\Mutator;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
