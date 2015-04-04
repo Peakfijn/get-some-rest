@@ -16,6 +16,24 @@ return [
     'namespace' => '',
 
     /*
+    |----------------------------------------------------------------------
+    | Resources - Aliases
+    |----------------------------------------------------------------------
+    |
+    | When you have some external, or not singular & camelcased, models
+    | define an alias. For example:
+    | [
+    |   snake_cased => '\Project\Snake_cased'
+    |   notmine     => '\Externa\NotMine'
+    | ]
+    |
+    */
+
+    'resources' => [
+        'ding' => '\Coloni\Resource'
+    ],
+
+    /*
     |--------------------------------------------------------------------------
     | Encoders
     |--------------------------------------------------------------------------

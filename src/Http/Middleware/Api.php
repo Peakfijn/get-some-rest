@@ -3,6 +3,7 @@
 use Closure;
 use Illuminate\Contracts\Routing\Middleware;
 use Illuminate\Http\Request;
+use Peakfijn\GetSomeRest\Contracts\RestException;
 use Peakfijn\GetSomeRest\Factories\EncoderFactory;
 use Peakfijn\GetSomeRest\Factories\MutatorFactory;
 use Peakfijn\GetSomeRest\Http\Response as Response;
@@ -51,7 +52,21 @@ class Api implements Middleware
         $encoder = $this->encoders->makeFromRequest($request);
         $mutator = $this->mutators->makeFromRequest($request);
 
-        $response = $next($request);
+        try {
+            $response = $next($request);
+        } catch (RestException $error) {
+            if (!$error->shouldBeCaught()) {
+                throw $error;
+            }
+
+            $response = $error->getResponse();
+        } catch (HttpException $error) {
+             $response = response($error->getMessage(), $error->getStatusCode());
+        } catch (ModelNotFoundException $error) {
+            $response = response(
+                'Could not find the requested "'. $error->getModel() .'".', 404
+            );
+        }
 
         if ($response instanceof SymfonyResponse) {
             $response = Response::makeFromExisting($response);

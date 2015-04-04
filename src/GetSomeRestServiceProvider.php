@@ -3,6 +3,7 @@
 use Illuminate\Support\ServiceProvider;
 use Peakfijn\GetSomeRest\Factories\EncoderFactory;
 use Peakfijn\GetSomeRest\Factories\MutatorFactory;
+use Peakfijn\GetSomeRest\Factories\ResourceFactory;
 
 class GetSomeRestServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,11 @@ class GetSomeRestServiceProvider extends ServiceProvider
             $config->get('get-some-rest.mutators', []),
             $config->get('get-some-rest.default-mutator')
         );
+
+        $this->registerResourceFactory(
+            $config->get('get-some-rest.namespace'),
+            $config->get('get-some-rest.resources', [])
+        );
     }
 
     /**
@@ -35,7 +41,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         return [
             'Peakfijn\GetSomeRest\Factories\EncoderFactory',
-            'Peakfijn\GetSomeRest\Factories\MutatorFactory'
+            'Peakfijn\GetSomeRest\Factories\MutatorFactory',
+            'Peakfijn\GetSomeRest\Factories\ResourceFactory',
         ];
     }
 
@@ -98,7 +105,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
      * @param  string $default
      * @return void
      */
-    protected function registerMutatorFactory(array $mutators, $default = null) {
+    protected function registerMutatorFactory(array $mutators, $default = null)
+    {
         $this->app->singleton(
             '\Peakfijn\GetSomeRest\Factories\MutatorFactory',
             function ($app) use ($mutators, $default)
@@ -111,6 +119,34 @@ class GetSomeRestServiceProvider extends ServiceProvider
 
                 if (!empty($default)) {
                     $factory->defaults($default);
+                }
+
+                return $factory;
+            }
+        );
+    }
+
+    /**
+     * Register the resource factory to the container, as singleton.
+     *
+     * @param  string $namespace
+     * @param  array  $resources
+     * @return void
+     */
+    protected function registerResourceFactory($namespace, array $resources = array())
+    {
+        $this->app->singleton(
+            '\Peakfijn\GetSomeRest\Factories\ResourceFactory',
+            function ($app) use ($namespace, $resources)
+            {
+                $factory = new ResourceFactory(
+                    $app,
+                    $app->make('\Illuminate\Support\Str'),
+                    $namespace
+                );
+
+                foreach ($resources as $name => $resource) {
+                    $factory->register($name, $resource);
                 }
 
                 return $factory;
