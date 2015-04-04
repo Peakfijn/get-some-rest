@@ -63,7 +63,7 @@ class Api implements Middleware
         } catch (HttpException $error) {
              $response = response($error->getMessage(), $error->getStatusCode());
         } catch (ModelNotFoundException $error) {
-            $response = response(
+            $response = new Response(
                 'Could not find the requested "'. $error->getModel() .'".', 404
             );
         }
