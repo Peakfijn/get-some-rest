@@ -23,7 +23,7 @@ interface Factory
      * Register an instance to the factory.
      *
      * @param  string $name
-     * @param  mixed  $encoder
+     * @param  mixed  $value
      * @return void
      */
     public function register($name, $value);

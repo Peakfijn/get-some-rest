@@ -49,12 +49,12 @@ class Factory implements FactoryContract
      * Register an instance to the factory.
      *
      * @param  string $name
-     * @param  mixed  $encoder
-     * @return void
+     * @param  mixed  $value
+     * @return object
      */
     public function register($name, $value)
     {
-        $this->instances[strtolower($name)] = $value;
+        return $this->instances[strtolower($name)] = $value;
     }
 
     /**
