@@ -1,10 +1,8 @@
 <?php namespace Peakfijn\GetSomeRest;
 
-use Illuminate\Routing\Console\MiddlewareMakeCommand;
 use Illuminate\Support\ServiceProvider;
-use Peakfijn\GetSomeRest\Http\Request;
-use Peakfijn\GetSomeRest\Http\Url\Url;
-use Peakfijn\GetSomeRest\Http\Url\Resolvers\ResourceResolver;
+use Peakfijn\GetSomeRest\Factories\EncoderFactory;
+use Peakfijn\GetSomeRest\Factories\MutatorFactory;
 
 class GetSomeRestServiceProvider extends ServiceProvider
 {
@@ -15,41 +13,17 @@ class GetSomeRestServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('Peakfijn\GetSomeRest\Http\Request', function ($app)
-        {
-            $origin = $app['request'];
+        $config = $this->app->make('config');
 
-            $request = new Request(
-                $origin->query->all(),
-                $origin->request->all(),
-                $origin->attributes->all(),
-                $origin->cookies->all(),
-                $origin->files->all(),
-                $origin->server->all(),
-                $origin->content
-            );
+        $this->registerEncoderFactory(
+            $config->get('get-some-rest.encoders', []),
+            $config->get('get-some-rest.default-encoder')
+        );
 
-            return $request;
-        });
-
-        $this->app->bind('Peakfijn\GetSomeRest\Http\Url\Resolvers\ResourceResolver', function ($app)
-        {
-            $config = $app['config'];
-
-            return new ResourceResolver(
-                $config['get-some-rest.namespace'],
-                $config['get-some-rest.aliases'],
-                $config['get-some-rest.plural']
-            );
-        });
-
-        $this->app->bind('Peakfijn\GetSomeRest\Http\Url\Url', function ($app)
-        {
-            return new Url(
-                $app['Illuminate\Http\Request']->segments(),
-                $app['Peakfijn\GetSomeRest\Http\Url\Resolvers\ResourceResolver']
-            );
-        });
+        $this->registerMutatorFactory(
+            $config->get('get-some-rest.mutators', []),
+            $config->get('get-some-rest.default-mutator')
+        );
     }
 
     /**
@@ -60,9 +34,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            'Peakfijn\GetSomeRest\Http\Request',
-            'Peakfijn\GetSomeRest\Http\Url\Url',
-            'Peakfijn\GetSomeRest\Http\Url\Resolvers\ResourceResolver'
+            'Peakfijn\GetSomeRest\Factories\EncoderFactory',
+            'Peakfijn\GetSomeRest\Factories\MutatorFactory'
         ];
     }
 
@@ -73,7 +46,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $config = $this->app['config'];
+        $config = $this->app->make('config');
         $configFile = __DIR__ .'/config/config.php';
 
         $this->mergeConfigFrom($configFile, 'get-some-rest');
@@ -81,17 +54,72 @@ class GetSomeRestServiceProvider extends ServiceProvider
             $configFile => config_path('get-some-rest.php')
         ]);
 
-        if ($config->get('get-some-rest.generate-routes', false)) {
-            $this->bindResourceRoutes(
-                $this->app['router'],
-                $config->get('get-some-rest.route-controller'),
-                $config->get('get-some-rest.route-settings')
-            );
-        }
+        // if ($config->get('get-some-rest.generate-routes', false)) {
+        //     $this->bindResourceRoutes(
+        //         $this->app->make('router'),
+        //         $config->get('get-some-rest.route-controller'),
+        //         $config->get('get-some-rest.route-settings')
+        //     );
+        // }
     }
 
     /**
-     * Register the resource route, that covers all resource actions.
+     * Register the encoder factory to the container, as singleton.
+     *
+     * @param  array  $encoders
+     * @param  string $default
+     * @return void
+     */
+    protected function registerEncoderFactory(array $encoders, $default = null)
+    {
+        $this->app->singleton(
+            '\Peakfijn\GetSomeRest\Factories\EncoderFactory',
+            function ($app) use ($encoders, $default)
+            {
+                $factory = new EncoderFactory();
+
+                foreach ($encoders as $name => $encoder) {
+                    $factory->register($name, $app->make($encoder));
+                }
+
+                if (!empty($default)) {
+                    $factory->defaults($default);
+                }
+
+                return $factory;
+            }
+        );
+    }
+
+    /**
+     * Register the mutator factory to the container, as singleton.
+     *
+     * @param  array  $mutators
+     * @param  string $default
+     * @return void
+     */
+    protected function registerMutatorFactory(array $mutators, $default = null) {
+        $this->app->singleton(
+            '\Peakfijn\GetSomeRest\Factories\MutatorFactory',
+            function ($app) use ($mutators, $default)
+            {
+                $factory = new MutatorFactory();
+
+                foreach ($mutators as $name => $mutator) {
+                    $factory->register($name, $app->make($mutator));
+                }
+
+                if (!empty($default)) {
+                    $factory->defaults($default);
+                }
+
+                return $factory;
+            }
+        );
+    }
+
+    /**
+     * Bind the resource route, that covers all resource actions.
      *
      * @param  \Illuminate\Routing\Router $router
      * @param  string                     $controller
@@ -102,11 +130,11 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         $router->group($settings, function ($router) use ($controller)
         {
-            $router->get('/{resource}',                $controller .'@index');
-            $router->post('/{resource}',               $controller .'@store');
-            $router->get('/{resource}/{id}/{scopes?}', $controller .'@show')->where('scopes', '(.*)');
-            $router->put('/{resource}/{id}',           $controller .'@update');
-            $router->delete('/{resource}/{id}',        $controller .'@destroy');
+            $router->get('/{resource}',         $controller .'@index');
+            $router->post('/{resource}',        $controller .'@store');
+            $router->get('/{resource}/{id}',    $controller .'@show');
+            $router->put('/{resource}/{id}',    $controller .'@update');
+            $router->delete('/{resource}/{id}', $controller .'@destroy');
         });
     }
 }

@@ -1,29 +1,16 @@
 <?php namespace Peakfijn\GetSomeRest\Contracts;
 
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Http\Request;
 
-abstract class Mutator
+interface Mutator
 {
     /**
-     * Mutate the data.
+     * Mutate the data, returning an array that represents the response.
      *
      * @param  \Illuminate\Http\Request $request
      * @param  integer                  $status
      * @param  mixed                    $data
-     * @return mixed
+     * @return array
      */
-    abstract public function mutate(Request $request, $status, $data);
-
-    /**
-     * Check if the status code is an error.
-     *
-     * @param  integer  $status
-     * @return boolean
-     */
-    public function isErrorStatus($status)
-    {
-        $status = (string) $status;
-
-        return (int) $status[0] >= 4;
-    }
+    public function mutate(Request $request, $status, $data);
 }

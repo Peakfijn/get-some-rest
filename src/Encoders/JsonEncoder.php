@@ -1,16 +1,14 @@
 <?php namespace Peakfijn\GetSomeRest\Encoders;
 
-use Symfony\Component\HttpFoundation\Request;
-use Peakfijn\GetSomeRest\Contracts\Encoder;
+use Illuminate\Http\Request;
 
-class JsonEncoder implements Encoder
+class JsonEncoder extends Encoder
 {
     /**
-     * Modify the provided response, so the content will be encoded in the
-     * desired encoding.
+     * Encode the data, and return the encoded string.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  mixed                    $data
+     * @param  array                    $data
      * @return string
      */
     public function encode(Request $request, $data)

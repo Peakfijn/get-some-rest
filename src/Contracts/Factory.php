@@ -1,15 +1,38 @@
 <?php namespace Peakfijn\GetSomeRest\Contracts;
 
-use Illuminate\Http\Request;
-
 interface Factory
 {
     /**
-     * Create an instance, for which the factory was designed for.
-     * You should provide a request so the factory knows what to spawn.
+     * Get a new instance from the factory, by name.
+     * If nothing was found, it returns the default instance.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return mixed
+     * @param  string $name
+     * @return object|null
      */
-    public function make(Request $request);
+    public function make($name);
+
+    /**
+     * Check if the factory has a registered instance for the provided name.
+     *
+     * @param  string $name
+     * @return boolean
+     */
+    public function contains($name);
+
+    /**
+     * Register an instance to the factory.
+     *
+     * @param  string $name
+     * @param  mixed  $encoder
+     * @return void
+     */
+    public function register($name, $value);
+
+    /**
+     * Set a registered instance as default.
+     *
+     * @param  string $name
+     * @return object|null
+     */
+    public function defaults($name);
 }

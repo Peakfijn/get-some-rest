@@ -24,14 +24,14 @@ abstract class AbstractTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Call and return an internal, private or protected, method from an object.
+     * Call and return a protected, private or protected, method from an object.
      *
      * @param  object $object
      * @param  string $method
      * @param  array  $args (default: [])
      * @return mixed
      */
-    public function callInternalMethod($object, $method, array $args = array())
+    public function callProtectedMethod($object, $method, array $args = array())
     {
         $reflection = new ReflectionMethod(get_class($object), $method);
         $reflection->setAccessible(true);
@@ -44,13 +44,13 @@ abstract class AbstractTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Get an internal, private or protected, property from an object.
+     * Get a protected, private or protected, property from an object.
      *
      * @param  object $object
      * @param  string $property
      * @return mixed
      */
-    public function getInternalProperty($object, $property)
+    public function getProtectedProperty($object, $property)
     {
         $reflection = new ReflectionProperty(get_class($object), $property);
         $reflection->setAccessible(true);
@@ -59,14 +59,14 @@ abstract class AbstractTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Set the value of an internal, private or protected, property from an object.
+     * Set the value of a protected, private or protected, property from an object.
      *
      * @param  object $object
      * @param  string $property
      * @param  mixed  $value
      * @return void
      */
-    public function setInternalProperty($object, $property, $value)
+    public function setProtectedProperty($object, $property, $value)
     {
         $reflection = new ReflectionProperty(get_class($object), $property);
         $reflection->setAccessible(true);

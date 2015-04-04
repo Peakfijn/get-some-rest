@@ -1,6 +1,6 @@
 <?php namespace Peakfijn\GetSomeRest\Contracts;
 
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Http\Request;
 
 interface Encoder
 {

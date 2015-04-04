@@ -1,27 +1,13 @@
 <?php namespace Peakfijn\GetSomeRest\Http;
 
 use Illuminate\Http\Response as IlluminateResponse;
-use Peakfijn\GetSomeRest\Contracts\Encoder;
-use Peakfijn\GetSomeRest\Contracts\Mutator;
+use Peakfijn\GetSomeRest\Contracts\Encoder as EncoderContract;
+use Peakfijn\GetSomeRest\Contracts\Mutator as MutatorContract;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class Response extends SymfonyResponse
 {
-    /**
-     * The mutator instance.
-     *
-     * @var \Peakfijn\GetSomeRest\Contracts\Mutator
-     */
-    protected $mutator;
-
-    /**
-     * The encoder instance.
-     *
-     * @var \Peakfijn\GetSomeRest\Contracts\Encoder
-     */
-    protected $encoder;
-
     /**
      * The original content of the response.
      *
@@ -36,8 +22,11 @@ class Response extends SymfonyResponse
      * @param integer $status
      * @param array   $headers
      */
-    public function __construct($content = '', $status = 200, $headers = array())
-    {
+    public function __construct(
+        $content = '',
+        $status = 200,
+        $headers = array()
+    ) {
         $this->setOriginalContent($content);
 
         return parent::__construct('', $status, $headers);
@@ -74,7 +63,7 @@ class Response extends SymfonyResponse
      * @param  \Peakfijn\GetSomeRest\Contracts\Encoder $encoder
      * @return \Peakfijn\GetSomeRest\Http\Response
      */
-    public function setEncoder(Encoder $encoder)
+    public function setEncoder(EncoderContract $encoder)
     {
         $this->encoder = $encoder;
 
@@ -97,7 +86,7 @@ class Response extends SymfonyResponse
      * @param  \Peakfijn\GetSomeRest\Contracts\Mutator $mutator
      * @return \Peakfijn\GetSomeRest\Http\Response
      */
-    public function setMutator(Mutator $mutator)
+    public function setMutator(MutatorContract $mutator)
     {
         $this->mutator = $mutator;
 
@@ -121,18 +110,20 @@ class Response extends SymfonyResponse
      * compliant with RFC 2616. Most of the changes are based on
      * the Request that is "associated" with this Response.
      *
-     * @param Request $request A Request instance
-     *
-     * @return Response The current response.
+     * @param  \Illuminate\Http\Request $request A Request instance
+     * @return \Peakfijn\GetSomeRest\Http\Response
      */
     public function prepare(SymfonyRequest $request)
     {
-        $content = $this->getOriginalContent();
-        $content = $this->getMutator()->mutate($request, $this->getStatusCode(), $content);
-        $content = $this->getEncoder()->encode($request, $content);
+        $mutator = $this->getMutator();
+        $encoder = $this->getEncoder();
 
-        $this->headers->set('Content-Type', $this->getEncoder()->getContentType());
+        $content = $this->getOriginalContent();
+        $content = $mutator->mutate($request, $this->getStatusCode(), $content);
+        $content = $encoder->encode($request, $content);
+
         $this->setContent($content);
+        $this->header('Content-Type', $encoder->getContentType(), true);
 
         return parent::prepare($request);
     }
@@ -145,6 +136,10 @@ class Response extends SymfonyResponse
      */
     public static function makeFromExisting(SymfonyResponse $response)
     {
+        if ($response instanceof self) {
+            return $response;
+        }
+
         $content = $response->getContent();
 
         if (method_exists($response, 'getOriginalContent')) {
