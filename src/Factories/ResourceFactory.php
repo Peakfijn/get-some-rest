@@ -61,11 +61,11 @@ class ResourceFactory implements FactoryContract
      */
     public function make($name)
     {
-        $class = $this->getClassName($name);
-
-        if (!$this->contains($class) && !$this->resolve($class)) {
+        if (!$this->contains($name) && !$this->resolve($name)) {
             throw new ResourceUnknownException($name);
         }
+
+        $class = $this->getClassName($name);
 
         return $this->container->make($this->resources[$class]);
     }
