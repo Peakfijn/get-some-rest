@@ -23,7 +23,7 @@ abstract class MutatorTest extends AbstractUnitTest
      */
     public function getMockedArrayable($arrayable = null)
     {
-        $mock = Mockery::mock('\Illuminate\Contracts\Arrayable');
+        $mock = Mockery::mock('\Illuminate\Contracts\Support\Arrayable');
 
         $mock->shouldReceive('toArray')
             ->andReturn($arrayable);

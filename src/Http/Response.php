@@ -16,6 +16,20 @@ class Response extends SymfonyResponse
     protected $original;
 
     /**
+     * The encoder to use when finalizing the response.
+     *
+     * @var \Peakfijn\GetSomeRest\Contracts\Encoder
+     */
+    protected $encoder;
+
+    /**
+     * The mutator to use when finalizing the response.
+     *
+     * @var \Peakfijn\GetSomeRest\Contracts\Mutator
+     */
+    protected $mutator;
+
+    /**
      * Create a new response, and set the content as original content.
      *
      * @param string  $content
@@ -110,7 +124,7 @@ class Response extends SymfonyResponse
      * compliant with RFC 2616. Most of the changes are based on
      * the Request that is "associated" with this Response.
      *
-     * @param  \Illuminate\Http\Request $request A Request instance
+     * @param  \Symfony\Component\HttpFoundation\Request $request
      * @return \Peakfijn\GetSomeRest\Http\Response
      */
     public function prepare(SymfonyRequest $request)
@@ -123,7 +137,7 @@ class Response extends SymfonyResponse
         $content = $encoder->encode($request, $content);
 
         $this->setContent($content);
-        $this->header('Content-Type', $encoder->getContentType(), true);
+        $this->headers->set('Content-Type', $encoder->getContentType());
 
         return parent::prepare($request);
     }

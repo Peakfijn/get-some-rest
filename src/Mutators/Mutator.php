@@ -1,6 +1,6 @@
 <?php namespace Peakfijn\GetSomeRest\Mutators;
 
-use Illuminate\Contracts\Arrayable;
+use Illuminate\Contracts\Support\Arrayable;
 use Peakfijn\GetSomeRest\Contracts\Mutator as MutatorContract;
 
 abstract class Mutator implements MutatorContract
