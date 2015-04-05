@@ -18,12 +18,12 @@ class GetSomeRestServiceProvider extends ServiceProvider
 
         $this->registerEncoderFactory(
             $config->get('get-some-rest.encoders', []),
-            $config->get('get-some-rest.default-encoder')
+            $config->get('get-some-rest.default_encoder')
         );
 
         $this->registerMutatorFactory(
             $config->get('get-some-rest.mutators', []),
-            $config->get('get-some-rest.default-mutator')
+            $config->get('get-some-rest.default_mutator')
         );
 
         $this->registerResourceFactory(
@@ -53,7 +53,6 @@ class GetSomeRestServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $config = $this->app->make('config');
         $configFile = __DIR__ .'/config/config.php';
 
         $this->mergeConfigFrom($configFile, 'get-some-rest');
@@ -61,13 +60,15 @@ class GetSomeRestServiceProvider extends ServiceProvider
             $configFile => config_path('get-some-rest.php')
         ]);
 
-        // if ($config->get('get-some-rest.generate-routes', false)) {
-        //     $this->bindResourceRoutes(
-        //         $this->app->make('router'),
-        //         $config->get('get-some-rest.route-controller'),
-        //         $config->get('get-some-rest.route-settings')
-        //     );
-        // }
+        $config = $this->app->make('config');
+
+        if ($config->get('get-some-rest.generate_routes', false)) {
+            $this->bindResourceRoutes(
+                $this->app->make('router'),
+                $config->get('get-some-rest.route_controller'),
+                $config->get('get-some-rest.route_settings')
+            );
+        }
     }
 
     /**
