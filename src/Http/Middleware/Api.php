@@ -2,6 +2,7 @@
 
 use Closure;
 use Illuminate\Contracts\Routing\Middleware;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Peakfijn\GetSomeRest\Contracts\RestException;
 use Peakfijn\GetSomeRest\Factories\EncoderFactory;
@@ -64,7 +65,7 @@ class Api implements Middleware
              $response = response($error->getMessage(), $error->getStatusCode());
         } catch (ModelNotFoundException $error) {
             $response = new Response(
-                'Could not find the requested "'. $error->getModel() .'".', 404
+                'Could not find the requested "'. $error->getModel() .'" instance.', 404
             );
         }
 
