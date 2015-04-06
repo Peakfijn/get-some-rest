@@ -49,7 +49,7 @@ class Factory implements FactoryContract
      * Register an instance to the factory.
      *
      * @param  string $name
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return object
      */
     public function register($name, $value)

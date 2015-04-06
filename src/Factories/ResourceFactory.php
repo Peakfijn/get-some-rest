@@ -41,8 +41,8 @@ class ResourceFactory implements FactoryContract
      * Create a new instance with the string helper.
      *
      * @param \Illuminate\Contracts\Container\Container $container
-     * @param \Illuminate\Support\Str                   $str
-     * @param string                                    $namespace
+     * @param \Illuminate\Support\Str $str
+     * @param string $namespace
      */
     public function __construct(Container $container, Str $str, $namespace)
     {
@@ -86,12 +86,12 @@ class ResourceFactory implements FactoryContract
      * It only stores the class name.
      *
      * @param  string $name
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return object
      */
     public function register($name, $value)
     {
-        $value = is_object($value)? get_class($value): $value;
+        $value = is_object($value) ? get_class($value) : $value;
 
         return $this->resources[$this->getClassName($name)] = trim($value, '\\');
     }
@@ -122,7 +122,7 @@ class ResourceFactory implements FactoryContract
         $name = $this->getClassName($name);
 
         try {
-            $instance = $this->container->make($this->namespace .'\\'. $name);
+            $instance = $this->container->make($this->namespace . '\\' . $name);
             $this->register($name, $instance);
         } catch (ReflectionException $e) {
             return false;

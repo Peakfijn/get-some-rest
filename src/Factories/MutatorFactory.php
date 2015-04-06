@@ -11,16 +11,16 @@ class MutatorFactory extends Factory
      *
      * @throws \RuntimeException if the value is not a Mutator
      * @param  string $name
-     * @param  mixed  $encoder
-     * @return void
+     * @param  mixed $encoder
+     * @return object|null
      */
     public function register($name, $value)
     {
-        if ($value instanceof MutatorContract) {
-            return parent::register($name, $value);
+        if (!$value instanceof MutatorContract) {
+            throw new RuntimeException('The instance tried to register is not a Mutator.');
         }
 
-        throw new RuntimeException('The instance tried to register is not a Mutator.');
+        return parent::register($name, $value);
     }
 
     /**

@@ -3,12 +3,12 @@
 use Closure;
 use Illuminate\Contracts\Routing\Middleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-use Peakfijn\GetSomeRest\Contracts\RestException;
+use Peakfijn\GetSomeRest\Contracts\RestException as RestExceptionContract;
 use Peakfijn\GetSomeRest\Factories\EncoderFactory;
 use Peakfijn\GetSomeRest\Factories\MutatorFactory;
 use Peakfijn\GetSomeRest\Http\Response as Response;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface as HttpExceptionContract;
 
 class Api implements Middleware
 {
@@ -45,7 +45,7 @@ class Api implements Middleware
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \Closure                 $next
+     * @param  \Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -55,17 +55,21 @@ class Api implements Middleware
 
         try {
             $response = $next($request);
-        } catch (RestException $error) {
+        } catch (RestExceptionContract $error) {
             if (!$error->shouldBeCaught()) {
                 throw $error;
             }
 
             $response = $error->getResponse();
-        } catch (HttpException $error) {
-             $response = response($error->getMessage(), $error->getStatusCode());
+        } catch (HttpExceptionContract $error) {
+            $response = new Response(
+                $error->getMessage(),
+                $error->getStatusCode()
+            );
         } catch (ModelNotFoundException $error) {
             $response = new Response(
-                'Could not find the requested "'. $error->getModel() .'" instance.', 404
+                'Could not find "' . $error->getModel() . '" with the requested id.',
+                404
             );
         }
 

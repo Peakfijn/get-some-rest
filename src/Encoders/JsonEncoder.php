@@ -8,12 +8,12 @@ class JsonEncoder extends Encoder
      * Encode the data, and return the encoded string.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  array                    $data
+     * @param  array $data
      * @return string
      */
     public function encode(Request $request, $data)
     {
-        return json_encode((array) $data);
+        return json_encode((array)$data);
     }
 
     /**

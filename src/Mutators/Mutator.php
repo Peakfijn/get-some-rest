@@ -17,19 +17,19 @@ abstract class Mutator implements MutatorContract
             return $data->toArray();
         }
 
-        return (array) $data;
+        return (array)$data;
     }
 
     /**
      * Check if the status code is an error.
      *
-     * @param  integer  $status
+     * @param  integer $status
      * @return boolean
      */
     public function isErrorStatus($status)
     {
-        $status = (string) $status;
+        $status = (string)$status;
 
-        return (int) $status[0] >= 4;
+        return (int)$status[0] >= 4;
     }
 }

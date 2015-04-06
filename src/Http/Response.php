@@ -32,9 +32,9 @@ class Response extends SymfonyResponse
     /**
      * Create a new response, and set the content as original content.
      *
-     * @param string  $content
+     * @param string $content
      * @param integer $status
-     * @param array   $headers
+     * @param array $headers
      */
     public function __construct(
         $content = '',

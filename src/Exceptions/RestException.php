@@ -15,6 +15,7 @@ class RestException extends HttpException implements RestExceptionContract
     {
         return true;
     }
+
     /**
      * Get a response, from this exception.
      *

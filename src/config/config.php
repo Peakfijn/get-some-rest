@@ -20,11 +20,11 @@ return [
     | Resources Aliases
     |----------------------------------------------------------------------
     |
-    | When you have some external, or not singular & camelcased, models
+    | When you have some external, or not singular & camel cased, models
     | define an alias. For example:
     | [
     |   snake_cased => '\Project\Snake_cased'
-    |   notmine     => '\Externa\NotMine'
+    |   not-mine    => '\External\NotMine'
     | ]
     |
     */
@@ -44,7 +44,7 @@ return [
     |
     | The use of this is recommended for development, since you only have to
     | define and setup your resources. For production you have to take security
-    | in account, else your API MIGHT be unsecure.
+    | in account, else your API MIGHT be not secured.
     |
     */
 
@@ -87,7 +87,7 @@ return [
     |
     | An API can have multiple front-end applications. Not all of them can talk
     | the same language. Therefore encoders are used to get the data into a
-    | specific format. Here you can add your own encoders, or replace existings.
+    | specific format. Here you can add your own encoders, or replace existing.
     |
     | The name should be equal to the general known file extension.
     |
@@ -115,7 +115,7 @@ return [
     |
     | APIs comes into different shapes and sizes. One simply returns an array,
     | others like to add some information about the collection. A mutator is
-    | used to achief these differences. A single mutator mutates, an array or
+    | used to achieve these differences. A single mutator mutates, an array or
     | object, to the desired response format. Here you can implement your own.
     |
     */

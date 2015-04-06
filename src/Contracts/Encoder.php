@@ -8,7 +8,7 @@ interface Encoder
      * Encode the data, and return the encoded string.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  mixed                    $data
+     * @param  mixed $data
      * @return string
      */
     public function encode(Request $request, $data);

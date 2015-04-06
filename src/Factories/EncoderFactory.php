@@ -11,16 +11,16 @@ class EncoderFactory extends Factory
      *
      * @throws \RuntimeException if the value is not an Encoder
      * @param  string $name
-     * @param  mixed  $encoder
-     * @return void
+     * @param  mixed $encoder
+     * @return object|null
      */
     public function register($name, $value)
     {
-        if ($value instanceof EncoderContract) {
-            return parent::register($name, $value);
+        if (!$value instanceof EncoderContract) {
+            throw new RuntimeException('The instance tried to register is not an Encoder.');
         }
 
-        throw new RuntimeException('The instance tried to register is not an Encoder.');
+        return parent::register($name, $value);
     }
 
     /**
@@ -33,7 +33,7 @@ class EncoderFactory extends Factory
      *   - application/xml             => xml
      *   - application/vnd.api+json    => json
      *   - application/vnd.api.v1+json => json
-     *   - application/vnd.api+yaml    => yaml
+     *   - application/vnd.api+yml     => yml
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Peakfijn\GetSomeRest\Contracts\Mutator|null

@@ -53,7 +53,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $configFile = __DIR__ .'/config/config.php';
+        $configFile = __DIR__ . '/config/config.php';
 
         $this->mergeConfigFrom($configFile, 'get-some-rest');
         $this->publishes([
@@ -74,7 +74,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     /**
      * Register the encoder factory to the container, as singleton.
      *
-     * @param  array  $encoders
+     * @param  array $encoders
      * @param  string $default
      * @return void
      */
@@ -82,8 +82,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             '\Peakfijn\GetSomeRest\Factories\EncoderFactory',
-            function ($app) use ($encoders, $default)
-            {
+            function ($app) use ($encoders, $default) {
                 $factory = new EncoderFactory();
 
                 foreach ($encoders as $name => $encoder) {
@@ -102,7 +101,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     /**
      * Register the mutator factory to the container, as singleton.
      *
-     * @param  array  $mutators
+     * @param  array $mutators
      * @param  string $default
      * @return void
      */
@@ -110,8 +109,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             '\Peakfijn\GetSomeRest\Factories\MutatorFactory',
-            function ($app) use ($mutators, $default)
-            {
+            function ($app) use ($mutators, $default) {
                 $factory = new MutatorFactory();
 
                 foreach ($mutators as $name => $mutator) {
@@ -131,15 +129,14 @@ class GetSomeRestServiceProvider extends ServiceProvider
      * Register the resource factory to the container, as singleton.
      *
      * @param  string $namespace
-     * @param  array  $resources
+     * @param  array $resources
      * @return void
      */
     protected function registerResourceFactory($namespace, array $resources = array())
     {
         $this->app->singleton(
             '\Peakfijn\GetSomeRest\Factories\ResourceFactory',
-            function ($app) use ($namespace, $resources)
-            {
+            function ($app) use ($namespace, $resources) {
                 $factory = new ResourceFactory(
                     $app,
                     $app->make('\Illuminate\Support\Str'),
@@ -159,19 +156,21 @@ class GetSomeRestServiceProvider extends ServiceProvider
      * Bind the resource route, that covers all resource actions.
      *
      * @param  \Illuminate\Routing\Router $router
-     * @param  string                     $controller
-     * @param  array                      $settings (default: [])
+     * @param  string $controller
+     * @param  array $settings (default: [])
      * @return void
      */
-    protected function bindResourceRoutes($router, $controller, array $settings = array())
-    {
-        $router->group($settings, function ($router) use ($controller)
-        {
-            $router->get('/{resource}',         $controller .'@index');
-            $router->post('/{resource}',        $controller .'@store');
-            $router->get('/{resource}/{id}',    $controller .'@show');
-            $router->put('/{resource}/{id}',    $controller .'@update');
-            $router->delete('/{resource}/{id}', $controller .'@destroy');
+    protected function bindResourceRoutes(
+        $router,
+        $controller,
+        array $settings = array()
+    ) {
+        $router->group($settings, function ($router) use ($controller) {
+            $router->get('/{resource}', $controller . '@index');
+            $router->post('/{resource}', $controller . '@store');
+            $router->get('/{resource}/{id}', $controller . '@show');
+            $router->put('/{resource}/{id}', $controller . '@update');
+            $router->delete('/{resource}/{id}', $controller . '@destroy');
         });
     }
 }
