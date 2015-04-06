@@ -3,13 +3,14 @@
 use RuntimeException;
 use Illuminate\Http\Request;
 use Peakfijn\GetSomeRest\Contracts\Mutator as MutatorContract;
+use Peakfijn\GetSomeRest\Contracts\MutatorFactory as MutatorFactoryContract;
 
-class MutatorFactory extends Factory
+class MutatorFactory extends Factory implements MutatorFactoryContract
 {
     /**
      * Register an instance to the factory.
      *
-     * @throws \RuntimeException if the value is not a Mutator
+     * @throws \RuntimeException
      * @param  string $name
      * @param  mixed $encoder
      * @return object|null

@@ -4,6 +4,7 @@ use Illuminate\Support\ServiceProvider;
 use Peakfijn\GetSomeRest\Factories\EncoderFactory;
 use Peakfijn\GetSomeRest\Factories\MutatorFactory;
 use Peakfijn\GetSomeRest\Factories\ResourceFactory;
+use Peakfijn\GetSomeRest\Rest\Url;
 
 class GetSomeRestServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
             $config->get('get-some-rest.namespace'),
             $config->get('get-some-rest.resources', [])
         );
+
+        $this->registerUrl();
     }
 
     /**
@@ -43,6 +46,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
             'Peakfijn\GetSomeRest\Factories\EncoderFactory',
             'Peakfijn\GetSomeRest\Factories\MutatorFactory',
             'Peakfijn\GetSomeRest\Factories\ResourceFactory',
+            'Peakfijn\GetSomeRest\Rest\Url'
         ];
     }
 
@@ -96,6 +100,11 @@ class GetSomeRestServiceProvider extends ServiceProvider
                 return $factory;
             }
         );
+
+        $this->app->bindIf(
+            '\Peakfijn\GetSomeRest\Contracts\EncoderFactory',
+            '\Peakfijn\GetSomeRest\Factories\EncoderFactory'
+        );
     }
 
     /**
@@ -122,6 +131,11 @@ class GetSomeRestServiceProvider extends ServiceProvider
 
                 return $factory;
             }
+        );
+
+        $this->app->bindIf(
+            '\Peakfijn\GetSomeRest\Contracts\MutatorFactory',
+            '\Peakfijn\GetSomeRest\Factories\MutatorFactory'
         );
     }
 
@@ -150,6 +164,33 @@ class GetSomeRestServiceProvider extends ServiceProvider
                 return $factory;
             }
         );
+
+        $this->app->bindIf(
+            '\Peakfijn\GetSomeRest\Contracts\ResourceFactory',
+            '\Peakfijn\GetSomeRest\Factories\ResourceFactory'
+        );
+    }
+
+    /**
+     * Register the rest url.
+     *
+     * @return void
+     */
+    protected function registerUrl()
+    {
+        $this->app->bind(
+            '\Peakfijn\GetSomeRest\Rest\Url',
+            function ($app) {
+                $resources = $app->make('\Peakfijn\GetSomeRest\Contracts\ResourceFactory');
+
+                return new Url($resources);
+            }
+        );
+
+        $this->app->bindIf(
+            '\Peakfijn\GetSomeRest\Contracts\Url',
+            '\Peakfijn\GetSomeRest\Rest\Url'
+        );
     }
 
     /**
@@ -171,6 +212,9 @@ class GetSomeRestServiceProvider extends ServiceProvider
             $router->get('/{resource}/{id}', $controller . '@show');
             $router->put('/{resource}/{id}', $controller . '@update');
             $router->delete('/{resource}/{id}', $controller . '@destroy');
+
+            // $router->get('/{resource}/{id}/{relation}');
+            // $router->get('/{resource}/{id}/{relation}/{id}');
         });
     }
 }

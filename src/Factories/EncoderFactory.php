@@ -3,13 +3,14 @@
 use RuntimeException;
 use Illuminate\Http\Request;
 use Peakfijn\GetSomeRest\Contracts\Encoder as EncoderContract;
+use Peakfijn\GetSomeRest\Contracts\EncoderFactory as EncoderFactoryContract;
 
-class EncoderFactory extends Factory
+class EncoderFactory extends Factory implements EncoderFactoryContract
 {
     /**
      * Register an instance to the factory.
      *
-     * @throws \RuntimeException if the value is not an Encoder
+     * @throws \RuntimeException
      * @param  string $name
      * @param  mixed $encoder
      * @return object|null

@@ -6,8 +6,9 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
 use Peakfijn\GetSomeRest\Exceptions\ResourceUnknownException;
 use Peakfijn\GetSomeRest\Contracts\Factory as FactoryContract;
+use Peakfijn\GetSomeRest\Contracts\ResourceFactory as ResourceFactoryContract;
 
-class ResourceFactory implements FactoryContract
+class ResourceFactory implements FactoryContract, ResourceFactoryContract
 {
     /**
      * The resource class paths, based on class name.
@@ -56,6 +57,7 @@ class ResourceFactory implements FactoryContract
      * If nothing was found, it tries to resolve the name.
      * When also resolving fails, it throws an exception.
      *
+     * @throws \Peakfijn\GetSomeRest\Exceptions\ResourceUnknownException
      * @param  string $name
      * @return object|null
      */
@@ -100,7 +102,7 @@ class ResourceFactory implements FactoryContract
      * The resource factory is a self-signing factory.
      * It tries to lookup something, if noting can be found no default should be used.
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
      * @param  string $name
      * @return void
      */
@@ -117,7 +119,7 @@ class ResourceFactory implements FactoryContract
      * @param  string $name
      * @return boolean
      */
-    protected function resolve($name)
+    public function resolve($name)
     {
         $name = $this->getClassName($name);
 
@@ -137,7 +139,7 @@ class ResourceFactory implements FactoryContract
      * @param  string $name
      * @return string
      */
-    protected function getClassName($name)
+    public function getClassName($name)
     {
         $name = strtolower($name);
         $name = $this->str->camel($name);

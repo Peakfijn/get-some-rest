@@ -4,9 +4,9 @@ use Closure;
 use Illuminate\Contracts\Routing\Middleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Peakfijn\GetSomeRest\Contracts\RestException as RestExceptionContract;
-use Peakfijn\GetSomeRest\Factories\EncoderFactory;
-use Peakfijn\GetSomeRest\Factories\MutatorFactory;
-use Peakfijn\GetSomeRest\Http\Response as Response;
+use Peakfijn\GetSomeRest\Contracts\EncoderFactory as EncoderFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\MutatorFactory as MutatorFactoryContract;
+use Peakfijn\GetSomeRest\Http\Response;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface as HttpExceptionContract;
 
@@ -15,14 +15,14 @@ class Api implements Middleware
     /**
      * The encoder factory.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\Factory
+     * @var \Peakfijn\GetSomeRest\Contracts\EncoderFactory
      */
     protected $encoders;
 
     /**
      * The mutator factory.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\Factory
+     * @var \Peakfijn\GetSomeRest\Contracts\MutatorFactory
      */
     protected $mutators;
 
@@ -30,12 +30,12 @@ class Api implements Middleware
      * Create a new API middleware instance.
      * It uses both encoder as mutator factories to determine the requested instance.
      *
-     * @param \Peakfijn\GetSomeRest\Factories\EncoderFactory $encoders
-     * @param \Peakfijn\GetSomeRest\Factories\MutatorFactory $mutators
+     * @param \Peakfijn\GetSomeRest\Contracts\EncoderFactory $encoders
+     * @param \Peakfijn\GetSomeRest\Contracts\MutatorFactory $mutators
      */
     public function __construct(
-        EncoderFactory $encoders,
-        MutatorFactory $mutators
+        EncoderFactoryContract $encoders,
+        MutatorFactoryContract $mutators
     ) {
         $this->encoders = $encoders;
         $this->mutators = $mutators;
