@@ -156,6 +156,16 @@ class ResourceFactoryTest extends FactoryTest
     }
 
     /**
+     * Get a mocked anatomy for testing.
+     *
+     * @return \Mockery\Mock
+     */
+    protected function getMockedAnatomy()
+    {
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Anatomy');
+    }
+
+    /**
      * Register some instances to the provided factory.
      *
      * @param  \Peakfijn\GetSomeRest\Contracts\Factory $factory
@@ -194,8 +204,7 @@ class ResourceFactoryTest extends FactoryTest
 
     public function testMakeThrowsResourceUnknownExceptionWhenNothingWasFound()
     {
-        $factory = $this->getMockedInstance()
-            ->shouldAllowMockingProtectedMethods();
+        $factory = $this->getMockedInstance();
 
         $factory->shouldReceive('contains')
             ->with('test')
@@ -212,6 +221,40 @@ class ResourceFactoryTest extends FactoryTest
         }
 
         $this->fail('The resource factory didn\'t throw an error when nothing was found.');
+    }
+
+    public function testMakeAcceptsAnatomyAndUsesResourceName()
+    {
+        $anatomy = $this->getMockedAnatomy();
+        $container = $this->getMockedContainer();
+        $factory = $this->getMockedInstance(null, $container);
+
+        $anatomy->shouldReceive('getResourceName')
+            ->once()
+            ->andReturn('resource');
+
+        $factory->shouldReceive('contains')
+            ->with('resource')
+            ->once()
+            ->andReturn(false);
+
+        $factory->shouldReceive('resolve')
+            ->with('resource')
+            ->once()
+            ->andReturn(true);
+
+        $factory->shouldReceive('getClassName')
+            ->with('resource')
+            ->once()
+            ->andReturn('Resource');
+
+        $this->setProtectedProperty($factory, 'resources', ['Resource' => 'Resource']);
+
+        $container->shouldReceive('make')
+            ->with('Resource')
+            ->once();
+
+        $factory->make($anatomy);
     }
 
     public function testDefaultsThrowsException()
