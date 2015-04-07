@@ -4,7 +4,8 @@ use Illuminate\Support\ServiceProvider;
 use Peakfijn\GetSomeRest\Factories\EncoderFactory;
 use Peakfijn\GetSomeRest\Factories\MutatorFactory;
 use Peakfijn\GetSomeRest\Factories\ResourceFactory;
-use Peakfijn\GetSomeRest\Rest\Url;
+use Peakfijn\GetSomeRest\Rest\Anatomy;
+use Peakfijn\GetSomeRest\Rest\Dissector;
 
 class GetSomeRestServiceProvider extends ServiceProvider
 {
@@ -32,7 +33,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
             $config->get('get-some-rest.resources', [])
         );
 
-        $this->registerUrl();
+        $this->registerDissectorAndAnatomy();
     }
 
     /**
@@ -46,7 +47,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
             'Peakfijn\GetSomeRest\Factories\EncoderFactory',
             'Peakfijn\GetSomeRest\Factories\MutatorFactory',
             'Peakfijn\GetSomeRest\Factories\ResourceFactory',
-            'Peakfijn\GetSomeRest\Rest\Url'
+            'Peakfijn\GetSomeRest\Rest\Anatomy',
+            'Peakfijn\GetSomeRest\Rest\Dissector',
         ];
     }
 
@@ -172,24 +174,40 @@ class GetSomeRestServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the rest url.
+     * Register the rest dissector and anatomy.
      *
      * @return void
      */
-    protected function registerUrl()
+    protected function registerDissectorAndAnatomy()
     {
-        $this->app->bind(
-            '\Peakfijn\GetSomeRest\Rest\Url',
+        $this->app->singleton(
+            '\Peakfijn\GetSomeRest\Rest\Dissector',
             function ($app) {
                 $resources = $app->make('\Peakfijn\GetSomeRest\Contracts\ResourceFactory');
+                $anatomy = new Anatomy();
 
-                return new Url($resources);
+                return new Dissector($resources, $anatomy);
+            }
+        );
+
+        $this->app->bind(
+            '\Peakfijn\GetSomeRest\Rest\Anatomy',
+            function ($app) {
+                $dissector = $app->make('\Peakfijn\GetSomeRest\Contracts\Dissector');
+                $request = $app->make('request');
+
+                return $dissector->anatomy($request);
             }
         );
 
         $this->app->bindIf(
-            '\Peakfijn\GetSomeRest\Contracts\Url',
-            '\Peakfijn\GetSomeRest\Rest\Url'
+            '\Peakfijn\GetSomeRest\Contracts\Anatomy',
+            '\Peakfijn\GetSomeRest\Rest\Anatomy'
+        );
+
+        $this->app->bindIf(
+            '\Peakfijn\GetSomeRest\Contracts\Dissector',
+            '\Peakfijn\GetSomeRest\Rest\Dissector'
         );
     }
 
