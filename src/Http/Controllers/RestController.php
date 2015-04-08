@@ -8,7 +8,9 @@ class RestController extends Controller
         ResourceStoreTrait,
         ResourceShowTrait,
         ResourceUpdateTrait,
-        ResourceDestroyTrait;
+        ResourceDestroyTrait,
+        ResourceRelationIndexTrait,
+        ResourceRelationShowTrait;
 
     public function __construct()
     {

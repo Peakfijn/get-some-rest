@@ -231,8 +231,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
             $router->put('/{resource}/{id}', $controller . '@update');
             $router->delete('/{resource}/{id}', $controller . '@destroy');
 
-            // $router->get('/{resource}/{id}/{relation}');
-            // $router->get('/{resource}/{id}/{relation}/{id}');
+            $router->get('/{resource}/{id}/{relation}', $controller . '@relationIndex');
+            $router->get('/{resource}/{id}/{relation}/{relatedId}', $controller .'@relationShow');
         });
     }
 }

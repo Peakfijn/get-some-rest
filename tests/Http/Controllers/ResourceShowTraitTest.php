@@ -10,7 +10,7 @@ class ResourceShowTraitTest extends ResourceTraitTest
      * Get a new instance of the relevant class.
      * All possible parameters MUST be optional.
      *
-     * @return mixed
+     * @return \Peakfijn\GetSomeRest\Tests\Stubs\Controllers\ShowController
      */
     protected function getInstance()
     {

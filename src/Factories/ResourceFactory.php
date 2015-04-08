@@ -146,9 +146,57 @@ class ResourceFactory implements FactoryContract, ResourceFactoryContract
      */
     public function getClassName($name)
     {
+        $name = $this->getSingular($name);
+
+        return $this->getCamelCase($name);
+    }
+
+    /**
+     * Get a formatted method name from the provided string.
+     *
+     * @param  string $name
+     * @return string
+     */
+    public function getMethodName($name)
+    {
+        $name = $this->getPlural($name);
+
+        return $this->getCamelCase($name);
+    }
+
+    /**
+     * Get the singular equilavent of the provided string.
+     *
+     * @param  string $name
+     * @return string
+     */
+    protected function getSingular($name)
+    {
+        return $this->str->singular($name);
+    }
+
+     /**
+     * Get the plural equilavent of the provided string.
+     *
+     * @param  string $name
+     * @return string
+     */
+    protected function getPlural($name)
+    {
+        return $this->str->plural($name);
+    }
+
+    /**
+     * Get the camel case equivalent of the provided string.
+     *
+     * @param  string $name
+     * @return string
+     */
+    protected function getCamelCase($name)
+    {
+        $name = $this->str->snake($name);
         $name = strtolower($name);
         $name = $this->str->camel($name);
-        $name = $this->str->singular($name);
 
         return ucfirst($name);
     }

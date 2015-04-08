@@ -17,4 +17,12 @@ interface ResourceFactory extends Factory
      * @return string
      */
     public function getClassName($name);
+
+    /**
+     * Get a formatted method name from the provided string.
+     *
+     * @param  string $name
+     * @return string
+     */
+    public function getMethodName($name);
 }

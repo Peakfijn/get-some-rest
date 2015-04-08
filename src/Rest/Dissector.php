@@ -59,7 +59,9 @@ class Dissector implements DissectorContract
         }
 
         if (count($segments) > 1) {
-            $anatomy = $anatomy->withRelationName($segments[1]);
+            $name = $this->getMethodName($segments[1]);
+
+            $anatomy = $anatomy->withRelationName($name);
         }
 
         if (count($segments) > 2) {
@@ -81,5 +83,16 @@ class Dissector implements DissectorContract
         $resolved = $this->resources->resolve($name);
 
         return $contained || $resolved;
+    }
+
+    /**
+     * Get a clean class name from the provided string.
+     *
+     * @param  string $name
+     * @return string
+     */
+    protected function getMethodName($name)
+    {
+        return $this->resources->getMethodName($name);
     }
 }

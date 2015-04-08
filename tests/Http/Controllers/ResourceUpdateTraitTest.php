@@ -11,7 +11,7 @@ class ResourceUpdateTraitTest extends ResourceTraitTest
      * Get a new instance of the relevant class.
      * All possible parameters MUST be optional.
      *
-     * @return mixed
+     * @return \Peakfijn\GetSomeRest\Tests\Stubs\Controllers\UpdateController
      */
     protected function getInstance()
     {

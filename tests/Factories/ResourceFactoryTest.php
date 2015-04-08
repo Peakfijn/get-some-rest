@@ -105,18 +105,6 @@ class ResourceFactoryTest extends FactoryTest
         $mock = Mockery::mock('\Illuminate\Support\Str');
 
         $mock->shouldReceive('camel')
-            ->with('resources')
-            ->andReturn('resources');
-
-        $mock->shouldReceive('camel')
-            ->with('resource')
-            ->andReturn('resource');
-
-        $mock->shouldReceive('singular')
-            ->with('resources')
-            ->andReturn('resource');
-
-        $mock->shouldReceive('singular')
             ->with('resource')
             ->andReturn('resource');
 
@@ -124,33 +112,73 @@ class ResourceFactoryTest extends FactoryTest
             ->with('somename')
             ->andReturn('somename');
 
-        $mock->shouldReceive('singular')
-            ->with('somename')
-            ->andReturn('somename');
+        $mock->shouldReceive('camel')
+            ->with('some-other')
+            ->andReturn('someOther');
 
         $mock->shouldReceive('camel')
-            ->with('someother')
-            ->andReturn('someother');
-
-        $mock->shouldReceive('singular')
-            ->with('someother')
-            ->andReturn('someother');
-
-        $mock->shouldReceive('camel')
-            ->with('oops-allcaps')
-            ->andReturn('oopsAllcaps');
-
-        $mock->shouldReceive('singular')
-            ->with('oopsAllcaps')
-            ->andReturn('OopsAllcap');
+            ->with('oops-allcap')
+            ->andReturn('oopsAllcap');
 
         $mock->shouldReceive('camel')
             ->with('non-existent')
             ->andReturn('nonExistent');
 
         $mock->shouldReceive('singular')
-            ->with('nonExistent')
-            ->andReturn('nonExistent');
+            ->with('resources')
+            ->andReturn('resource');
+
+        $mock->shouldReceive('singular')
+            ->with('Resource')
+            ->andReturn('resource');
+
+        $mock->shouldReceive('singular')
+            ->with('somename')
+            ->andReturn('somename');
+
+        $mock->shouldReceive('singular')
+            ->with('SomeOther')
+            ->andReturn('SomeOther');
+
+        $mock->shouldReceive('singular')
+            ->with('someOther')
+            ->andReturn('someOther');
+
+        $mock->shouldReceive('singular')
+            ->with('someother')
+            ->andReturn('someother');
+
+        $mock->shouldReceive('singular')
+            ->with('OOPS-ALLCAPS')
+            ->andReturn('OOPS-ALLCAP');
+
+        $mock->shouldReceive('singular')
+            ->with('non-existent')
+            ->andReturn('non-existent');
+
+        $mock->shouldReceive('snake')
+            ->with('Resource')
+            ->andReturn('resource');
+
+        $mock->shouldReceive('snake')
+            ->with('somename')
+            ->andReturn('somename');
+
+        $mock->shouldReceive('snake')
+            ->with('SomeOther')
+            ->andReturn('Some-Other');
+
+        $mock->shouldReceive('snake')
+            ->with('someOther')
+            ->andReturn('some-other');
+
+        $mock->shouldReceive('snake')
+            ->with('OOPS-ALLCAP')
+            ->andReturn('OOPS-ALLCAP');
+
+        $mock->shouldReceive('snake')
+            ->with('non-existent')
+            ->andReturn('non-Existent');
 
         return $mock;
     }
@@ -180,18 +208,6 @@ class ResourceFactoryTest extends FactoryTest
         return $factory;
     }
 
-    public function testRegisterStoresValueByName()
-    {
-        $factory = $this->getInstance();
-        $factory = $this->registerInstances($factory);
-
-        $storage = $this->getProtectedProperty($factory, 'resources');
-
-        $this->assertNotNull($storage['Somename']);
-        $this->assertNotNull($storage['Someother']);
-        $this->assertNotNull($storage['OopsAllcap']);
-    }
-
     public function testDefaultsSetsDefaultInstanceFromStorage()
     {
         // different behaviour
@@ -200,6 +216,33 @@ class ResourceFactoryTest extends FactoryTest
     public function testMakeReturnsDefaultWhenNothingWasFound()
     {
         // different behaviour
+    }
+
+    public function testRegisterStoresValueByName()
+    {
+        $factory = $this->getMockedInstance();
+
+        $factory->shouldReceive('getClassName')
+            ->with('somename')
+            ->once()
+            ->andReturn('Somename');
+
+        $factory->shouldReceive('getClassName')
+            ->with('SomeOther')
+            ->once()
+            ->andReturn('SomeOther');
+
+        $factory->shouldReceive('getClassName')
+            ->with('OOPS-ALLCAPS')
+            ->once()
+            ->andReturn('OopsAllcap');
+
+        $factory = $this->registerInstances($factory);
+        $storage = $this->getProtectedProperty($factory, 'resources');
+
+        $this->assertNotNull($storage['Somename']);
+        $this->assertNotNull($storage['SomeOther']);
+        $this->assertNotNull($storage['OopsAllcap']);
     }
 
     public function testMakeThrowsResourceUnknownExceptionWhenNothingWasFound()
@@ -272,39 +315,93 @@ class ResourceFactoryTest extends FactoryTest
 
     public function testResolveRegistersClassWhenFound()
     {
-        $factory = $this->getInstance();
+        $container = $this->getMockedContainer();
+        $factory = $this->getMockedInstance();
+
+        $factory->shouldReceive('getClassName')
+            ->with('resources')
+            ->once()
+            ->andReturn('Resource');
+
+        $factory->shouldReceive('getClassName')
+            ->with('OOPS-ALLCAPS')
+            ->once()
+            ->andReturn('OopsAllcap');
+
+        $factory->shouldReceive('register')
+            ->with('Resource', Mockery::type('object'))
+            ->once();
+
+        $factory->shouldReceive('register')
+            ->with('OopsAllcap', Mockery::type('object'))
+            ->never();
 
         $shouldBeTrue = $this->callProtectedMethod($factory, 'resolve', ['resources']);
         $shouldBeFalse = $this->callProtectedMethod($factory, 'resolve', ['OOPS-ALLCAPS']);
 
-        $resources = $this->getProtectedProperty($factory, 'resources');
-
-        $this->assertArrayHasKey('Resource', $resources);
         $this->assertTrue($shouldBeTrue);
         $this->assertFalse($shouldBeFalse);
     }
 
     public function testGetClassNameReturnsValidClassName()
     {
-        $str = $this->getMockedStr();
+        $factory = $this->getMockedInstance()
+            ->shouldAllowMockingProtectedMethods();
 
-        $str->shouldReceive('camel')
-            ->with('totally-not-valid')
+        $factory->shouldReceive('getSingular')
+            ->with('test-items')
             ->once()
-            ->andReturn('totallyNotValid');
+            ->andReturn('test-item');
+
+        $factory->shouldReceive('getCamelCase')
+            ->with('test-item')
+            ->once()
+            ->andReturn('TestItem');
+
+        $this->assertEquals('TestItem', $factory->getClassName('test-items'));
+    }
+
+    public function testGetMethodNameReturnsValidMethodName()
+    {
+        $factory = $this->getMockedInstance()
+            ->shouldAllowMockingProtectedMethods();
+
+        $factory->shouldReceive('getPlural')
+            ->with('test-item')
+            ->once()
+            ->andReturn('test-items');
+
+        $factory->shouldReceive('getCamelCase')
+            ->with('test-items')
+            ->once()
+            ->andReturn('testItems');
+
+        $this->assertEquals('testItems', $factory->getMethodName('test-item'));
+    }
+
+    public function testGetSingularReturnsSingularEquivalent()
+    {
+        $str = $this->getMockedStr();
+        $factory = $this->getInstance(null, null, $str);
 
         $str->shouldReceive('singular')
-            ->with('totallyNotValid')
+            ->with('tests')
             ->once()
-            ->andReturn('totallyNotValid');
+            ->andReturn('test');
 
+        $this->assertEquals('test', $this->callProtectedMethod($factory, 'getSingular', ['tests']));
+    }
+
+    public function testGetPluralReturnsPluralEquivalent()
+    {
+        $str = $this->getMockedStr();
         $factory = $this->getInstance(null, null, $str);
-        $class = $this->callProtectedMethod(
-            $factory,
-            'getClassName',
-            ['Totally-Not-VALID']
-        );
 
-        $this->assertEquals('TotallyNotValid', $class);
+        $str->shouldReceive('plural')
+            ->with('test')
+            ->once()
+            ->andReturn('tests');
+
+        $this->assertEquals('tests', $this->callProtectedMethod($factory, 'getPlural', ['test']));
     }
 }

@@ -112,6 +112,20 @@ class DissectorTest extends AbstractUnitTest
         $this->assertFalse($this->callProtectedMethod($dissector, 'isValidResource', ['none']));
     }
 
+    public function testGetMethodNameLooksInContainedFactory()
+    {
+        $resources = $this->getMockedResourceFactory();
+        $dissector = $this->getInstance($resources);
+
+        $resources->shouldReceive('getMethodName')
+            ->with('testing-it')
+            ->once()
+            ->andReturn('testingIt');
+
+        $result = $this->callProtectedMethod($dissector, 'getMethodName', ['testing-it']);
+        $this->assertEquals('testingIt', $result);
+    }
+
     public function testAnatomyIsReturnedWhenNothingWasFound()
     {
         $request = $this->getMockedRequest();
@@ -252,6 +266,11 @@ class DissectorTest extends AbstractUnitTest
             ->once()
             ->andReturn(true);
 
+        $dissector->shouldReceive('getMethodName')
+            ->with('relation')
+            ->once()
+            ->andReturn('relation');
+
         $this->assertInstanceOf(
             '\Peakfijn\GetSomeRest\Contracts\Anatomy',
             $dissector->anatomy($request)
@@ -292,6 +311,11 @@ class DissectorTest extends AbstractUnitTest
             ->with('resource')
             ->once()
             ->andReturn(true);
+
+        $dissector->shouldReceive('getMethodName')
+            ->with('relation')
+            ->once()
+            ->andReturn('relation');
 
         $this->assertInstanceOf(
             '\Peakfijn\GetSomeRest\Contracts\Anatomy',

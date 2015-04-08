@@ -52,7 +52,7 @@ class FactoryTest extends AbstractUnitTest
 
         $this->assertTrue($factory->contains('somename'));
         $this->assertTrue($factory->contains('someOther'));
-        $this->assertTrue($factory->contains('oops-ALLCAPS'));
+        $this->assertTrue($factory->contains('OOPS-ALLCAPS'));
         $this->assertFalse($factory->contains('non-existent'));
     }
 
@@ -62,7 +62,7 @@ class FactoryTest extends AbstractUnitTest
         $factory = $this->registerInstances($factory);
 
         $this->assertNotNull($factory->defaults('somename'));
-        $this->assertNotNull($factory->defaults('someother'));
+        $this->assertNotNull($factory->defaults('someOther'));
         $this->assertNull($factory->defaults('non-existent'));
     }
 
@@ -72,8 +72,8 @@ class FactoryTest extends AbstractUnitTest
         $factory = $this->registerInstances($factory);
 
         $this->assertNotNull($factory->make('somename'));
-        $this->assertNotNull($factory->make('someother'));
-        $this->assertNotNull($factory->make('oops-allcaps'));
+        $this->assertNotNull($factory->make('someOther'));
+        $this->assertNotNull($factory->make('OOPS-ALLCAPS'));
     }
 
     public function testMakeReturnsDefaultWhenNothingWasFound()
