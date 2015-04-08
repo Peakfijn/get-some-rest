@@ -27,7 +27,7 @@ class RestExceptionTest extends AbstractUnitTest
      */
     protected function getMockedInstance($status = 500)
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Exceptions\RestException', [$status]);
+        return Mockery::mock('\Peakfijn\GetSomeRest\Exceptions\RestException');
     }
 
     public function testShouldBeCaughtReturnsBoolean()
