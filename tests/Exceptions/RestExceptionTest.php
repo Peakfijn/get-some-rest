@@ -1,6 +1,5 @@
 <?php namespace Peakfijn\GetSomeRest\Tests\Exceptions;
 
-use Mockery;
 use Peakfijn\GetSomeRest\Exceptions\RestException;
 use Peakfijn\GetSomeRest\Tests\AbstractUnitTest;
 
@@ -18,16 +17,14 @@ class RestExceptionTest extends AbstractUnitTest
         return new RestException(500);
     }
 
-    /**
-     * Get a mocked object of the getInstance object's class.
-     * It will generate a partial mock.
-     *
-     * @param  integer $status (default: 500)
-     * @return \Mockery\Mock
-     */
-    protected function getMockedInstance($status = 500)
+    protected function getMockedInstance()
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Exceptions\RestException');
+        // different behaviour
+    }
+
+    public function testMockedClassIsInstantiable()
+    {
+        // different behaviour
     }
 
     public function testShouldBeCaughtReturnsBoolean()
