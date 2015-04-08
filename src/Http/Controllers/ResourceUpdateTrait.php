@@ -30,7 +30,7 @@ trait ResourceUpdateTrait
      * @throws \Peakfijn\GetSomeRest\Exceptions\ResourceSaveException
      * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
      * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
-     * @param  array $input (default: []s)
+     * @param  array $input (default: [])
      * @return mixed
      */
     protected function updateResource(
@@ -38,7 +38,7 @@ trait ResourceUpdateTrait
         ResourceFactoryContract $resources,
         array $input = array()
     ) {
-        $resource = $resource->make($rest)
+        $resource = $resources->make($rest)
             ->findOrFail($rest->getResourceId());
 
         $resource->fill($input);

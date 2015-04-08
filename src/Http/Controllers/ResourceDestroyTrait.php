@@ -17,7 +17,7 @@ trait ResourceDestroyTrait
         AnatomyContract $rest,
         ResourceFactoryContract $resources
     ) {
-        return $this->showResource($rest, $resources);
+        return $this->destroyResource($rest, $resources);
     }
 
     /**
@@ -33,7 +33,7 @@ trait ResourceDestroyTrait
         AnatomyContract $rest,
         ResourceFactoryContract $resources
     ) {
-        $resource = $resource->make($rest)
+        $resource = $resources->make($rest)
             ->findOrFail($rest->getResourceId());
 
         if (!$resource->delete()) {

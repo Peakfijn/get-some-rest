@@ -1,6 +1,6 @@
 <?php namespace Peakfijn\GetSomeRest\Exceptions;
 
-class ResourceDestroyException extends RestException
+class ResourceSaveException extends RestException
 {
     public function __construct()
     {

@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Peakfijn\GetSomeRest\Contracts\Anatomy as AnatomyContract;
 use Peakfijn\GetSomeRest\Contracts\ResourceFactory as ResourceFactoryContract;
-use Peakfijn\GetSomeRest\Http\Exceptions\ResourceSaveException;
+use Peakfijn\GetSomeRest\Exceptions\ResourceSaveException;
 
 trait ResourceStoreTrait
 {
@@ -20,7 +20,7 @@ trait ResourceStoreTrait
         ResourceFactoryContract $resources,
         Request $request
     ) {
-        return $this->indexResource($rest, $resources, $request->input());
+        return $this->storeResource($rest, $resources, $request->input());
     }
 
     /**
