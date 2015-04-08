@@ -44,6 +44,8 @@ class Api implements Middleware
     /**
      * Handle an incoming request.
      *
+     * @throws \Exception
+     * @throws \Peakfijn\GetSomeRest\Contracts\RestException
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure $next
      * @return mixed

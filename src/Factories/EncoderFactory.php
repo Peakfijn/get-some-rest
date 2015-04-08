@@ -12,7 +12,7 @@ class EncoderFactory extends Factory implements EncoderFactoryContract
      *
      * @throws \RuntimeException
      * @param  string $name
-     * @param  mixed $encoder
+     * @param  mixed $value
      * @return object|null
      */
     public function register($name, $value)
@@ -37,7 +37,7 @@ class EncoderFactory extends Factory implements EncoderFactoryContract
      *   - application/vnd.api+yml     => yml
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Peakfijn\GetSomeRest\Contracts\Mutator|null
+     * @return \Peakfijn\GetSomeRest\Contracts\Encoder|null
      */
     public function makeFromRequest(Request $request)
     {

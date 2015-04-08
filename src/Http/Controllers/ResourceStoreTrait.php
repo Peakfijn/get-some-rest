@@ -26,7 +26,7 @@ trait ResourceStoreTrait
     /**
      * Store a new resource in storage.
      *
-     * @throws \Peakfijn\GetSomeRest\Http\Exceptions\ResourceSaveException
+     * @throws \Peakfijn\GetSomeRest\Exceptions\ResourceSaveException
      * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
      * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
      * @param  array $input (default: [])

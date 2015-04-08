@@ -68,5 +68,7 @@ class Factory implements FactoryContract
         if ($this->contains($name)) {
             return $this->defaults = $this->instances[strtolower($name)];
         }
+
+        return null;
     }
 }

@@ -12,7 +12,7 @@ class MutatorFactory extends Factory implements MutatorFactoryContract
      *
      * @throws \RuntimeException
      * @param  string $name
-     * @param  mixed $encoder
+     * @param  mixed $value
      * @return object|null
      */
     public function register($name, $value)
