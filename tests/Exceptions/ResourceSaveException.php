@@ -1,24 +1,24 @@
 <?php namespace Peakfijn\GetSomeRest\Tests\Exceptions;
 
-use Peakfijn\GetSomeRest\Exceptions\ResourceUnknownException;
+use Peakfijn\GetSomeRest\Exceptions\ResourceSaveException;
 
-class ResourceUnknownExceptionTest extends RestExceptionTest
+class ResourceSaveExceptionTest extends RestExceptionTest
 {
     /**
      * Get a new instance of the relevant class.
      * All possible parameters MUST be optional.
      *
-     * @return \Peakfijn\GetSomeRest\Exceptions\ResourceUnknownException
+     * @return \Peakfijn\GetSomeRest\Exceptions\ResourceSaveException
      */
     protected function getInstance()
     {
-        return new ResourceUnknownException();
+        return new ResourceSaveException();
     }
 
     public function testResponseStatusCodeMatchesExpectedStatus()
     {
         $instance = $this->getInstance();
 
-        $this->assertEquals(404, $instance->getStatusCode());
+        $this->assertEquals(422, $instance->getStatusCode());
     }
 }
