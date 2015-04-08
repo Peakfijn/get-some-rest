@@ -15,6 +15,21 @@
         <testsuite name="get-some-rest">
             <directory suffix="Test.php">./tests/</directory>
         </testsuite>
+        <testsuite name="encoders">
+            <directory suffix="Test.php">./tests/Encoders/</directory>
+        </testsuite>
+        <testsuite name="mutators">
+            <directory suffix="Test.php">./tests/Mutators/</directory>
+        </testsuite>
+        <testsuite name="factories">
+            <directory suffix="Test.php">./tests/Factories/</directory>
+        </testsuite>
+        <testsuite name="http">
+            <directory suffix="Test.php">./tests/Http/</directory>
+        </testsuite>
+        <testsuite name="rest">
+            <directory suffix="Test.php">./tests/Rest/</directory>
+        </testsuite>
     </testsuites>
     <logging>
         <log type="coverage-clover" target="build/logs/clover.xml"/>
