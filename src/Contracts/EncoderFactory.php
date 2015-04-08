@@ -17,7 +17,7 @@ interface EncoderFactory extends Factory
      *   - application/vnd.api+yml     => yml
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Peakfijn\GetSomeRest\Contracts\Mutator|null
+     * @return \Peakfijn\GetSomeRest\Contracts\Encoder|null
      */
     public function makeFromRequest(Request $request);
 }
