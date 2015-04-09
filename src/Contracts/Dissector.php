@@ -1,14 +1,26 @@
 <?php namespace Peakfijn\GetSomeRest\Contracts;
 
-use Illuminate\Http\Request;
-
 interface Dissector
 {
     /**
      * Dissect the REST information from the request.
      *
-     * @param  \Illuminate\Http\Request $request
      * @return \Peakfijn\GetSomeRest\Contracts\Anatomy
      */
-    public function anatomy(Request $request);
+    public function anatomy();
+
+    /**
+     * Dissect the requested REST methods.
+     *
+     * @param  boolean $removePrefix
+     * @return array
+     */
+    public function methods($removePrefix = true);
+
+    /**
+     * Dissect the requested REST filters.
+     *
+     * @return mixed
+     */
+    public function filters();
 }

@@ -2,6 +2,7 @@
 
 use Peakfijn\GetSomeRest\Contracts\Anatomy as AnatomyContract;
 use Peakfijn\GetSomeRest\Contracts\ResourceFactory as ResourceFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Operator as OperatorContract;
 use Peakfijn\GetSomeRest\Exceptions\ResourceRelationUnknownException;
 
 trait ResourceRelationShowTrait
@@ -15,9 +16,10 @@ trait ResourceRelationShowTrait
      */
     public function relationShow(
         AnatomyContract $rest,
-        ResourceFactoryContract $resources
+        ResourceFactoryContract $resources,
+        OperatorContract $operator
     ) {
-        return $this->relationShowResource($rest, $resources);
+        return $this->relationShowResource($rest, $resources, $operator);
     }
 
     /**
@@ -27,11 +29,13 @@ trait ResourceRelationShowTrait
      * @throws \Peakfijn\GetSomeRest\Exceptions\ResourceRelationUnknownException
      * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
      * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Operator $operator
      * @return mixed
      */
     protected function relationShowResource(
         AnatomyContract $rest,
-        ResourceFactoryContract $resources
+        ResourceFactoryContract $resources,
+        OperatorContract $operator
     ) {
         $resource = $resources->make($rest)
             ->findOrFail($rest->getResourceId());
@@ -42,7 +46,9 @@ trait ResourceRelationShowTrait
             throw new ResourceRelationUnknownException();
         }
 
-        return $resource->$relation()
-            ->findOrFail($rest->getRelationId());
+        $resource = $resource->$relation();
+        $resource = $operator->execute($resource);
+
+        return $resource->findOrFail($rest->getRelationId());
     }
 }

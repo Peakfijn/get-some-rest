@@ -10,42 +10,62 @@ class DissectorTest extends AbstractUnitTest
      * Get a new instance of the relevant class.
      * All possible parameters MUST be optional.
      *
+     * @param  \Illuminate\Http\Request $request (default: null)
      * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources (default: null)
+     * @param  \Peakfijn\GetSomeRest\Contracts\MethodFactory $methods
      * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $anatomy (default: null)
      * @return \Peakfijn\GetSomeRest\Rest\Dissector
      */
-    protected function getInstance($resources = null, $anatomy = null)
+    protected function getInstance($request = null, $resources = null, $methods = null, $anatomy = null)
     {
+        if (empty($request)) {
+            $request = $this->getMockedRequest();
+        }
+
         if (empty($resources)) {
             $resources = $this->getMockedResourceFactory();
+        }
+
+        if (empty($methods)) {
+            $methods = $this->getMockedMethodFactory();
         }
 
         if (empty($anatomy)) {
             $anatomy = $this->getMockedAnatomy();
         }
 
-        return new Dissector($resources, $anatomy);
+        return new Dissector($request, $resources, $methods, $anatomy);
     }
 
     /**
      * Get a mocked object of the getInstance object's class.
      * It will generate a partial mock.
      *
+     * @param  \Illuminate\Http\Request $request (default: null)
      * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources (default: null)
+     * @param  \Peakfijn\GetSomeRest\Contracts\MethodFactory $methods
      * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $anatomy (default: null)
      * @return \Mockery\Mock
      */
-    protected function getMockedInstance($resources = null, $anatomy = null)
+    protected function getMockedInstance($request = null, $resources = null, $methods = null, $anatomy = null)
     {
+        if (empty($request)) {
+            $request = $this->getMockedRequest();
+        }
+
         if (empty($resources)) {
             $resources = $this->getMockedResourceFactory();
+        }
+
+        if (empty($methods)) {
+            $methods = $this->getMockedMethodFactory();
         }
 
         if (empty($anatomy)) {
             $anatomy = $this->getMockedAnatomy();
         }
 
-        return parent::getMockedInstance($resources, $anatomy);
+        return parent::getMockedInstance($request, $resources, $methods, $anatomy);
     }
 
     /**
@@ -56,6 +76,16 @@ class DissectorTest extends AbstractUnitTest
     protected function getMockedResourceFactory()
     {
         return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\ResourceFactory');
+    }
+
+    /**
+     * Get a mocked method factory for testing.
+     *
+     * @return \Mockery\Mock
+     */
+    protected function getMockedMethodFactory()
+    {
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\MethodFactory');
     }
 
     /**
@@ -81,7 +111,7 @@ class DissectorTest extends AbstractUnitTest
     public function testIsValidResourceLooksInContainedFactoryAndPossibleResolving()
     {
         $resources = $this->getMockedResourceFactory();
-        $dissector = $this->getInstance($resources);
+        $dissector = $this->getInstance(null, $resources);
 
         $resources->shouldReceive('contains')
             ->with('contained')
@@ -115,7 +145,7 @@ class DissectorTest extends AbstractUnitTest
     public function testGetMethodNameLooksInContainedFactory()
     {
         $resources = $this->getMockedResourceFactory();
-        $dissector = $this->getInstance($resources);
+        $dissector = $this->getInstance(null, $resources);
 
         $resources->shouldReceive('getMethodName')
             ->with('testing-it')
@@ -130,18 +160,18 @@ class DissectorTest extends AbstractUnitTest
     {
         $request = $this->getMockedRequest();
         $anatomy = $this->getMockedAnatomy();
-        $dissector = $this->getMockedInstance(null, $anatomy);
+        $dissector = $this->getMockedInstance($request, null, null, $anatomy);
 
         $request->shouldReceive('segments')
             ->andReturn([]);
 
-        $this->assertEquals($anatomy, $dissector->anatomy($request));
+        $this->assertEquals($anatomy, $dissector->anatomy());
     }
 
     public function testAnatomyOnlyUsesLastFourSegments()
     {
         $request = $this->getMockedRequest();
-        $dissector = $this->getMockedInstance()
+        $dissector = $this->getMockedInstance($request)
             ->shouldAllowMockingProtectedMethods();
 
         $request->shouldReceive('segments')
@@ -171,14 +201,14 @@ class DissectorTest extends AbstractUnitTest
             ->once()
             ->andReturn(false);
 
-        $dissector->anatomy($request);
+        $dissector->anatomy();
     }
 
     public function testAnatomyOnlyGetsResourceName()
     {
         $request = $this->getMockedRequest();
         $anatomy = $this->getMockedAnatomy();
-        $dissector = $this->getMockedInstance(null, $anatomy)
+        $dissector = $this->getMockedInstance($request, null, null, $anatomy)
             ->shouldAllowMockingProtectedMethods();
 
         $request->shouldReceive('segments')
@@ -201,7 +231,7 @@ class DissectorTest extends AbstractUnitTest
 
         $this->assertInstanceOf(
             '\Peakfijn\GetSomeRest\Contracts\Anatomy',
-            $dissector->anatomy($request)
+            $dissector->anatomy()
         );
     }
 
@@ -209,7 +239,7 @@ class DissectorTest extends AbstractUnitTest
     {
         $request = $this->getMockedRequest();
         $anatomy = $this->getMockedAnatomy();
-        $dissector = $this->getMockedInstance(null, $anatomy)
+        $dissector = $this->getMockedInstance($request, null, null, $anatomy)
             ->shouldAllowMockingProtectedMethods();
 
         $request->shouldReceive('segments')
@@ -232,7 +262,7 @@ class DissectorTest extends AbstractUnitTest
 
         $this->assertInstanceOf(
             '\Peakfijn\GetSomeRest\Contracts\Anatomy',
-            $dissector->anatomy($request)
+            $dissector->anatomy()
         );
     }
 
@@ -240,7 +270,7 @@ class DissectorTest extends AbstractUnitTest
     {
         $request = $this->getMockedRequest();
         $anatomy = $this->getMockedAnatomy();
-        $dissector = $this->getMockedInstance(null, $anatomy)
+        $dissector = $this->getMockedInstance($request, null, null, $anatomy)
             ->shouldAllowMockingProtectedMethods();
 
         $request->shouldReceive('segments')
@@ -273,7 +303,7 @@ class DissectorTest extends AbstractUnitTest
 
         $this->assertInstanceOf(
             '\Peakfijn\GetSomeRest\Contracts\Anatomy',
-            $dissector->anatomy($request)
+            $dissector->anatomy()
         );
     }
 
@@ -281,7 +311,7 @@ class DissectorTest extends AbstractUnitTest
     {
         $request = $this->getMockedRequest();
         $anatomy = $this->getMockedAnatomy();
-        $dissector = $this->getMockedInstance(null, $anatomy)
+        $dissector = $this->getMockedInstance($request, null, null, $anatomy)
             ->shouldAllowMockingProtectedMethods();
 
         $request->shouldReceive('segments')
@@ -319,7 +349,7 @@ class DissectorTest extends AbstractUnitTest
 
         $this->assertInstanceOf(
             '\Peakfijn\GetSomeRest\Contracts\Anatomy',
-            $dissector->anatomy($request)
+            $dissector->anatomy()
         );
     }
 }

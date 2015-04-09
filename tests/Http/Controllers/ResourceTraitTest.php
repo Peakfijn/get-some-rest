@@ -59,4 +59,24 @@ abstract class ResourceTraitTest extends AbstractUnitTest
     {
         return Mockery::mock('\Illuminate\Database\Eloquent\Model');
     }
+
+    /**
+     * Get a mocked selector for testing.
+     *
+     * @return \Mockery\Mock
+     */
+    protected function getMockedSelector()
+    {
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Selector');
+    }
+
+    /**
+     * Get a mocked operator for testing.
+     *
+     * @return \Mockery\Mock
+     */
+    protected function getMockedOperator()
+    {
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Operator');
+    }
 }

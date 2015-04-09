@@ -2,10 +2,18 @@
 
 use Closure;
 use Illuminate\Contracts\Routing\Middleware;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
+use Illuminate\Http\Request;
+use Peakfijn\GetSomeRest\Contracts\Anatomy as AnatomyContract;
+use Peakfijn\GetSomeRest\Contracts\Dissector as DissectorContract;
 use Peakfijn\GetSomeRest\Contracts\RestException as RestExceptionContract;
 use Peakfijn\GetSomeRest\Contracts\EncoderFactory as EncoderFactoryContract;
 use Peakfijn\GetSomeRest\Contracts\MutatorFactory as MutatorFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\MethodFactory as MethodFactoryContract;
 use Peakfijn\GetSomeRest\Http\Response;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface as HttpExceptionContract;
@@ -26,6 +34,11 @@ class Api implements Middleware
      */
     protected $mutators;
 
+    protected $methods;
+    protected $dissector;
+
+    protected $anatomy;
+
     /**
      * Create a new API middleware instance.
      * It uses both encoder as mutator factories to determine the requested instance.
@@ -35,10 +48,18 @@ class Api implements Middleware
      */
     public function __construct(
         EncoderFactoryContract $encoders,
-        MutatorFactoryContract $mutators
+        MutatorFactoryContract $mutators,
+        MethodFactoryContract $methods,
+        DissectorContract $dissector,
+        AnatomyContract $anatomy
     ) {
         $this->encoders = $encoders;
         $this->mutators = $mutators;
+
+        $this->methods = $methods;
+        $this->dissector = $dissector;
+
+        $this->anatomy = $anatomy;
     }
 
     /**
@@ -84,5 +105,68 @@ class Api implements Middleware
         return $response
             ->setEncoder($encoder)
             ->setMutator($mutator);
+    }
+
+    /**
+     * Retrieve the methods from the query, and apply to the provided query.
+     * When it's finished, execute the ->get() or ->first() to return the final data only.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $query
+     * @return mixed
+     */
+    protected function executeMethods(Request $request, $query)
+    {
+        $methods = $this->dissector->methods($request);
+
+        foreach ($methods as $key => $value) {
+            $method = $this->methods->make($key);
+
+            if (!empty($method)) {
+                $method = new $method;
+                $query = $method->execute($value, $query);
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * Execute the provided filters.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  mixed $query
+     * @return mixed
+     */
+    protected function executeFilters(Request $request, $query)
+    {
+        $filters = $this->dissector->filters($request);
+
+        foreach ($filters as $key => $values) {
+            $query = $query->whereIn($key, $values);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Finalize the query, returning the response.
+     *
+     * @param  mixed $query
+     * @return mixed
+     */
+    protected function finalizeQuery($query)
+    {
+        if (!$this->anatomy->shouldBeCollection()) {
+            $id = $this->anatomy->getResourceId();
+
+            if ($this->anatomy->hasRelationId()) {
+                $id = $this->anatomy->getRelationId();
+            }
+
+            return $query->firstOrFail($id);
+        }
+
+        return $query->get();
     }
 }

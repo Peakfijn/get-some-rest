@@ -21,13 +21,15 @@ class ResourceIndexTraitTest extends ResourceTraitTest
         $instance = $this->getMockedInstance();
         $anatomy = $this->getMockedAnatomy();
         $resources = $this->getMockedResourceFactory();
+        $selector = $this->getMockedSelector();
+        $operator = $this->getMockedOperator();
 
         $instance->shouldReceive('indexResource')
-            ->with($anatomy, $resources)
+            ->with($anatomy, $resources, $selector, $operator)
             ->once()
             ->andReturn('result');
 
-        $this->assertEquals('result', $instance->index($anatomy, $resources));
+        $this->assertEquals('result', $instance->index($anatomy, $resources, $selector, $operator));
     }
 
     public function testIndexResourceThrowsExceptionWhenResourceWasNotFound()
@@ -35,6 +37,8 @@ class ResourceIndexTraitTest extends ResourceTraitTest
         $instance = $this->getInstance();
         $anatomy = $this->getMockedAnatomy();
         $resources = $this->getMockedResourceFactory();
+        $selector = $this->getMockedSelector();
+        $operator = $this->getMockedOperator();
 
         $resources->shouldReceive('make')
             ->with($anatomy)
@@ -42,7 +46,7 @@ class ResourceIndexTraitTest extends ResourceTraitTest
             ->andThrow(new ResourceUnknownException());
 
         try {
-            $this->callProtectedMethod($instance, 'indexResource', [$anatomy, $resources]);
+            $this->callProtectedMethod($instance, 'indexResource', [$anatomy, $resources, $selector, $operator]);
         } catch (ResourceUnknownException $e) {
             return;
         }
@@ -55,6 +59,8 @@ class ResourceIndexTraitTest extends ResourceTraitTest
         $instance = $this->getInstance();
         $anatomy = $this->getMockedAnatomy();
         $resources = $this->getMockedResourceFactory();
+        $selector = $this->getMockedSelector();
+        $operator = $this->getMockedOperator();
         $model = $this->getMockedEloquent();
 
         $resources->shouldReceive('make')
@@ -62,11 +68,21 @@ class ResourceIndexTraitTest extends ResourceTraitTest
             ->once()
             ->andReturn($model);
 
+        $selector->shouldReceive('filter')
+            ->with($model)
+            ->once()
+            ->andReturn($model);
+
+        $operator->shouldReceive('execute')
+            ->with($model)
+            ->once()
+            ->andReturn($model);
+
         $model->shouldReceive('get')
             ->once()
             ->andReturn($model);
 
-        $result = $this->callProtectedMethod($instance, 'indexResource', [$anatomy, $resources]);
+        $result = $this->callProtectedMethod($instance, 'indexResource', [$anatomy, $resources, $selector, $operator]);
         $this->assertEquals($model, $result);
     }
 }

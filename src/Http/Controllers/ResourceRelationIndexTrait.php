@@ -2,6 +2,8 @@
 
 use Peakfijn\GetSomeRest\Contracts\Anatomy as AnatomyContract;
 use Peakfijn\GetSomeRest\Contracts\ResourceFactory as ResourceFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Selector as SelectorContract;
+use Peakfijn\GetSomeRest\Contracts\Operator as OperatorContract;
 use Peakfijn\GetSomeRest\Exceptions\ResourceRelationUnknownException;
 
 trait ResourceRelationIndexTrait
@@ -11,13 +13,22 @@ trait ResourceRelationIndexTrait
      *
      * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
      * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Selector $selector
+     * @param  \Peakfijn\GetSomeRest\Contracts\Operator $operator
      * @return mixed
      */
     public function relationIndex(
         AnatomyContract $rest,
-        ResourceFactoryContract $resources
+        ResourceFactoryContract $resources,
+        SelectorContract $selector,
+        OperatorContract $operator
     ) {
-        return $this->relationIndexResource($rest, $resources);
+        return $this->relationIndexResource(
+            $rest,
+            $resources,
+            $selector,
+            $operator
+        );
     }
 
     /**
@@ -27,11 +38,15 @@ trait ResourceRelationIndexTrait
      * @throws \Peakfijn\GetSomeRest\Exceptions\ResourceRelationUnknownException
      * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
      * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Selector $selector
+     * @param  \Peakfijn\GetSomeRest\Contracts\Operator $operator
      * @return mixed
      */
     protected function relationIndexResource(
         AnatomyContract $rest,
-        ResourceFactoryContract $resources
+        ResourceFactoryContract $resources,
+        SelectorContract $selector,
+        OperatorContract $operator
     ) {
         $resource = $resources->make($rest)
             ->findOrFail($rest->getResourceId());
@@ -42,7 +57,11 @@ trait ResourceRelationIndexTrait
             throw new ResourceRelationUnknownException();
         }
 
-        return $resource->$relation()
-            ->get();
+        $resource = $resource->$relation();
+
+        $resource = $selector->filter($resource);
+        $resource = $operator->execute($resource);
+
+        return $resource->get();
     }
 }

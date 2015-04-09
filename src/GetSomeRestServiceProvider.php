@@ -3,6 +3,7 @@
 use Illuminate\Support\ServiceProvider;
 use Peakfijn\GetSomeRest\Factories\EncoderFactory;
 use Peakfijn\GetSomeRest\Factories\MutatorFactory;
+use Peakfijn\GetSomeRest\Factories\MethodFactory;
 use Peakfijn\GetSomeRest\Factories\ResourceFactory;
 use Peakfijn\GetSomeRest\Rest\Anatomy;
 use Peakfijn\GetSomeRest\Rest\Dissector;
@@ -33,7 +34,12 @@ class GetSomeRestServiceProvider extends ServiceProvider
             $config->get('get-some-rest.resources', [])
         );
 
+        $this->registerMethodFactory(
+            $config->get('get-some-rest.methods', [])
+        );
+
         $this->registerDissectorAndAnatomy();
+        $this->registerSelectorAndOperator();
     }
 
     /**
@@ -44,11 +50,14 @@ class GetSomeRestServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            'Peakfijn\GetSomeRest\Factories\EncoderFactory',
-            'Peakfijn\GetSomeRest\Factories\MutatorFactory',
-            'Peakfijn\GetSomeRest\Factories\ResourceFactory',
-            'Peakfijn\GetSomeRest\Rest\Anatomy',
-            'Peakfijn\GetSomeRest\Rest\Dissector',
+            'Peakfijn\GetSomeRest\Contracts\EncoderFactory',
+            'Peakfijn\GetSomeRest\Contracts\MutatorFactory',
+            'Peakfijn\GetSomeRest\Contracts\ResourceFactory',
+            'Peakfijn\GetSomeRest\Contracts\MethodFactory',
+            'Peakfijn\GetSomeRest\Contracts\Anatomy',
+            'Peakfijn\GetSomeRest\Contracts\Dissector',
+            'Peakfijn\GetSomeRest\Contracts\Selector',
+            'Peakfijn\GetSomeRest\Contracts\Operator',
         ];
     }
 
@@ -88,7 +97,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             '\Peakfijn\GetSomeRest\Factories\EncoderFactory',
-            function ($app) use ($encoders, $default) {
+            function ($app) use ($encoders, $default)
+            {
                 $factory = new EncoderFactory();
 
                 foreach ($encoders as $name => $encoder) {
@@ -120,7 +130,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             '\Peakfijn\GetSomeRest\Factories\MutatorFactory',
-            function ($app) use ($mutators, $default) {
+            function ($app) use ($mutators, $default)
+            {
                 $factory = new MutatorFactory();
 
                 foreach ($mutators as $name => $mutator) {
@@ -152,7 +163,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             '\Peakfijn\GetSomeRest\Factories\ResourceFactory',
-            function ($app) use ($namespace, $resources) {
+            function ($app) use ($namespace, $resources)
+            {
                 $factory = new ResourceFactory(
                     $app,
                     $app->make('\Illuminate\Support\Str'),
@@ -174,6 +186,35 @@ class GetSomeRestServiceProvider extends ServiceProvider
     }
 
     /**
+     * Register the method factory to the container, as singleton.
+     *
+     * @param  array $methods
+     * @return void
+     */
+    protected function registerMethodFactory(array $methods)
+    {
+        $this->app->singleton(
+            '\Peakfijn\GetSomeRest\Factories\MethodFactory',
+            function ($app) use ($methods)
+            {
+                $factory = new MethodFactory();
+                $factory->setPrefix('$');
+
+                foreach ($methods as $method => $class) {
+                    $factory->register($method, $app->make($class));
+                }
+
+                return $factory;
+            }
+        );
+
+        $this->app->bindif(
+            '\Peakfijn\GetSomeRest\Contracts\MethodFactory',
+            '\Peakfijn\GetSomeRest\Factories\MethodFactory'
+        );
+    }
+
+    /**
      * Register the rest dissector and anatomy.
      *
      * @return void
@@ -182,21 +223,24 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             '\Peakfijn\GetSomeRest\Rest\Dissector',
-            function ($app) {
+            function ($app)
+            {
+                $request = $app->make('request');
                 $resources = $app->make('\Peakfijn\GetSomeRest\Contracts\ResourceFactory');
+                $methods = $app->make('\Peakfijn\GetSomeRest\Contracts\MethodFactory');
                 $anatomy = new Anatomy();
 
-                return new Dissector($resources, $anatomy);
+                return new Dissector($request, $resources, $methods, $anatomy);
             }
         );
 
         $this->app->bind(
             '\Peakfijn\GetSomeRest\Rest\Anatomy',
-            function ($app) {
+            function ($app)
+            {
                 $dissector = $app->make('\Peakfijn\GetSomeRest\Contracts\Dissector');
-                $request = $app->make('request');
 
-                return $dissector->anatomy($request);
+                return $dissector->anatomy();
             }
         );
 
@@ -208,6 +252,24 @@ class GetSomeRestServiceProvider extends ServiceProvider
         $this->app->bindIf(
             '\Peakfijn\GetSomeRest\Contracts\Dissector',
             '\Peakfijn\GetSomeRest\Rest\Dissector'
+        );
+    }
+
+    /**
+     * Register the rest selector and operator.
+     *
+     * @return void
+     */
+    public function registerSelectorAndOperator()
+    {
+        $this->app->bindIf(
+            '\Peakfijn\GetSomeRest\Contracts\Selector',
+            '\Peakfijn\GetSomeRest\Rest\Selector'
+        );
+
+        $this->app->bindIf(
+            '\Peakfijn\GetSomeRest\Contracts\Operator',
+            '\Peakfijn\GetSomeRest\Rest\Operator'
         );
     }
 

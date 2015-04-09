@@ -2,6 +2,7 @@
 
 use Peakfijn\GetSomeRest\Contracts\Anatomy as AnatomyContract;
 use Peakfijn\GetSomeRest\Contracts\ResourceFactory as ResourceFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Operator as OperatorContract;
 
 trait ResourceShowTrait
 {
@@ -10,13 +11,15 @@ trait ResourceShowTrait
      *
      * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
      * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Operator $operator
      * @return mixed
      */
     public function show(
         AnatomyContract $rest,
-        ResourceFactoryContract $resources
+        ResourceFactoryContract $resources,
+        OperatorContract $operator
     ) {
-        return $this->showResource($rest, $resources);
+        return $this->showResource($rest, $resources, $operator);
     }
 
     /**
@@ -25,13 +28,17 @@ trait ResourceShowTrait
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
      * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Operator $operator
      * @return mixed
      */
     protected function showResource(
         AnatomyContract $rest,
-        ResourceFactoryContract $resources
+        ResourceFactoryContract $resources,
+        OperatorContract $operator
     ) {
-        return $resources->make($rest)
-            ->findOrFail($rest->getResourceId());
+        $resource = $resources->make($rest);
+        $resource = $operator->execute($resource);
+
+        return $resource->findOrFail($rest->getResourceId());
     }
 }

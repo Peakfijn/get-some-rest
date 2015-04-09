@@ -125,4 +125,11 @@ interface Anatomy
      * @return boolean
      */
     public function hasRelationId();
+
+    /**
+     * Check if the response should be a collection or just a single response.
+     *
+     * @return boolean
+     */
+    public function shouldBeCollection();
 }

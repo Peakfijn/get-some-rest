@@ -4,15 +4,30 @@ use Illuminate\Http\Request;
 use Peakfijn\GetSomeRest\Contracts\Anatomy as AnatomyContract;
 use Peakfijn\GetSomeRest\Contracts\Dissector as DissectorContract;
 use Peakfijn\GetSomeRest\Contracts\ResourceFactory as ResourceFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\MethodFactory as MethodFactoryContract;
 
 class Dissector implements DissectorContract
 {
+    /**
+     * The default request to use.
+     *
+     * @var \Illuminate\Http\Request
+     */
+    protected $request;
+
     /**
      * The resource factory to validate resources with.
      *
      * @var \Peakfijn\GetSomeRest\Contracts\ResourceFactory
      */
     protected $resources;
+
+    /**
+     * The method factory to retrieve the method prefix from.
+     *
+     * @var \Peakfijn\GetSomeRest\Contracts\MethodFactory
+     */
+    protected $methods;
 
     /**
      * The base anatomy class to use when dissecting requests.
@@ -24,27 +39,32 @@ class Dissector implements DissectorContract
     /**
      * Create a new dissector instance.
      *
+     * @param \Illuminate\Http\Request $request
      * @param \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
+     * @param \Peakfijn\GetSomeRest\Contracts\MethodFactory $methods
      * @param \Peakfijn\GetSomeRest\Contracts\Anatomy $anatomy
      */
     public function __construct(
+        Request $request,
         ResourceFactoryContract $resources,
+        MethodFactoryContract $methods,
         AnatomyContract $anatomy
     ) {
+        $this->request = $request;
         $this->resources = $resources;
+        $this->methods = $methods;
         $this->anatomy = $anatomy;
     }
 
     /**
      * Dissect the REST information from the request.
      *
-     * @param  \Illuminate\Http\Request $request
      * @return \Peakfijn\GetSomeRest\Contracts\Anatomy
      */
-    public function anatomy(Request $request)
+    public function anatomy()
     {
         $anatomy = $this->anatomy;
-        $segments = $request->segments();
+        $segments = $this->request->segments();
         $segments = array_splice($segments, -4);
 
         while ($segment = array_shift($segments)) {
@@ -69,6 +89,47 @@ class Dissector implements DissectorContract
         }
 
         return $anatomy;
+    }
+
+    /**
+     * Dissect the requested REST methods.
+     *
+     * @return array
+     */
+    public function methods($removePrefix = true)
+    {
+        $prefix = $this->methods->getPrefix();
+        $methods = [];
+
+        foreach ($this->request->input() as $key => $value) {
+            if (strpos($key, $prefix) === 0) {
+                if ($removePrefix) {
+                    $key = substr($key, strlen($prefix));
+                }
+
+                $methods[$key] = $value;
+            }
+        }
+
+        return $methods;
+    }
+
+    /**
+     * Dissect the requested REST filters.
+     *
+     * @return mixed
+     */
+    public function filters()
+    {
+        $methods = $this->methods(false);
+        $input = $this->request->input();
+        $filters = array_diff_key($input, $methods);
+
+        foreach ($filters as &$filter) {
+            $filter = explode(',', $filter);
+        }
+
+        return $filters;
     }
 
     /**

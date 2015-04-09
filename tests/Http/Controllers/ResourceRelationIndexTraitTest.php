@@ -23,13 +23,15 @@ class ResourceRelationIndexTraitTest extends ResourceTraitTest
         $instance = $this->getMockedInstance();
         $anatomy = $this->getMockedAnatomy();
         $resources = $this->getMockedResourceFactory();
+        $selector = $this->getMockedSelector();
+        $operator = $this->getMockedOperator();
 
         $instance->shouldReceive('relationIndexResource')
-            ->with($anatomy, $resources)
+            ->with($anatomy, $resources, $selector, $operator)
             ->once()
             ->andReturn('result');
 
-        $this->assertEquals('result', $instance->relationIndex($anatomy, $resources));
+        $this->assertEquals('result', $instance->relationIndex($anatomy, $resources, $selector, $operator));
     }
 
     public function testRelationIndexResourceThrowsExceptionWhenResourceWasNotFound()
@@ -37,6 +39,8 @@ class ResourceRelationIndexTraitTest extends ResourceTraitTest
         $instance = $this->getInstance();
         $anatomy = $this->getMockedAnatomy();
         $resources = $this->getMockedResourceFactory();
+        $selector = $this->getMockedSelector();
+        $operator = $this->getMockedOperator();
 
         $resources->shouldReceive('make')
             ->with($anatomy)
@@ -44,7 +48,7 @@ class ResourceRelationIndexTraitTest extends ResourceTraitTest
             ->andThrow(new ResourceUnknownException());
 
         try {
-            $this->callProtectedMethod($instance, 'relationIndexResource', [$anatomy, $resources]);
+            $this->callProtectedMethod($instance, 'relationIndexResource', [$anatomy, $resources, $selector, $operator]);
         } catch (ResourceUnknownException $e) {
             return;
         }
@@ -57,6 +61,8 @@ class ResourceRelationIndexTraitTest extends ResourceTraitTest
         $instance = $this->getInstance();
         $anatomy = $this->getMockedAnatomy();
         $resources = $this->getMockedResourceFactory();
+        $selector = $this->getMockedSelector();
+        $operator = $this->getMockedOperator();
         $model = $this->getMockedEloquent();
 
         $resources->shouldReceive('make')
@@ -78,7 +84,7 @@ class ResourceRelationIndexTraitTest extends ResourceTraitTest
             ->andReturn($model);
 
         try {
-            $this->callProtectedMethod($instance, 'relationIndexResource', [$anatomy, $resources]);
+            $this->callProtectedMethod($instance, 'relationIndexResource', [$anatomy, $resources, $selector, $operator]);
         } catch (ResourceRelationUnknownException $e) {
             return;
         }
@@ -91,6 +97,8 @@ class ResourceRelationIndexTraitTest extends ResourceTraitTest
         $instance = $this->getInstance();
         $anatomy = $this->getMockedAnatomy();
         $resources = $this->getMockedResourceFactory();
+        $selector = $this->getMockedSelector();
+        $operator = $this->getMockedOperator();
         $model = $this->getMockedEloquent();
         $realModel = new \Peakfijn\GetSomeRest\Tests\Stubs\Resource();
 
@@ -112,7 +120,17 @@ class ResourceRelationIndexTraitTest extends ResourceTraitTest
             ->once()
             ->andReturn($realModel);
 
-        $result = $this->callProtectedMethod($instance, 'relationIndexResource', [$anatomy, $resources]);
+        $selector->shouldReceive('filter')
+            ->with($realModel)
+            ->once()
+            ->andReturn($realModel);
+
+        $operator->shouldReceive('execute')
+            ->with($realModel)
+            ->once()
+            ->andReturn($realModel);
+
+        $result = $this->callProtectedMethod($instance, 'relationIndexResource', [$anatomy, $resources, $selector, $operator]);
         $this->assertEquals($realModel, $result);
     }
 
@@ -121,6 +139,8 @@ class ResourceRelationIndexTraitTest extends ResourceTraitTest
         $instance = $this->getInstance();
         $anatomy = $this->getMockedAnatomy();
         $resources = $this->getMockedResourceFactory();
+        $selector = $this->getMockedSelector();
+        $operator = $this->getMockedOperator();
         $model = $this->getMockedEloquent();
 
         $resources->shouldReceive('make')
@@ -138,7 +158,7 @@ class ResourceRelationIndexTraitTest extends ResourceTraitTest
             ->andThrow(new ModelNotFoundException());
 
         try {
-            $this->callProtectedMethod($instance, 'relationIndexResource', [$anatomy, $resources]);
+            $this->callProtectedMethod($instance, 'relationIndexResource', [$anatomy, $resources, $selector, $operator]);
         } catch (ModelNotFoundException $e) {
             return;
         }

@@ -81,6 +81,27 @@ return [
     'route_controller' => '\Peakfijn\GetSomeRest\Http\Controllers\RestController',
 
     /*
+    |----------------------------------------------------------------------
+    | Methods
+    |----------------------------------------------------------------------
+    |
+    | When requesting the API for data you sometimes find yourself thinking:
+    |   - "Wow, I actually need the reverse of this..."
+    |   - "Damn, I only need 5 of these..."
+    |   - "It would be handy if I can include the relation in the response..."
+    |
+    | Well, these methods provides an easy way to add custom methods.
+    | A method is actually a piece of code you execute on the query.
+    | These methods are available through the query, prefixed to extract it from the normal queries.
+    | For the "with" method you can add the "$with=relation" in the query.
+    |
+    */
+
+    'methods' => [
+        'with' => '\Peakfijn\GetSomeRest\Rest\Methods\WithMethod'
+    ],
+
+    /*
     |--------------------------------------------------------------------------
     | Encoders
     |--------------------------------------------------------------------------
