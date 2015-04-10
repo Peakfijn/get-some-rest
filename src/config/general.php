@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'namespace' => '',
+    'namespace' => 'App',
 
     /*
     |----------------------------------------------------------------------
@@ -23,62 +23,15 @@ return [
     | When you have some external, or not singular & camel cased, models
     | define an alias. For example:
     | [
-    |   snake_cased => '\Project\Snake_cased'
-    |   not-mine    => '\External\NotMine'
+    |   snake_cased => 'Project\Snake_cased'
+    |   not-mine    => 'External\NotMine'
     | ]
     |
     */
 
     'resources' => [
-        'ding' => '\Coloni\Resource'
+
     ],
-
-    /*
-    |----------------------------------------------------------------------
-    | Generate Routes
-    |----------------------------------------------------------------------
-    |
-    | All resources must have it's own routes defined. This can be attached
-    | to a controller or closure. When this is set the true, it will add a
-    | special route that should cover all restful resource actions.
-    |
-    | The use of this is recommended for development, since you only have to
-    | define and setup your resources. For production you have to take security
-    | in account, else your API MIGHT be not secured.
-    |
-    */
-
-    'generate_routes' => true,
-
-    /*
-    |----------------------------------------------------------------------
-    | Routes Settings
-    |----------------------------------------------------------------------
-    |
-    | When generating the resource routes Get Some Rest will apply the code.
-    | Here you can define some settings that will be passed to the router->group
-    | method. You can set a prefix, add middleware or set other settings.
-    |
-    */
-
-    'route_settings' => [
-        'prefix' => 'api/v1'
-    ],
-
-    /*
-    |----------------------------------------------------------------------
-    | Resources - Routes Controller
-    |----------------------------------------------------------------------
-    |
-    | When generating the resource routes Get Some Rest will apply the code.
-    | Here you can define which controller it should use. Note that this
-    | controller MUST discover the target resource by itself, not the URL.
-    | This is because the resource name, in the url, is a variable and can be
-    | different each call.
-    |
-    */
-
-    'route_controller' => '\Peakfijn\GetSomeRest\Http\Controllers\RestController',
 
     /*
     |----------------------------------------------------------------------
@@ -98,7 +51,7 @@ return [
     */
 
     'methods' => [
-        'with' => '\Peakfijn\GetSomeRest\Rest\Methods\WithMethod'
+        'with' => 'Peakfijn\GetSomeRest\Rest\Methods\WithMethod'
     ],
 
     /*
@@ -115,7 +68,7 @@ return [
     */
 
     'encoders' => [
-        'json' => '\Peakfijn\GetSomeRest\Encoders\JsonEncoder',
+        'json' => 'Peakfijn\GetSomeRest\Encoders\JsonEncoder',
     ],
 
     /*
@@ -142,7 +95,7 @@ return [
     */
 
     'mutators' => [
-        'array' => '\Peakfijn\GetSomeRest\Mutators\ArrayMutator',
+        'array' => 'Peakfijn\GetSomeRest\Mutators\ArrayMutator',
     ],
 
     /*

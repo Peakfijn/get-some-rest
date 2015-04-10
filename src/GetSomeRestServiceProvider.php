@@ -11,6 +11,15 @@ use Peakfijn\GetSomeRest\Rest\Dissector;
 class GetSomeRestServiceProvider extends ServiceProvider
 {
     /**
+     * The config files to plublish.
+     *
+     * @var array
+     */
+    protected $configFiles = [
+        'general', 'routes'
+    ];
+
+    /**
      * Register bindings in the container.
      *
      * @return void
@@ -20,22 +29,22 @@ class GetSomeRestServiceProvider extends ServiceProvider
         $config = $this->app->make('config');
 
         $this->registerEncoderFactory(
-            $config->get('get-some-rest.encoders', []),
-            $config->get('get-some-rest.default_encoder')
+            $config->get('get-some-rest.general.encoders', []),
+            $config->get('get-some-rest.general.default_encoder')
         );
 
         $this->registerMutatorFactory(
-            $config->get('get-some-rest.mutators', []),
-            $config->get('get-some-rest.default_mutator')
+            $config->get('get-some-rest.general.mutators', []),
+            $config->get('get-some-rest.general.default_mutator')
         );
 
         $this->registerResourceFactory(
-            $config->get('get-some-rest.namespace'),
-            $config->get('get-some-rest.resources', [])
+            $config->get('get-some-rest.general.namespace'),
+            $config->get('get-some-rest.general.resources', [])
         );
 
         $this->registerMethodFactory(
-            $config->get('get-some-rest.methods', [])
+            $config->get('get-some-rest.general.methods', [])
         );
 
         $this->registerDissectorAndAnatomy();
@@ -68,22 +77,37 @@ class GetSomeRestServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $configFile = __DIR__ . '/config/config.php';
-
-        $this->mergeConfigFrom($configFile, 'get-some-rest');
-        $this->publishes([
-            $configFile => config_path('get-some-rest.php')
-        ]);
+        $this->registerConfigFiles();
 
         $config = $this->app->make('config');
 
-        if ($config->get('get-some-rest.generate_routes', false)) {
+        if ($config->get('get-some-rest.routes.generate', false)) {
             $this->bindResourceRoutes(
                 $this->app->make('router'),
-                $config->get('get-some-rest.route_controller'),
-                $config->get('get-some-rest.route_settings')
+                $config->get('get-some-rest.routes.controller'),
+                $config->get('get-some-rest.routes.settings', []),
+                $config->get('get-some-rest.routes.sub_resources', false)
             );
         }
+    }
+
+    /**
+     * Publish & merge the provided config files.
+     *
+     * @param  array $files
+     * @return void
+     */
+    protected function registerConfigFiles()
+    {
+        $folder = __DIR__ . '/config/';
+        $publish = [];
+
+        foreach ($this->configFiles as $file) {
+            $publish[$folder . $file . '.php'] = config_path('get-some-rest/' . $file . '.php');
+            $this->mergeConfigFrom($folder . $file . '.php', 'get-some-rest.' . $file);
+        }
+
+        $this->publishes($publish);
     }
 
     /**
@@ -96,7 +120,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     protected function registerEncoderFactory(array $encoders, $default = null)
     {
         $this->app->singleton(
-            '\Peakfijn\GetSomeRest\Factories\EncoderFactory',
+            'Peakfijn\GetSomeRest\Factories\EncoderFactory',
             function ($app) use ($encoders, $default)
             {
                 $factory = new EncoderFactory();
@@ -114,8 +138,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
         );
 
         $this->app->bindIf(
-            '\Peakfijn\GetSomeRest\Contracts\EncoderFactory',
-            '\Peakfijn\GetSomeRest\Factories\EncoderFactory'
+            'Peakfijn\GetSomeRest\Contracts\EncoderFactory',
+            'Peakfijn\GetSomeRest\Factories\EncoderFactory'
         );
     }
 
@@ -129,7 +153,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     protected function registerMutatorFactory(array $mutators, $default = null)
     {
         $this->app->singleton(
-            '\Peakfijn\GetSomeRest\Factories\MutatorFactory',
+            'Peakfijn\GetSomeRest\Factories\MutatorFactory',
             function ($app) use ($mutators, $default)
             {
                 $factory = new MutatorFactory();
@@ -147,8 +171,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
         );
 
         $this->app->bindIf(
-            '\Peakfijn\GetSomeRest\Contracts\MutatorFactory',
-            '\Peakfijn\GetSomeRest\Factories\MutatorFactory'
+            'Peakfijn\GetSomeRest\Contracts\MutatorFactory',
+            'Peakfijn\GetSomeRest\Factories\MutatorFactory'
         );
     }
 
@@ -162,7 +186,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     protected function registerResourceFactory($namespace, array $resources = array())
     {
         $this->app->singleton(
-            '\Peakfijn\GetSomeRest\Factories\ResourceFactory',
+            'Peakfijn\GetSomeRest\Factories\ResourceFactory',
             function ($app) use ($namespace, $resources)
             {
                 $factory = new ResourceFactory(
@@ -180,8 +204,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
         );
 
         $this->app->bindIf(
-            '\Peakfijn\GetSomeRest\Contracts\ResourceFactory',
-            '\Peakfijn\GetSomeRest\Factories\ResourceFactory'
+            'Peakfijn\GetSomeRest\Contracts\ResourceFactory',
+            'Peakfijn\GetSomeRest\Factories\ResourceFactory'
         );
     }
 
@@ -194,7 +218,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     protected function registerMethodFactory(array $methods)
     {
         $this->app->singleton(
-            '\Peakfijn\GetSomeRest\Factories\MethodFactory',
+            'Peakfijn\GetSomeRest\Factories\MethodFactory',
             function ($app) use ($methods)
             {
                 $factory = new MethodFactory();
@@ -209,8 +233,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
         );
 
         $this->app->bindif(
-            '\Peakfijn\GetSomeRest\Contracts\MethodFactory',
-            '\Peakfijn\GetSomeRest\Factories\MethodFactory'
+            'Peakfijn\GetSomeRest\Contracts\MethodFactory',
+            'Peakfijn\GetSomeRest\Factories\MethodFactory'
         );
     }
 
@@ -222,12 +246,12 @@ class GetSomeRestServiceProvider extends ServiceProvider
     protected function registerDissectorAndAnatomy()
     {
         $this->app->singleton(
-            '\Peakfijn\GetSomeRest\Rest\Dissector',
+            'Peakfijn\GetSomeRest\Rest\Dissector',
             function ($app)
             {
                 $request = $app->make('request');
-                $resources = $app->make('\Peakfijn\GetSomeRest\Contracts\ResourceFactory');
-                $methods = $app->make('\Peakfijn\GetSomeRest\Contracts\MethodFactory');
+                $resources = $app->make('Peakfijn\GetSomeRest\Contracts\ResourceFactory');
+                $methods = $app->make('Peakfijn\GetSomeRest\Contracts\MethodFactory');
                 $anatomy = new Anatomy();
 
                 return new Dissector($request, $resources, $methods, $anatomy);
@@ -235,23 +259,23 @@ class GetSomeRestServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            '\Peakfijn\GetSomeRest\Rest\Anatomy',
+            'Peakfijn\GetSomeRest\Rest\Anatomy',
             function ($app)
             {
-                $dissector = $app->make('\Peakfijn\GetSomeRest\Contracts\Dissector');
+                $dissector = $app->make('Peakfijn\GetSomeRest\Contracts\Dissector');
 
                 return $dissector->anatomy();
             }
         );
 
         $this->app->bindIf(
-            '\Peakfijn\GetSomeRest\Contracts\Anatomy',
-            '\Peakfijn\GetSomeRest\Rest\Anatomy'
+            'Peakfijn\GetSomeRest\Contracts\Anatomy',
+            'Peakfijn\GetSomeRest\Rest\Anatomy'
         );
 
         $this->app->bindIf(
-            '\Peakfijn\GetSomeRest\Contracts\Dissector',
-            '\Peakfijn\GetSomeRest\Rest\Dissector'
+            'Peakfijn\GetSomeRest\Contracts\Dissector',
+            'Peakfijn\GetSomeRest\Rest\Dissector'
         );
     }
 
@@ -263,13 +287,13 @@ class GetSomeRestServiceProvider extends ServiceProvider
     public function registerSelectorAndOperator()
     {
         $this->app->bindIf(
-            '\Peakfijn\GetSomeRest\Contracts\Selector',
-            '\Peakfijn\GetSomeRest\Rest\Selector'
+            'Peakfijn\GetSomeRest\Contracts\Selector',
+            'Peakfijn\GetSomeRest\Rest\Selector'
         );
 
         $this->app->bindIf(
-            '\Peakfijn\GetSomeRest\Contracts\Operator',
-            '\Peakfijn\GetSomeRest\Rest\Operator'
+            'Peakfijn\GetSomeRest\Contracts\Operator',
+            'Peakfijn\GetSomeRest\Rest\Operator'
         );
     }
 
@@ -278,23 +302,27 @@ class GetSomeRestServiceProvider extends ServiceProvider
      *
      * @param  \Illuminate\Routing\Router $router
      * @param  string $controller
-     * @param  array $settings (default: [])
+     * @param  array $settings (default: []),
+     * @param  boolean $subresources (default: false)
      * @return void
      */
     protected function bindResourceRoutes(
         $router,
         $controller,
-        array $settings = array()
+        array $settings = array(),
+        $subresources = false
     ) {
-        $router->group($settings, function ($router) use ($controller) {
+        $router->group($settings, function ($router) use ($controller, $subresources) {
             $router->get('/{resource}', $controller . '@index');
             $router->post('/{resource}', $controller . '@store');
             $router->get('/{resource}/{id}', $controller . '@show');
             $router->put('/{resource}/{id}', $controller . '@update');
             $router->delete('/{resource}/{id}', $controller . '@destroy');
 
-            $router->get('/{resource}/{id}/{relation}', $controller . '@relationIndex');
-            $router->get('/{resource}/{id}/{relation}/{relatedId}', $controller .'@relationShow');
+            if ($subresources) {
+                $router->get('/{resource}/{id}/{relation}', $controller . '@relationIndex');
+                $router->get('/{resource}/{id}/{relation}/{relatedId}', $controller .'@relationShow');
+            }
         });
     }
 }
