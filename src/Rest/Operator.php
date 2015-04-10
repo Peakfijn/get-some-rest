@@ -9,22 +9,22 @@ class Operator implements OperatorContract
     /**
      * The dissector to extract from.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\Dissector
+     * @var \Peakfijn\GetSomeRest\Contracts\Rest\Dissector
      */
     protected $dissector;
 
     /**
      * The method factory to get the method logic from.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\MethodFactory
+     * @var \Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory
      */
     protected $methods;
 
     /**
      * Create a new operator.
      *
-     * @param \Peakfijn\GetSomeRest\Contracts\Dissector $dissector
-     * @param \Peakfijn\GetSomeRest\Contracts\MethodFactory $methods
+     * @param \Peakfijn\GetSomeRest\Contracts\Rest\Dissector $dissector
+     * @param \Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory $methods
      */
     public function __construct(
         DissectorContract $dissector,

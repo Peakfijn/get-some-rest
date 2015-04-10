@@ -11,10 +11,10 @@ trait ResourceRelationIndexTrait
     /**
      * Display a listing of the related resources, from the main resource.
      *
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
-     * @param  \Peakfijn\GetSomeRest\Contracts\Selector $selector
-     * @param  \Peakfijn\GetSomeRest\Contracts\Operator $operator
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $rest
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Selector $selector
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Operator $operator
      * @return mixed
      */
     public function relationIndex(
@@ -36,10 +36,10 @@ trait ResourceRelationIndexTrait
      *
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      * @throws \Peakfijn\GetSomeRest\Exceptions\ResourceRelationUnknownException
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
-     * @param  \Peakfijn\GetSomeRest\Contracts\Selector $selector
-     * @param  \Peakfijn\GetSomeRest\Contracts\Operator $operator
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $rest
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Selector $selector
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Operator $operator
      * @return mixed
      */
     protected function relationIndexResource(

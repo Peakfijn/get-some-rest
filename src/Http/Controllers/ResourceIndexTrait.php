@@ -10,10 +10,10 @@ trait ResourceIndexTrait
     /**
      * Display a listing of the resource.
      *
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
-     * @param  \Peakfijn\GetSomeRest\Contracts\Selector $selector
-     * @param  \Peakfijn\GetSomeRest\Contracts\Operator $operator
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $rest
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Selector $selector
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Operator $operator
      * @return mixed
      */
     public function index(
@@ -28,10 +28,10 @@ trait ResourceIndexTrait
     /**
      * Get a list of the resource.
      *
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
-     * @param  \Peakfijn\GetSomeRest\Contracts\Selector $selector
-     * @param  \Peakfijn\GetSomeRest\Contracts\Operator $operator
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $rest
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Selector $selector
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Operator $operator
      * @return mixed
      */
     protected function indexResource(

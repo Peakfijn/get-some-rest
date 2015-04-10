@@ -55,7 +55,7 @@ class Anatomy implements AnatomyContract
      * This MUST be implemented to retain the immutability of this class.
      *
      * @param  string $name
-     * @return \Peakfijn\GetSomeRest\Contracts\Anatomy
+     * @return \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy
      */
     public function withResourceName($name)
     {
@@ -98,7 +98,7 @@ class Anatomy implements AnatomyContract
      * This MUST be implemented to retain the immutability of this class.
      *
      * @param  string|integer|null $id
-     * @return \Peakfijn\GetSomeRest\Contracts\Anatomy
+     * @return \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy
      */
     public function withResourceId($id)
     {
@@ -141,7 +141,7 @@ class Anatomy implements AnatomyContract
      * This MUST be implemented to retain the immutability of this class.
      *
      * @param  string|null $name
-     * @return \Peakfijn\GetSomeRest\Contracts\Anatomy
+     * @return \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy
      */
     public function withRelationName($name)
     {
@@ -184,7 +184,7 @@ class Anatomy implements AnatomyContract
      * This MUST be implemented to retain the immutability of this class.
      *
      * @param  string|integer|null $id
-     * @return \Peakfijn\GetSomeRest\Contracts\Anatomy
+     * @return \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy
      */
     public function withRelationId($id)
     {

@@ -17,14 +17,14 @@ class Response extends SymfonyResponse
     /**
      * The encoder to use when finalizing the response.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\Encoder
+     * @var \Peakfijn\GetSomeRest\Contracts\Encoders\Encoder
      */
     protected $encoder;
 
     /**
      * The mutator to use when finalizing the response.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\Mutator
+     * @var \Peakfijn\GetSomeRest\Contracts\Mutators\Mutator
      */
     protected $mutator;
 
@@ -73,7 +73,7 @@ class Response extends SymfonyResponse
     /**
      * Set the encoder to the response.
      *
-     * @param  \Peakfijn\GetSomeRest\Contracts\Encoder $encoder
+     * @param  \Peakfijn\GetSomeRest\Contracts\Encoders\Encoder $encoder
      * @return \Peakfijn\GetSomeRest\Http\Response
      */
     public function setEncoder(EncoderContract $encoder)
@@ -86,7 +86,7 @@ class Response extends SymfonyResponse
     /**
      * Get the encoder for this response.
      *
-     * @return \Peakfijn\GetSomeRest\Contracts\Encoder
+     * @return \Peakfijn\GetSomeRest\Contracts\Encoders\Encoder
      */
     public function getEncoder()
     {
@@ -96,7 +96,7 @@ class Response extends SymfonyResponse
     /**
      * Set the mutator to the response.
      *
-     * @param  \Peakfijn\GetSomeRest\Contracts\Mutator $mutator
+     * @param  \Peakfijn\GetSomeRest\Contracts\Mutators\Mutator $mutator
      * @return \Peakfijn\GetSomeRest\Http\Response
      */
     public function setMutator(MutatorContract $mutator)
@@ -109,7 +109,7 @@ class Response extends SymfonyResponse
     /**
      * Get the mutator for this response.
      *
-     * @return \Peakfijn\GetSomeRest\Contracts\Mutator
+     * @return \Peakfijn\GetSomeRest\Contracts\Mutators\Mutator
      */
     public function getMutator()
     {

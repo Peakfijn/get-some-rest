@@ -18,21 +18,21 @@ class Dissector implements DissectorContract
     /**
      * The resource factory to validate resources with.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\ResourceFactory
+     * @var \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory
      */
     protected $resources;
 
     /**
      * The method factory to retrieve the method prefix from.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\MethodFactory
+     * @var \Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory
      */
     protected $methods;
 
     /**
      * The base anatomy class to use when dissecting requests.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\Anatomy
+     * @var \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy
      */
     protected $anatomy;
 
@@ -40,9 +40,9 @@ class Dissector implements DissectorContract
      * Create a new dissector instance.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
-     * @param \Peakfijn\GetSomeRest\Contracts\MethodFactory $methods
-     * @param \Peakfijn\GetSomeRest\Contracts\Anatomy $anatomy
+     * @param \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
+     * @param \Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory $methods
+     * @param \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $anatomy
      */
     public function __construct(
         Request $request,
@@ -59,7 +59,7 @@ class Dissector implements DissectorContract
     /**
      * Dissect the REST information from the request.
      *
-     * @return \Peakfijn\GetSomeRest\Contracts\Anatomy
+     * @return \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy
      */
     public function anatomy()
     {

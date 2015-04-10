@@ -9,9 +9,9 @@ trait ResourceShowTrait
     /**
      * Display a listing of the resource.
      *
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
-     * @param  \Peakfijn\GetSomeRest\Contracts\Operator $operator
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $rest
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Operator $operator
      * @return mixed
      */
     public function show(
@@ -26,9 +26,9 @@ trait ResourceShowTrait
      * Get a single resource, by it's primary key.
      *
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
-     * @param  \Peakfijn\GetSomeRest\Contracts\Operator $operator
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $rest
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Operator $operator
      * @return mixed
      */
     protected function showResource(

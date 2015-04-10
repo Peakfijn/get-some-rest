@@ -66,7 +66,7 @@ class Api implements Middleware
      * Handle an incoming request.
      *
      * @throws \Exception
-     * @throws \Peakfijn\GetSomeRest\Contracts\RestException
+     * @throws \Peakfijn\GetSomeRest\Contracts\Exceptions\RestException
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure $next
      * @return mixed
@@ -123,7 +123,6 @@ class Api implements Middleware
             $method = $this->methods->make($key);
 
             if (!empty($method)) {
-                $method = new $method;
                 $query = $method->execute($value, $query);
             }
         }

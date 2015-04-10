@@ -59,7 +59,7 @@ class ResourceFactory implements FactoryContract, ResourceFactoryContract
      * When also resolving fails, it throws an exception.
      *
      * @throws \Peakfijn\GetSomeRest\Exceptions\ResourceUnknownException
-     * @param  string|\Peakfijn\GetSomeRest\Contracts\Anatomy $name
+     * @param  string|\Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $name
      * @return object|null
      */
     public function make($name)

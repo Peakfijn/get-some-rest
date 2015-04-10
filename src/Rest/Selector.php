@@ -10,14 +10,14 @@ class Selector implements SelectorContract
     /**
      * The dissector to extract from.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\Dissector
+     * @var \Peakfijn\GetSomeRest\Contracts\Rest\Dissector
      */
     protected $dissector;
 
     /**
      * Create a new selector.
      *
-     * @param \Peakfijn\GetSomeRest\Contracts\Dissector $dissector
+     * @param \Peakfijn\GetSomeRest\Contracts\Rest\Dissector $dissector
      */
     public function __construct(DissectorContract $dissector)
     {

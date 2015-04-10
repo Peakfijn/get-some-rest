@@ -38,7 +38,7 @@ class MutatorFactory extends Factory implements MutatorFactoryContract
      *   - application/vnd.api.v9.meta+yml   => meta
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Peakfijn\GetSomeRest\Contracts\Mutator|null
+     * @return \Peakfijn\GetSomeRest\Contracts\Mutators\Mutator|null
      */
     public function makeFromRequest(Request $request)
     {

@@ -11,8 +11,8 @@ trait ResourceStoreTrait
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $rest
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
      * @param  \Illuminate\Http\Request $request
      * @return mixed
      */
@@ -28,8 +28,8 @@ trait ResourceStoreTrait
      * Store a new resource in storage.
      *
      * @throws \Peakfijn\GetSomeRest\Exceptions\ResourceSaveException
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $rest
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
      * @param  array $input (default: [])
      * @return mixed
      */

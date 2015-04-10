@@ -22,7 +22,7 @@ interface Anatomy
      * This MUST be implemented to retain the immutability of this class.
      *
      * @param  string $name
-     * @return \Peakfijn\GetSomeRest\Contracts\Anatomy
+     * @return \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy
      */
     public function withResourceName($name);
 
@@ -53,7 +53,7 @@ interface Anatomy
      * This MUST be implemented to retain the immutability of this class.
      *
      * @param  string|integer|null $id
-     * @return \Peakfijn\GetSomeRest\Contracts\Anatomy
+     * @return \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy
      */
     public function withResourceId($id);
 
@@ -84,7 +84,7 @@ interface Anatomy
      * This MUST be implemented to retain the immutability of this class.
      *
      * @param  string|null $name
-     * @return \Peakfijn\GetSomeRest\Contracts\Anatomy
+     * @return \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy
      */
     public function withRelationName($name);
 
@@ -115,7 +115,7 @@ interface Anatomy
      * This MUST be implemented to retain the immutability of this class.
      *
      * @param  string|integer|null $id
-     * @return \Peakfijn\GetSomeRest\Contracts\Anatomy
+     * @return \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy
      */
     public function withRelationId($id);
 

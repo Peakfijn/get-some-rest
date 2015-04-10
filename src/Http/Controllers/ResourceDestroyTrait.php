@@ -9,8 +9,8 @@ trait ResourceDestroyTrait
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $rest
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
      * @return mixed
      */
     public function destroy(
@@ -25,8 +25,8 @@ trait ResourceDestroyTrait
      *
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      * @throws \Peakfijn\GetSomeRest\Exceptions\ResourceDestroyException
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $rest
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
      * @return mixed
      */
     protected function destroyResource(

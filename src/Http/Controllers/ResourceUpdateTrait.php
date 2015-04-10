@@ -10,8 +10,8 @@ trait ResourceUpdateTrait
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $rest
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
      * @param  \Illuminate\Http\Request $request
      * @return mixed
      */
@@ -28,8 +28,8 @@ trait ResourceUpdateTrait
      *
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      * @throws \Peakfijn\GetSomeRest\Exceptions\ResourceSaveException
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $rest
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $rest
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
      * @param  array $input (default: [])
      * @return mixed
      */
