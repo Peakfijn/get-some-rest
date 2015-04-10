@@ -40,7 +40,7 @@ class ResponseTest extends AbstractUnitTest
      */
     protected function getMockedEncoder()
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Encoder');
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Encoders\Encoder');
     }
 
     /**
@@ -50,7 +50,7 @@ class ResponseTest extends AbstractUnitTest
      */
     protected function getMockedMutator()
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Mutator');
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Mutators\Mutator');
     }
 
     /**

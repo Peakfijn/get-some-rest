@@ -1,7 +1,7 @@
 <?php namespace Peakfijn\GetSomeRest\Tests\Factories;
 
 use StdClass;
-use Peakfijn\GetSomeRest\Contracts\Factory as FactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\Factory as FactoryContract;
 use Peakfijn\GetSomeRest\Factories\Factory;
 use Peakfijn\GetSomeRest\Tests\AbstractUnitTest;
 
@@ -21,8 +21,8 @@ class FactoryTest extends AbstractUnitTest
     /**
      * Register some instances to the provided factory.
      *
-     * @param  \Peakfijn\GetSomeRest\Contracts\Factory $factory
-     * @return \Peakfijn\GetSomeRest\Contracts\Factory
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\Factory $factory
+     * @return \Peakfijn\GetSomeRest\Contracts\Factories\Factory
      */
     protected function registerInstances(FactoryContract $factory)
     {

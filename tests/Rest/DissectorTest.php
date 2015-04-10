@@ -11,9 +11,9 @@ class DissectorTest extends AbstractUnitTest
      * All possible parameters MUST be optional.
      *
      * @param  \Illuminate\Http\Request $request (default: null)
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources (default: null)
-     * @param  \Peakfijn\GetSomeRest\Contracts\MethodFactory $methods
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $anatomy (default: null)
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources (default: null)
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory $methods
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $anatomy (default: null)
      * @return \Peakfijn\GetSomeRest\Rest\Dissector
      */
     protected function getInstance($request = null, $resources = null, $methods = null, $anatomy = null)
@@ -42,9 +42,9 @@ class DissectorTest extends AbstractUnitTest
      * It will generate a partial mock.
      *
      * @param  \Illuminate\Http\Request $request (default: null)
-     * @param  \Peakfijn\GetSomeRest\Contracts\ResourceFactory $resources (default: null)
-     * @param  \Peakfijn\GetSomeRest\Contracts\MethodFactory $methods
-     * @param  \Peakfijn\GetSomeRest\Contracts\Anatomy $anatomy (default: null)
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources (default: null)
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory $methods
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $anatomy (default: null)
      * @return \Mockery\Mock
      */
     protected function getMockedInstance($request = null, $resources = null, $methods = null, $anatomy = null)
@@ -75,7 +75,7 @@ class DissectorTest extends AbstractUnitTest
      */
     protected function getMockedResourceFactory()
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\ResourceFactory');
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory');
     }
 
     /**
@@ -85,7 +85,7 @@ class DissectorTest extends AbstractUnitTest
      */
     protected function getMockedMethodFactory()
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\MethodFactory');
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory');
     }
 
     /**
@@ -95,7 +95,7 @@ class DissectorTest extends AbstractUnitTest
      */
     protected function getMockedAnatomy()
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Anatomy');
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Rest\Anatomy');
     }
 
     /**
@@ -230,7 +230,7 @@ class DissectorTest extends AbstractUnitTest
             ->andReturn(true);
 
         $this->assertInstanceOf(
-            '\Peakfijn\GetSomeRest\Contracts\Anatomy',
+            '\Peakfijn\GetSomeRest\Contracts\Rest\Anatomy',
             $dissector->anatomy()
         );
     }
@@ -261,7 +261,7 @@ class DissectorTest extends AbstractUnitTest
             ->andReturn(true);
 
         $this->assertInstanceOf(
-            '\Peakfijn\GetSomeRest\Contracts\Anatomy',
+            '\Peakfijn\GetSomeRest\Contracts\Rest\Anatomy',
             $dissector->anatomy()
         );
     }
@@ -302,7 +302,7 @@ class DissectorTest extends AbstractUnitTest
             ->andReturn('relation');
 
         $this->assertInstanceOf(
-            '\Peakfijn\GetSomeRest\Contracts\Anatomy',
+            '\Peakfijn\GetSomeRest\Contracts\Rest\Anatomy',
             $dissector->anatomy()
         );
     }
@@ -348,7 +348,7 @@ class DissectorTest extends AbstractUnitTest
             ->andReturn('relation');
 
         $this->assertInstanceOf(
-            '\Peakfijn\GetSomeRest\Contracts\Anatomy',
+            '\Peakfijn\GetSomeRest\Contracts\Rest\Anatomy',
             $dissector->anatomy()
         );
     }

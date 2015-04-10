@@ -3,7 +3,7 @@
 use Mockery;
 use RuntimeException;
 use StdClass;
-use Peakfijn\GetSomeRest\Contracts\Factory as FactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\Factory as FactoryContract;
 use Peakfijn\GetSomeRest\Factories\EncoderFactory;
 
 class EncoderFactoryTest extends FactoryTest
@@ -26,14 +26,14 @@ class EncoderFactoryTest extends FactoryTest
      */
     protected function getMockedEncoder()
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Encoder');
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Encoders\Encoder');
     }
 
     /**
      * Register some instances to the provided factory.
      *
-     * @param  \Peakfijn\GetSomeRest\Contracts\Factory $factory
-     * @return \Peakfijn\GetSomeRest\Contracts\Factory
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\Factory $factory
+     * @return \Peakfijn\GetSomeRest\Contracts\Factories\Factory
      */
     protected function registerInstances(FactoryContract $factory)
     {
@@ -80,11 +80,11 @@ class EncoderFactoryTest extends FactoryTest
         $encoder = $this->getMockedEncoder();
         $request = $this->getMockedRequest([
             'application/json',
-            'application/vnd.api+yaml',
+            'application/vnd.api+yml',
             'application/vnd.api.v1+xml',
         ]);
 
-        $this->setProtectedProperty($factory, 'instances', ['yaml' => $encoder]);
+        $this->setProtectedProperty($factory, 'instances', ['yml' => $encoder]);
 
         $factory->shouldReceive('contains')
             ->with('json')
@@ -92,7 +92,7 @@ class EncoderFactoryTest extends FactoryTest
             ->andReturn(false);
 
         $factory->shouldReceive('contains')
-            ->with('yaml')
+            ->with('yml')
             ->once()
             ->andReturn(true);
 
@@ -110,7 +110,7 @@ class EncoderFactoryTest extends FactoryTest
         $request = $this->getMockedRequest([
             'application/xml',
             'application/vnd.api+json',
-            'application/vnd.api.v1+yaml',
+            'application/vnd.api.v1+yml',
         ]);
 
         $this->setProtectedProperty($factory, 'defaults', 'default-value');
@@ -121,7 +121,7 @@ class EncoderFactoryTest extends FactoryTest
             ->andReturn(false);
 
         $factory->shouldReceive('contains')
-            ->with('yaml')
+            ->with('yml')
             ->once()
             ->andReturn(false);
 

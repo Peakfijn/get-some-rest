@@ -3,7 +3,7 @@
 use Mockery;
 use RuntimeException;
 use StdClass;
-use Peakfijn\GetSomeRest\Contracts\Factory as FactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\Factory as FactoryContract;
 use Peakfijn\GetSomeRest\Factories\MutatorFactory;
 
 class MutatorFactoryTest extends FactoryTest
@@ -26,14 +26,14 @@ class MutatorFactoryTest extends FactoryTest
      */
     protected function getMockedMutator()
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Mutator');
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Mutators\Mutator');
     }
 
     /**
      * Register some instances to the provided factory.
      *
-     * @param  \Peakfijn\GetSomeRest\Contracts\Factory $factory
-     * @return \Peakfijn\GetSomeRest\Contracts\Factory
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\Factory $factory
+     * @return \Peakfijn\GetSomeRest\Contracts\Factories\Factory
      */
     protected function registerInstances(FactoryContract $factory)
     {
@@ -81,7 +81,7 @@ class MutatorFactoryTest extends FactoryTest
         $request = $this->getMockedRequest([
             'application/vnd.api.v1.array+json',
             'application/vnd.api.v1.plain+xml',
-            'application/vnd.api.v1.array+yaml',
+            'application/vnd.api.v1.array+yml',
         ]);
 
         $this->setProtectedProperty($factory, 'instances', ['array' => $mutator]);
@@ -105,7 +105,7 @@ class MutatorFactoryTest extends FactoryTest
         $request = $this->getMockedRequest([
             'application/vnd.api.v1.array+json',
             'application/vnd.api.v1.plain+xml',
-            'application/vnd.api.v1.array+yaml',
+            'application/vnd.api.v1.array+yml',
         ]);
 
         $this->setProtectedProperty($factory, 'defaults', 'default-value');

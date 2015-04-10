@@ -3,7 +3,7 @@
 use Mockery;
 use ReflectionException;
 use RuntimeException;
-use Peakfijn\GetSomeRest\Contracts\Factory as FactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\Factory as FactoryContract;
 use Peakfijn\GetSomeRest\Exceptions\ResourceUnknownException;
 use Peakfijn\GetSomeRest\Factories\ResourceFactory;
 
@@ -190,14 +190,14 @@ class ResourceFactoryTest extends FactoryTest
      */
     protected function getMockedAnatomy()
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Anatomy');
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Rest\Anatomy');
     }
 
     /**
      * Register some instances to the provided factory.
      *
-     * @param  \Peakfijn\GetSomeRest\Contracts\Factory $factory
-     * @return \Peakfijn\GetSomeRest\Contracts\Factory
+     * @param  \Peakfijn\GetSomeRest\Contracts\Factories\Factory $factory
+     * @return \Peakfijn\GetSomeRest\Contracts\Factories\Factory
      */
     protected function registerInstances(FactoryContract $factory)
     {

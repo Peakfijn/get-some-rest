@@ -1,6 +1,5 @@
 <?php namespace Peakfijn\GetSomeRest\Tests\Encoders;
 
-use Mockery;
 use Peakfijn\GetSomeRest\Encoders\JsonEncoder;
 
 class JsonEncoderTest extends EncoderTest

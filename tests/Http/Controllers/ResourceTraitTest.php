@@ -27,7 +27,7 @@ abstract class ResourceTraitTest extends AbstractUnitTest
      */
     protected function getMockedAnatomy()
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Anatomy');
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Rest\Anatomy');
     }
 
     /**
@@ -37,7 +37,7 @@ abstract class ResourceTraitTest extends AbstractUnitTest
      */
     protected function getMockedResourceFactory()
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\ResourceFactory');
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory');
     }
 
     /**
@@ -67,7 +67,7 @@ abstract class ResourceTraitTest extends AbstractUnitTest
      */
     protected function getMockedSelector()
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Selector');
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Rest\Selector');
     }
 
     /**
@@ -77,6 +77,6 @@ abstract class ResourceTraitTest extends AbstractUnitTest
      */
     protected function getMockedOperator()
     {
-        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Operator');
+        return Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Rest\Operator');
     }
 }
