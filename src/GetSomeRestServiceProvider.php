@@ -16,7 +16,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
      * @var array
      */
     protected $configFiles = [
-        'general', 'routes'
+        'general',
+        'routes'
     ];
 
     /**
@@ -86,7 +87,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
                 $this->app->make('router'),
                 $config->get('get-some-rest.routes.controller'),
                 $config->get('get-some-rest.routes.settings', []),
-                $config->get('get-some-rest.routes.sub_resources', false)
+                $config->get('get-some-rest.routes.relations', false)
             );
         }
     }
@@ -94,7 +95,6 @@ class GetSomeRestServiceProvider extends ServiceProvider
     /**
      * Publish & merge the provided config files.
      *
-     * @param  array $files
      * @return void
      */
     protected function registerConfigFiles()
@@ -121,8 +121,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             'Peakfijn\GetSomeRest\Factories\EncoderFactory',
-            function ($app) use ($encoders, $default)
-            {
+            function ($app) use ($encoders, $default) {
                 $factory = new EncoderFactory();
 
                 foreach ($encoders as $name => $encoder) {
@@ -154,8 +153,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             'Peakfijn\GetSomeRest\Factories\MutatorFactory',
-            function ($app) use ($mutators, $default)
-            {
+            function ($app) use ($mutators, $default) {
                 $factory = new MutatorFactory();
 
                 foreach ($mutators as $name => $mutator) {
@@ -187,8 +185,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             'Peakfijn\GetSomeRest\Factories\ResourceFactory',
-            function ($app) use ($namespace, $resources)
-            {
+            function ($app) use ($namespace, $resources) {
                 $factory = new ResourceFactory(
                     $app,
                     $app->make('\Illuminate\Support\Str'),
@@ -219,8 +216,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             'Peakfijn\GetSomeRest\Factories\MethodFactory',
-            function ($app) use ($methods)
-            {
+            function ($app) use ($methods) {
                 $factory = new MethodFactory();
                 $factory->setPrefix('$');
 
@@ -247,8 +243,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             'Peakfijn\GetSomeRest\Rest\Dissector',
-            function ($app)
-            {
+            function ($app) {
                 $request = $app->make('request');
                 $resources = $app->make('Peakfijn\GetSomeRest\Contracts\ResourceFactory');
                 $methods = $app->make('Peakfijn\GetSomeRest\Contracts\MethodFactory');
@@ -260,8 +255,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
 
         $this->app->bind(
             'Peakfijn\GetSomeRest\Rest\Anatomy',
-            function ($app)
-            {
+            function ($app) {
                 $dissector = $app->make('Peakfijn\GetSomeRest\Contracts\Dissector');
 
                 return $dissector->anatomy();
@@ -303,25 +297,25 @@ class GetSomeRestServiceProvider extends ServiceProvider
      * @param  \Illuminate\Routing\Router $router
      * @param  string $controller
      * @param  array $settings (default: []),
-     * @param  boolean $subresources (default: false)
+     * @param  boolean $relations (default: false)
      * @return void
      */
     protected function bindResourceRoutes(
         $router,
         $controller,
         array $settings = array(),
-        $subresources = false
+        $relations = false
     ) {
-        $router->group($settings, function ($router) use ($controller, $subresources) {
+        $router->group($settings, function ($router) use ($controller, $relations) {
             $router->get('/{resource}', $controller . '@index');
             $router->post('/{resource}', $controller . '@store');
             $router->get('/{resource}/{id}', $controller . '@show');
             $router->put('/{resource}/{id}', $controller . '@update');
             $router->delete('/{resource}/{id}', $controller . '@destroy');
 
-            if ($subresources) {
+            if ($relations) {
                 $router->get('/{resource}/{id}/{relation}', $controller . '@relationIndex');
-                $router->get('/{resource}/{id}/{relation}/{relatedId}', $controller .'@relationShow');
+                $router->get('/{resource}/{id}/{relation}/{relatedId}', $controller . '@relationShow');
             }
         });
     }
