@@ -1,9 +1,9 @@
 <?php namespace Peakfijn\GetSomeRest\Http\Controllers;
 
-use Peakfijn\GetSomeRest\Contracts\Anatomy as AnatomyContract;
-use Peakfijn\GetSomeRest\Contracts\ResourceFactory as ResourceFactoryContract;
-use Peakfijn\GetSomeRest\Contracts\Selector as SelectorContract;
-use Peakfijn\GetSomeRest\Contracts\Operator as OperatorContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory as ResourceFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Anatomy as AnatomyContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Selector as SelectorContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Operator as OperatorContract;
 
 trait ResourceIndexTrait
 {

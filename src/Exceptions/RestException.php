@@ -1,6 +1,6 @@
 <?php namespace Peakfijn\GetSomeRest\Exceptions;
 
-use Peakfijn\GetSomeRest\Contracts\RestException as RestExceptionContract;
+use Peakfijn\GetSomeRest\Contracts\Exceptions\RestException as RestExceptionContract;
 use Peakfijn\GetSomeRest\Http\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 

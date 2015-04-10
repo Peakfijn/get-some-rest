@@ -1,8 +1,8 @@
 <?php namespace Peakfijn\GetSomeRest\Rest;
 
-use Peakfijn\GetSomeRest\Contracts\Dissector as DissectorContract;
-use Peakfijn\GetSomeRest\Contracts\MethodFactory as MethodFactoryContract;
-use Peakfijn\GetSomeRest\Contracts\Operator as OperatorContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory as MethodFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Dissector as DissectorContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Operator as OperatorContract;
 
 class Operator implements OperatorContract
 {

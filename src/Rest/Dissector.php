@@ -1,10 +1,10 @@
 <?php namespace Peakfijn\GetSomeRest\Rest;
 
 use Illuminate\Http\Request;
-use Peakfijn\GetSomeRest\Contracts\Anatomy as AnatomyContract;
-use Peakfijn\GetSomeRest\Contracts\Dissector as DissectorContract;
-use Peakfijn\GetSomeRest\Contracts\ResourceFactory as ResourceFactoryContract;
-use Peakfijn\GetSomeRest\Contracts\MethodFactory as MethodFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory as ResourceFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory as MethodFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Anatomy as AnatomyContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Dissector as DissectorContract;
 
 class Dissector implements DissectorContract
 {

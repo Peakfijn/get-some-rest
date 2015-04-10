@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 use Illuminate\Http\Request;
-use Peakfijn\GetSomeRest\Contracts\Anatomy as AnatomyContract;
-use Peakfijn\GetSomeRest\Contracts\Dissector as DissectorContract;
-use Peakfijn\GetSomeRest\Contracts\RestException as RestExceptionContract;
-use Peakfijn\GetSomeRest\Contracts\EncoderFactory as EncoderFactoryContract;
-use Peakfijn\GetSomeRest\Contracts\MutatorFactory as MutatorFactoryContract;
-use Peakfijn\GetSomeRest\Contracts\MethodFactory as MethodFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory as EncoderFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\MutatorFactory as MutatorFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory as MethodFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Anatomy as AnatomyContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Dissector as DissectorContract;
+use Peakfijn\GetSomeRest\Contracts\Exceptions\RestException as RestExceptionContract;
 use Peakfijn\GetSomeRest\Http\Response;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface as HttpExceptionContract;
@@ -23,14 +23,14 @@ class Api implements Middleware
     /**
      * The encoder factory.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\EncoderFactory
+     * @var \Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory
      */
     protected $encoders;
 
     /**
      * The mutator factory.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\MutatorFactory
+     * @var \Peakfijn\GetSomeRest\Contracts\Factories\MutatorFactory
      */
     protected $mutators;
 
@@ -43,8 +43,8 @@ class Api implements Middleware
      * Create a new API middleware instance.
      * It uses both encoder as mutator factories to determine the requested instance.
      *
-     * @param \Peakfijn\GetSomeRest\Contracts\EncoderFactory $encoders
-     * @param \Peakfijn\GetSomeRest\Contracts\MutatorFactory $mutators
+     * @param \Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory $encoders
+     * @param \Peakfijn\GetSomeRest\Contracts\Factories\MutatorFactory $mutators
      */
     public function __construct(
         EncoderFactoryContract $encoders,

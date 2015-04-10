@@ -1,4 +1,4 @@
-<?php namespace Peakfijn\GetSomeRest\Contracts;
+<?php namespace Peakfijn\GetSomeRest\Contracts\Rest;
 
 interface Anatomy
 {

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Peakfijn\GetSomeRest\Contracts\Method as MethodContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Method as MethodContract;
 
 abstract class Method implements MethodContract
 {

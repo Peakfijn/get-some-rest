@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Peakfijn\GetSomeRest\Contracts\Dissector as DissectorContract;
-use Peakfijn\GetSomeRest\Contracts\Selector as SelectorContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Dissector as DissectorContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Selector as SelectorContract;
 
 class Selector implements SelectorContract
 {

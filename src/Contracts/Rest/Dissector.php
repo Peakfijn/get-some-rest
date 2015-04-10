@@ -1,11 +1,11 @@
-<?php namespace Peakfijn\GetSomeRest\Contracts;
+<?php namespace Peakfijn\GetSomeRest\Contracts\Rest;
 
 interface Dissector
 {
     /**
      * Dissect the REST information from the request.
      *
-     * @return \Peakfijn\GetSomeRest\Contracts\Anatomy
+     * @return \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy
      */
     public function anatomy();
 

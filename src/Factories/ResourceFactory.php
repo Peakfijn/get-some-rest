@@ -5,9 +5,9 @@ use RuntimeException;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
 use Peakfijn\GetSomeRest\Exceptions\ResourceUnknownException;
-use Peakfijn\GetSomeRest\Contracts\Anatomy as AnatomyContract;
-use Peakfijn\GetSomeRest\Contracts\Factory as FactoryContract;
-use Peakfijn\GetSomeRest\Contracts\ResourceFactory as ResourceFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\Factory as FactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory as ResourceFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Anatomy as AnatomyContract;
 
 class ResourceFactory implements FactoryContract, ResourceFactoryContract
 {

@@ -1,6 +1,6 @@
 <?php namespace Peakfijn\GetSomeRest\Rest;
 
-use Peakfijn\GetSomeRest\Contracts\Anatomy as AnatomyContract;
+use Peakfijn\GetSomeRest\Contracts\Rest\Anatomy as AnatomyContract;
 
 class Anatomy implements AnatomyContract
 {

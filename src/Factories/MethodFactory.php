@@ -1,6 +1,6 @@
 <?php namespace Peakfijn\GetSomeRest\Factories;
 
-use Peakfijn\GetSomeRest\Contracts\MethodFactory as MethodFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory as MethodFactoryContract;
 
 class MethodFactory extends Factory implements MethodFactoryContract
 {

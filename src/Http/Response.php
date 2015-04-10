@@ -1,7 +1,7 @@
 <?php namespace Peakfijn\GetSomeRest\Http;
 
-use Peakfijn\GetSomeRest\Contracts\Encoder as EncoderContract;
-use Peakfijn\GetSomeRest\Contracts\Mutator as MutatorContract;
+use Peakfijn\GetSomeRest\Contracts\Encoders\Encoder as EncoderContract;
+use Peakfijn\GetSomeRest\Contracts\Mutators\Mutator as MutatorContract;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 

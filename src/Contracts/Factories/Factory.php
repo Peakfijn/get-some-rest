@@ -1,4 +1,4 @@
-<?php namespace Peakfijn\GetSomeRest\Contracts;
+<?php namespace Peakfijn\GetSomeRest\Contracts\Factories;
 
 interface Factory
 {

@@ -1,4 +1,4 @@
-<?php namespace Peakfijn\GetSomeRest\Contracts;
+<?php namespace Peakfijn\GetSomeRest\Contracts\Mutators;
 
 use Illuminate\Http\Request;
 

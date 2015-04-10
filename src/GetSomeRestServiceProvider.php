@@ -60,14 +60,14 @@ class GetSomeRestServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            'Peakfijn\GetSomeRest\Contracts\EncoderFactory',
-            'Peakfijn\GetSomeRest\Contracts\MutatorFactory',
-            'Peakfijn\GetSomeRest\Contracts\ResourceFactory',
-            'Peakfijn\GetSomeRest\Contracts\MethodFactory',
-            'Peakfijn\GetSomeRest\Contracts\Anatomy',
-            'Peakfijn\GetSomeRest\Contracts\Dissector',
-            'Peakfijn\GetSomeRest\Contracts\Selector',
-            'Peakfijn\GetSomeRest\Contracts\Operator',
+            'Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory',
+            'Peakfijn\GetSomeRest\Contracts\Factories\MutatorFactory',
+            'Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory',
+            'Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory',
+            'Peakfijn\GetSomeRest\Contracts\Rest\Anatomy',
+            'Peakfijn\GetSomeRest\Contracts\Rest\Dissector',
+            'Peakfijn\GetSomeRest\Contracts\Rest\Selector',
+            'Peakfijn\GetSomeRest\Contracts\Rest\Operator',
         ];
     }
 
@@ -137,7 +137,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
         );
 
         $this->app->bindIf(
-            'Peakfijn\GetSomeRest\Contracts\EncoderFactory',
+            'Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory',
             'Peakfijn\GetSomeRest\Factories\EncoderFactory'
         );
     }
@@ -169,7 +169,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
         );
 
         $this->app->bindIf(
-            'Peakfijn\GetSomeRest\Contracts\MutatorFactory',
+            'Peakfijn\GetSomeRest\Contracts\Factories\MutatorFactory',
             'Peakfijn\GetSomeRest\Factories\MutatorFactory'
         );
     }
@@ -201,7 +201,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
         );
 
         $this->app->bindIf(
-            'Peakfijn\GetSomeRest\Contracts\ResourceFactory',
+            'Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory',
             'Peakfijn\GetSomeRest\Factories\ResourceFactory'
         );
     }
@@ -229,7 +229,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
         );
 
         $this->app->bindif(
-            'Peakfijn\GetSomeRest\Contracts\MethodFactory',
+            'Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory',
             'Peakfijn\GetSomeRest\Factories\MethodFactory'
         );
     }
@@ -245,8 +245,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
             'Peakfijn\GetSomeRest\Rest\Dissector',
             function ($app) {
                 $request = $app->make('request');
-                $resources = $app->make('Peakfijn\GetSomeRest\Contracts\ResourceFactory');
-                $methods = $app->make('Peakfijn\GetSomeRest\Contracts\MethodFactory');
+                $resources = $app->make('Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory');
+                $methods = $app->make('Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory');
                 $anatomy = new Anatomy();
 
                 return new Dissector($request, $resources, $methods, $anatomy);
@@ -256,19 +256,19 @@ class GetSomeRestServiceProvider extends ServiceProvider
         $this->app->bind(
             'Peakfijn\GetSomeRest\Rest\Anatomy',
             function ($app) {
-                $dissector = $app->make('Peakfijn\GetSomeRest\Contracts\Dissector');
+                $dissector = $app->make('Peakfijn\GetSomeRest\Contracts\Rest\Dissector');
 
                 return $dissector->anatomy();
             }
         );
 
         $this->app->bindIf(
-            'Peakfijn\GetSomeRest\Contracts\Anatomy',
+            'Peakfijn\GetSomeRest\Contracts\Rest\Anatomy',
             'Peakfijn\GetSomeRest\Rest\Anatomy'
         );
 
         $this->app->bindIf(
-            'Peakfijn\GetSomeRest\Contracts\Dissector',
+            'Peakfijn\GetSomeRest\Contracts\Rest\Dissector',
             'Peakfijn\GetSomeRest\Rest\Dissector'
         );
     }
@@ -281,12 +281,12 @@ class GetSomeRestServiceProvider extends ServiceProvider
     public function registerSelectorAndOperator()
     {
         $this->app->bindIf(
-            'Peakfijn\GetSomeRest\Contracts\Selector',
+            'Peakfijn\GetSomeRest\Contracts\Rest\Selector',
             'Peakfijn\GetSomeRest\Rest\Selector'
         );
 
         $this->app->bindIf(
-            'Peakfijn\GetSomeRest\Contracts\Operator',
+            'Peakfijn\GetSomeRest\Contracts\Rest\Operator',
             'Peakfijn\GetSomeRest\Rest\Operator'
         );
     }

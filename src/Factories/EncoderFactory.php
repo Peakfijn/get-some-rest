@@ -2,8 +2,8 @@
 
 use RuntimeException;
 use Illuminate\Http\Request;
-use Peakfijn\GetSomeRest\Contracts\Encoder as EncoderContract;
-use Peakfijn\GetSomeRest\Contracts\EncoderFactory as EncoderFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Encoders\Encoder as EncoderContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory as EncoderFactoryContract;
 
 class EncoderFactory extends Factory implements EncoderFactoryContract
 {

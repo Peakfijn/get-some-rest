@@ -2,8 +2,8 @@
 
 use RuntimeException;
 use Illuminate\Http\Request;
-use Peakfijn\GetSomeRest\Contracts\Mutator as MutatorContract;
-use Peakfijn\GetSomeRest\Contracts\MutatorFactory as MutatorFactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Mutators\Mutator as MutatorContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\MutatorFactory as MutatorFactoryContract;
 
 class MutatorFactory extends Factory implements MutatorFactoryContract
 {

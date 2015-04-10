@@ -1,6 +1,6 @@
 <?php namespace Peakfijn\GetSomeRest\Factories;
 
-use Peakfijn\GetSomeRest\Contracts\Factory as FactoryContract;
+use Peakfijn\GetSomeRest\Contracts\Factories\Factory as FactoryContract;
 
 class Factory implements FactoryContract
 {
