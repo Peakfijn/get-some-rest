@@ -1,6 +1,6 @@
 # Get Some REST
-Get Some REST is a simple, yet powerful, package that integrates into your Laravel 5 project.
-It provides some structure to help you get started on your restful API with just some basic setup.
+_GSR_ is a simple, yet powerful, package that integrates into your Laravel 5 project.
+It provides some tools to help you get started on your restful API with just some basic setup.
 The best part of this is that you can extend or modify the core of the system, using an implementation of your own liking.
 
 [![Latest Version](https://img.shields.io/packagist/v/peakfijn/get-some-rest.svg?style=flat-square)](https://packagist.org/packages/peakfijn/get-some-rest)
@@ -10,9 +10,16 @@ The best part of this is that you can extend or modify the core of the system, u
 [![Code Climate](https://img.shields.io/codeclimate/github/Peakfijn/get-some-rest.svg?style=flat-square)](https://codeclimate.com/github/Peakfijn/get-some-rest)
 [![Total Downloads](https://img.shields.io/packagist/dt/peakfijn/get-some-rest.svg?style=flat-square)](https://packagist.org/packages/peakfijn/get-some-rest)
 
+## Requirements
+This package will work just fine with the following requirements.
+
+- **PHP 5.4+**
+- **Laravel 5+**
+
 ## Installation
-So let's get started on the installation.
-As said, it integrates into your Laravel 5 project by adding it to your composer.json
+>Get Some REST is currently in intensive development, meaning it is **not ready for production... _yet_...**
+
+_GSR_ is best installed with [composer](https://getcomposer.org/), by adding it to your **require** section in **composer.json**.
 
 ```json
 {
@@ -27,12 +34,3 @@ Or execute the following command inside your laravel 5 project.
 ```sh
 composer require peakfijn/get-some-rest:dev-release/v0.5.0-rc.3
 ```
-
-### Note
-Get Some REST is currently in intensive development, meaning it is **not ready for production... _yet_...**
-
-## Requirements
-This package will work just fine with the following requirements:
-
-- **PHP 5.4+**
-- **Laravel 5+**
