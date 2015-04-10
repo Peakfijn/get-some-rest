@@ -2,12 +2,7 @@
 
 use Closure;
 use Illuminate\Contracts\Routing\Middleware;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
-use Illuminate\Http\Request;
 use Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory as EncoderFactoryContract;
 use Peakfijn\GetSomeRest\Contracts\Factories\MutatorFactory as MutatorFactoryContract;
 use Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory as MethodFactoryContract;
@@ -45,6 +40,10 @@ class Api implements Middleware
      *
      * @param \Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory $encoders
      * @param \Peakfijn\GetSomeRest\Contracts\Factories\MutatorFactory $mutators
+     * @param \Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory $methods
+     * @param \Peakfijn\GetSomeRest\Contracts\Rest\Dissector $dissector
+     * @param \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $anatomy
+     *
      */
     public function __construct(
         EncoderFactoryContract $encoders,
@@ -105,67 +104,5 @@ class Api implements Middleware
         return $response
             ->setEncoder($encoder)
             ->setMutator($mutator);
-    }
-
-    /**
-     * Retrieve the methods from the query, and apply to the provided query.
-     * When it's finished, execute the ->get() or ->first() to return the final data only.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $query
-     * @return mixed
-     */
-    protected function executeMethods(Request $request, $query)
-    {
-        $methods = $this->dissector->methods($request);
-
-        foreach ($methods as $key => $value) {
-            $method = $this->methods->make($key);
-
-            if (!empty($method)) {
-                $query = $method->execute($value, $query);
-            }
-        }
-
-        return $query;
-    }
-
-    /**
-     * Execute the provided filters.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  mixed $query
-     * @return mixed
-     */
-    protected function executeFilters(Request $request, $query)
-    {
-        $filters = $this->dissector->filters($request);
-
-        foreach ($filters as $key => $values) {
-            $query = $query->whereIn($key, $values);
-        }
-
-        return $query;
-    }
-
-    /**
-     * Finalize the query, returning the response.
-     *
-     * @param  mixed $query
-     * @return mixed
-     */
-    protected function finalizeQuery($query)
-    {
-        if (!$this->anatomy->shouldBeCollection()) {
-            $id = $this->anatomy->getResourceId();
-
-            if ($this->anatomy->hasRelationId()) {
-                $id = $this->anatomy->getRelationId();
-            }
-
-            return $query->firstOrFail($id);
-        }
-
-        return $query->get();
     }
 }

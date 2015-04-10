@@ -11,7 +11,7 @@ use Peakfijn\GetSomeRest\Rest\Dissector;
 class GetSomeRestServiceProvider extends ServiceProvider
 {
     /**
-     * The config files to plublish.
+     * The config files to publish.
      *
      * @var array
      */

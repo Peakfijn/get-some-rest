@@ -12,7 +12,7 @@ interface Dissector
     /**
      * Dissect the requested REST methods.
      *
-     * @param  boolean $removePrefix
+     * @param  boolean $removePrefix (default: true)
      * @return array
      */
     public function methods($removePrefix = true);

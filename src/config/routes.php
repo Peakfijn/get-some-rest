@@ -59,7 +59,7 @@ return [
     'settings' => [
         'prefix' => 'api/v1'
     ],
-
+    
     /*
     |----------------------------------------------------------------------
     | Resource routes controller

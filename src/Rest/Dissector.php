@@ -94,6 +94,7 @@ class Dissector implements DissectorContract
     /**
      * Dissect the requested REST methods.
      *
+     * @param  boolean $removePrefix (default: true)
      * @return array
      */
     public function methods($removePrefix = true)

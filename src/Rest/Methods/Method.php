@@ -9,8 +9,8 @@ abstract class Method implements MethodContract
     /**
      * Check if the provided attribute is visible.
      *
-     * @param  mixed  $resource
-     * @param   $[name] [description]
+     * @param  mixed $attribute
+     * @param  mixed $resource
      * @return boolean
      */
     protected function isVisibleAttribute($attribute, $resource)

@@ -175,8 +175,8 @@ class ResourceFactory implements FactoryContract, ResourceFactoryContract
         return $this->str->singular($name);
     }
 
-     /**
-     * Get the plural equilavent of the provided string.
+    /**
+     * Get the plural equivalent of the provided string.
      *
      * @param  string $name
      * @return string

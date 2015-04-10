@@ -12,6 +12,7 @@ trait ResourceRelationShowTrait
      *
      * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $rest
      * @param  \Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory $resources
+     * @param  \Peakfijn\GetSomeRest\Contracts\Rest\Operator $operator
      * @return mixed
      */
     public function relationShow(

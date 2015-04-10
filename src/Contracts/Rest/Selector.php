@@ -13,7 +13,7 @@ interface Selector
     /**
      * Check if the requested filter is filterable.
      *
-     * @param  mixed  $resource
+     * @param  mixed $resource
      * @param  string $attribute
      * @return boolean
      */
