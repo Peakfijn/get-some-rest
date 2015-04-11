@@ -64,8 +64,8 @@ class Dissector implements DissectorContract
     public function anatomy()
     {
         $anatomy = $this->anatomy;
-        $segments = $this->request->segments();
-        $segments = array_splice($segments, -4);
+        $segments = array_slice($this->request->segments(), -4);
+        $anatomy->segments = $segments;
 
         while ($segment = array_shift($segments)) {
             if ($this->isValidResource($segment)) {

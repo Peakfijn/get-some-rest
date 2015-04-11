@@ -65,11 +65,13 @@ class ResourceFactory implements FactoryContract, ResourceFactoryContract
     public function make($name)
     {
         if ($name instanceof AnatomyContract) {
-            $name = $name->getResourceName();
+            $anatomy = $name;
+            $name = $anatomy->getResourceName();
         }
 
         if (!$this->contains($name) && !$this->resolve($name)) {
-            throw new ResourceUnknownException($name);
+            $anatomy = isset($anatomy) ? $anatomy : null;
+            throw new ResourceUnknownException($name, $anatomy);
         }
 
         $class = $this->getClassName($name);

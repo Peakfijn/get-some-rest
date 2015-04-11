@@ -248,6 +248,8 @@ class ResourceFactoryTest extends FactoryTest
     public function testMakeThrowsResourceUnknownExceptionWhenNothingWasFound()
     {
         $factory = $this->getMockedInstance();
+        $anatomy = Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Rest\Anatomy')
+                    ->shouldReceive('getResourceName')->andReturnNull();
 
         $factory->shouldReceive('contains')
             ->with('test')
@@ -259,6 +261,12 @@ class ResourceFactoryTest extends FactoryTest
 
         try {
             $factory->make('test');
+        } catch (ResourceUnknownException $e) {
+            return;
+        }
+
+        try {
+            $factory->make($anatomy);
         } catch (ResourceUnknownException $e) {
             return;
         }
