@@ -17,9 +17,9 @@ This package will work just fine with the following requirements.
 - **Laravel 5+**
 
 ## Installation
->Get Some REST is currently in intensive development, meaning it is **not ready for production... _yet_...**
+> Get Some REST is currently in intensive development, meaning it is **not ready for production... _yet_...**
 
-_GSR_ is best installed with [composer](https://getcomposer.org/), by adding it to your **require** section in **composer.json**.
+_GSR_ is best installed with [composer](https://getcomposer.org/), by adding it to your **require** section in **composer.json**. Run `composer update` afterwards to let composer download the required package.
 
 ```json
 {
@@ -34,3 +34,26 @@ Or execute the following command inside your laravel 5 project.
 ```sh
 composer require peakfijn/get-some-rest:dev-release/v0.5.0-rc.3
 ```
+
+## Register in Laravel
+After the composer installation, we need to add it to the service provider of your Laravel application.
+This can be done by adding the following line to the **/config/app.php**.
+
+```php
+'providers' => [
+
+    /*
+     * Laravel Framework Service Providers...
+     */
+    ...,
+
+    /*
+     * Application Service Providers...
+     */
+    ...,
+
+    'Peakfijn\GetSomeRest\GetSomeRestServiceProvider',
+],
+```
+
+> Please add this to **the bottom** of the array, else it will overwrite some functionalities resulting in unexpected behaviour.
