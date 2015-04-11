@@ -1,5 +1,6 @@
 <?php namespace Peakfijn\GetSomeRest;
 
+use RuntimeException;
 use Illuminate\Support\ServiceProvider;
 use Peakfijn\GetSomeRest\Factories\EncoderFactory;
 use Peakfijn\GetSomeRest\Factories\MutatorFactory;
@@ -27,6 +28,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerConfigFiles();
+
         $config = $this->app->make('config');
 
         $this->registerEncoderFactory(
@@ -80,8 +83,6 @@ class GetSomeRestServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerConfigFiles();
-
         $config = $this->app->make('config');
 
         if ($config->get('get-some-rest.routes.generate', false)) {
@@ -130,9 +131,11 @@ class GetSomeRestServiceProvider extends ServiceProvider
                     $factory->register($name, $app->make($encoder));
                 }
 
-                if (!empty($default)) {
-                    $factory->defaults($default);
+                if (empty($default) || $factory->defaults($default) == null) {
+                    throw new RuntimeException('A default encoder MUST be set.');
                 }
+
+                $factory->defaults($default);
 
                 return $factory;
             }
@@ -172,8 +175,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
                     $factory->register($name, $app->make($mutator));
                 }
 
-                if (!empty($default)) {
-                    $factory->defaults($default);
+                if (empty($default) || $factory->defaults($default) == null) {
+                    throw new RuntimeException('A default mutator MUST be set.');
                 }
 
                 return $factory;

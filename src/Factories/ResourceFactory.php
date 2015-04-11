@@ -126,6 +126,10 @@ class ResourceFactory implements FactoryContract, ResourceFactoryContract
      */
     public function resolve($name)
     {
+        if (empty($name)) {
+            return false;
+        }
+
         $name = $this->getClassName($name);
 
         try {
