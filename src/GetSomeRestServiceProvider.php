@@ -60,6 +60,8 @@ class GetSomeRestServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
+            'Peakfijn\GetSomeRest\Contracts\Encoders\Encoder',
+            'Peakfijn\GetSomeRest\Contracts\Mutators\Mutator',
             'Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory',
             'Peakfijn\GetSomeRest\Contracts\Factories\MutatorFactory',
             'Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory',
@@ -137,6 +139,16 @@ class GetSomeRestServiceProvider extends ServiceProvider
         );
 
         $this->app->bindIf(
+            'Peakfijn\GetSomeRest\Contracts\Encoders\Encoder',
+            function ($app) {
+                $factory = $app->make('Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory');
+                $request = $app->make('request');
+
+                return $factory->makeFromRequest($request);
+            }
+        );
+
+        $this->app->bindIf(
             'Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory',
             'Peakfijn\GetSomeRest\Factories\EncoderFactory'
         );
@@ -165,6 +177,16 @@ class GetSomeRestServiceProvider extends ServiceProvider
                 }
 
                 return $factory;
+            }
+        );
+
+        $this->app->bindIf(
+            'Peakfijn\GetSomeRest\Contracts\Mutators\Mutator',
+            function ($app) {
+                $factory = $app->make('Peakfijn\GetSomeRest\Contracts\Factories\MutatorFactory');
+                $request = $app->make('request');
+
+                return $factory->makeFromRequest($request);
             }
         );
 

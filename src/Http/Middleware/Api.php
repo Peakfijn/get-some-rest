@@ -3,11 +3,8 @@
 use Closure;
 use Illuminate\Contracts\Routing\Middleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory as EncoderFactoryContract;
-use Peakfijn\GetSomeRest\Contracts\Factories\MutatorFactory as MutatorFactoryContract;
-use Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory as MethodFactoryContract;
-use Peakfijn\GetSomeRest\Contracts\Rest\Anatomy as AnatomyContract;
-use Peakfijn\GetSomeRest\Contracts\Rest\Dissector as DissectorContract;
+use Peakfijn\GetSomeRest\Contracts\Encoders\Encoder as EncoderContract;
+use Peakfijn\GetSomeRest\Contracts\Mutators\Mutator as MutatorContract;
 use Peakfijn\GetSomeRest\Contracts\Exceptions\RestException as RestExceptionContract;
 use Peakfijn\GetSomeRest\Http\Response;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -16,49 +13,33 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface as HttpExcepti
 class Api implements Middleware
 {
     /**
-     * The encoder factory.
+     * The encoder to use for the response.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory
+     * @var \Peakfijn\GetSomeRest\Contracts\Encoders\Encoder
      */
-    protected $encoders;
+    protected $encoder;
 
     /**
-     * The mutator factory.
+     * The mutator to use for the response.
      *
-     * @var \Peakfijn\GetSomeRest\Contracts\Factories\MutatorFactory
+     * @var \Peakfijn\GetSomeRest\Contracts\Mutators\Mutator
      */
-    protected $mutators;
-
-    protected $methods;
-    protected $dissector;
-
-    protected $anatomy;
+    protected $mutator;
 
     /**
      * Create a new API middleware instance.
      * It uses both encoder as mutator factories to determine the requested instance.
      *
-     * @param \Peakfijn\GetSomeRest\Contracts\Factories\EncoderFactory $encoders
-     * @param \Peakfijn\GetSomeRest\Contracts\Factories\MutatorFactory $mutators
-     * @param \Peakfijn\GetSomeRest\Contracts\Factories\MethodFactory $methods
-     * @param \Peakfijn\GetSomeRest\Contracts\Rest\Dissector $dissector
-     * @param \Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $anatomy
+     * @param \Peakfijn\GetSomeRest\Contracts\Encoders\Encoder $encoder
+     * @param \Peakfijn\GetSomeRest\Contracts\Mutators\Mutator $mutator
      *
      */
     public function __construct(
-        EncoderFactoryContract $encoders,
-        MutatorFactoryContract $mutators,
-        MethodFactoryContract $methods,
-        DissectorContract $dissector,
-        AnatomyContract $anatomy
+        EncoderContract $encoder,
+        MutatorContract $mutator
     ) {
-        $this->encoders = $encoders;
-        $this->mutators = $mutators;
-
-        $this->methods = $methods;
-        $this->dissector = $dissector;
-
-        $this->anatomy = $anatomy;
+        $this->encoder = $encoder;
+        $this->mutator = $mutator;
     }
 
     /**
@@ -72,9 +53,6 @@ class Api implements Middleware
      */
     public function handle($request, Closure $next)
     {
-        $encoder = $this->encoders->makeFromRequest($request);
-        $mutator = $this->mutators->makeFromRequest($request);
-
         try {
             $response = $next($request);
         } catch (RestExceptionContract $error) {
@@ -102,7 +80,7 @@ class Api implements Middleware
         }
 
         return $response
-            ->setEncoder($encoder)
-            ->setMutator($mutator);
+            ->setEncoder($this->encoder)
+            ->setMutator($this->mutator);
     }
 }
