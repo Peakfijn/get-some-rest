@@ -48,6 +48,7 @@ class GetSomeRestServiceProvider extends ServiceProvider
         );
 
         $this->registerMethodFactory(
+            $config->get('get-some-rest.general.method_prefix'),
             $config->get('get-some-rest.general.methods', [])
         );
 
@@ -234,16 +235,17 @@ class GetSomeRestServiceProvider extends ServiceProvider
     /**
      * Register the method factory to the container, as singleton.
      *
+     * @param  string $prefix
      * @param  array $methods
      * @return void
      */
-    protected function registerMethodFactory(array $methods)
+    protected function registerMethodFactory($prefix, array $methods)
     {
         $this->app->singleton(
             'Peakfijn\GetSomeRest\Factories\MethodFactory',
-            function ($app) use ($methods) {
+            function ($app) use ($prefix, $methods) {
                 $factory = new MethodFactory();
-                $factory->setPrefix('$');
+                $factory->setPrefix($prefix);
 
                 foreach ($methods as $method => $class) {
                     $factory->register($method, $app->make($class));

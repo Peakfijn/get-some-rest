@@ -45,14 +45,28 @@ return [
     |
     | Well, these methods provides an easy way to add custom methods.
     | A method is actually a piece of code you execute on the query.
-    | These methods are available through the query, prefixed to extract it from the normal queries.
-    | For the "with" method you can add the "$with=relation" in the query.
+    | These methods are available through the query, prefixed to extract it from
+    | the normal queries. For the "with" method you can add the "$with=relation"
+    | in the query.
     |
     */
 
     'methods' => [
         'with' => 'Peakfijn\GetSomeRest\Rest\Methods\WithMethod'
     ],
+
+    /*
+    |----------------------------------------------------------------------
+    | Method prefix
+    |----------------------------------------------------------------------
+    |
+    | To distinguish methods from filters/selector we need to prefix them with a
+    | special character. Be default this is set to the url-safe character '$'.
+    | When changing this, keep in mind that it MUST NOT be encoded.
+    |
+    */
+
+    'method_prefix' => '$',
 
     /*
     |--------------------------------------------------------------------------
