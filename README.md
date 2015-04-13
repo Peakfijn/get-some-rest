@@ -24,7 +24,7 @@ _GSR_ is best installed with [composer](https://getcomposer.org/), by adding it 
 ```json
 {
     "require": {
-        "peakfijn/get-some-rest": "dev-release/v0.5.0-rc.3"
+        "peakfijn/get-some-rest": "dev-develop"
     }
 }
 ```
@@ -32,7 +32,7 @@ _GSR_ is best installed with [composer](https://getcomposer.org/), by adding it 
 Or execute the following command inside your laravel 5 project.
 
 ```sh
-composer require peakfijn/get-some-rest:dev-release/v0.5.0-rc.3
+composer require peakfijn/get-some-rest:dev-develop
 ```
 
 ## Register in Laravel
