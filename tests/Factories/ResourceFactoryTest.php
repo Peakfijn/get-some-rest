@@ -248,8 +248,6 @@ class ResourceFactoryTest extends FactoryTest
     public function testMakeThrowsResourceUnknownExceptionWhenNothingWasFound()
     {
         $factory = $this->getMockedInstance();
-        $anatomy = Mockery::mock('\Peakfijn\GetSomeRest\Contracts\Rest\Anatomy')
-                    ->shouldReceive('getResourceName')->andReturnNull();
 
         $factory->shouldReceive('contains')
             ->with('test')
@@ -265,13 +263,35 @@ class ResourceFactoryTest extends FactoryTest
             return;
         }
 
+        $this->fail('The resource factory didn\'t throw an error when nothing was found.');
+    }
+
+    public function testMakeThrowsResourceUnknownExceptionWhenNothingWasFoundUsingAnatomy()
+    {
+        $factory = $this->getMockedInstance();
+        $anatomy = $this->getMockedAnatomy();
+
+        $anatomy->shouldReceive('__toString')
+            ->once()
+            ->andReturn('');
+
+        $factory->shouldReceive('contains')
+            ->with(null)
+            ->once()
+            ->andReturn(false);
+
+        $factory->shouldReceive('resolve')
+            ->with(null)
+            ->once()
+            ->andReturn(false);
+
         try {
             $factory->make($anatomy);
         } catch (ResourceUnknownException $e) {
             return;
         }
 
-        $this->fail('The resource factory didn\'t throw an error when nothing was found.');
+        $this->fail('The resource factory didn\'t throw an error when nothing was found using anatomy.');
     }
 
     public function testMakeAcceptsAnatomyAndUsesResourceName()
@@ -280,7 +300,7 @@ class ResourceFactoryTest extends FactoryTest
         $container = $this->getMockedContainer();
         $factory = $this->getMockedInstance(null, $container);
 
-        $anatomy->shouldReceive('getResourceName')
+        $anatomy->shouldReceive('__toString')
             ->once()
             ->andReturn('resource');
 

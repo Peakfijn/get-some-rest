@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 use Peakfijn\GetSomeRest\Exceptions\ResourceUnknownException;
 use Peakfijn\GetSomeRest\Contracts\Factories\Factory as FactoryContract;
 use Peakfijn\GetSomeRest\Contracts\Factories\ResourceFactory as ResourceFactoryContract;
-use Peakfijn\GetSomeRest\Contracts\Rest\Anatomy as AnatomyContract;
 
 class ResourceFactory implements FactoryContract, ResourceFactoryContract
 {
@@ -59,19 +58,15 @@ class ResourceFactory implements FactoryContract, ResourceFactoryContract
      * When also resolving fails, it throws an exception.
      *
      * @throws \Peakfijn\GetSomeRest\Exceptions\ResourceUnknownException
-     * @param  string|\Peakfijn\GetSomeRest\Contracts\Rest\Anatomy $name
+     * @param  string $name
      * @return object|null
      */
     public function make($name)
     {
-        if ($name instanceof AnatomyContract) {
-            $anatomy = $name;
-            $name = $anatomy->getResourceName();
-        }
+        $name = (string)$name;
 
         if (!$this->contains($name) && !$this->resolve($name)) {
-            $anatomy = isset($anatomy) ? $anatomy : null;
-            throw new ResourceUnknownException($name, $anatomy);
+            throw new ResourceUnknownException($name);
         }
 
         $class = $this->getClassName($name);

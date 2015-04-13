@@ -65,13 +65,17 @@ class Dissector implements DissectorContract
     {
         $anatomy = $this->anatomy;
         $segments = array_slice($this->request->segments(), -4);
-        $anatomy->segments = $segments;
 
         while ($segment = array_shift($segments)) {
             if ($this->isValidResource($segment)) {
                 $anatomy = $anatomy->withResourceName($segment);
                 break;
             }
+        }
+
+        if (empty($segments) && !$anatomy->hasResourceName()) {
+            $segments = $this->request->segments();
+            $anatomy = $anatomy->withResourceName(end($segments));
         }
 
         if (count($segments) > 0) {

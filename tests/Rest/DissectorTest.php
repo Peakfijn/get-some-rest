@@ -165,13 +165,22 @@ class DissectorTest extends AbstractUnitTest
         $request->shouldReceive('segments')
             ->andReturn([]);
 
+        $anatomy->shouldReceive('hasResourceName')
+            ->once()
+            ->andReturn(false);
+
+        $anatomy->shouldReceive('withResourceName')
+            ->with(null)
+            ->andReturn($anatomy);
+
         $this->assertEquals($anatomy, $dissector->anatomy());
     }
 
     public function testAnatomyOnlyUsesLastFourSegments()
     {
         $request = $this->getMockedRequest();
-        $dissector = $this->getMockedInstance($request)
+        $anatomy = $this->getMockedAnatomy();
+        $dissector = $this->getMockedInstance($request, null, null, $anatomy)
             ->shouldAllowMockingProtectedMethods();
 
         $request->shouldReceive('segments')
@@ -201,6 +210,10 @@ class DissectorTest extends AbstractUnitTest
             ->once()
             ->andReturn(false);
 
+        $anatomy->shouldReceive('hasResourceName')
+            ->once()
+            ->andReturn(true);
+
         $dissector->anatomy();
     }
 
@@ -226,6 +239,10 @@ class DissectorTest extends AbstractUnitTest
 
         $dissector->shouldReceive('isValidResource')
             ->with('resource')
+            ->once()
+            ->andReturn(true);
+
+        $anatomy->shouldReceive('hasResourceName')
             ->once()
             ->andReturn(true);
 
