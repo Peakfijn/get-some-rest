@@ -125,4 +125,11 @@ interface Anatomy
      * @return boolean
      */
     public function hasRelationId();
+
+    /**
+     * The anatomy MUST return the resource name, when cast to string.
+     *
+     * @return string
+     */
+    public function __toString();
 }

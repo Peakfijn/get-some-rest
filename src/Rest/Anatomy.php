@@ -203,4 +203,14 @@ class Anatomy implements AnatomyContract
     {
         return !empty($this->relationId);
     }
+
+    /**
+     * The anatomy MUST return the resource name, when cast to string.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getResourceName();
+    }
 }
