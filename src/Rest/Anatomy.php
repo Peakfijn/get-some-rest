@@ -203,14 +203,4 @@ class Anatomy implements AnatomyContract
     {
         return !empty($this->relationId);
     }
-
-    /**
-     * Check if the response should be a collection or just a single response.
-     *
-     * @return boolean
-     */
-    public function shouldBeCollection()
-    {
-        return !$this->hasResourceId() || ($this->hasRelationName() && !$this->hasRelationId());
-    }
 }
