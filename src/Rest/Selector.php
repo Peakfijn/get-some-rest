@@ -34,9 +34,9 @@ class Selector implements SelectorContract
     {
         $filters = $this->dissector->filters();
 
-        foreach ($filters as $attribute => $filters) {
+        foreach ($filters as $attribute => $filter) {
             if ($this->isFilterableAttribute($resource, $attribute)) {
-                $resource = $resource->whereIn($attribute, (array)$filters);
+                $resource = $resource->whereIn($attribute, (array)$filter);
             }
         }
 
@@ -46,6 +46,7 @@ class Selector implements SelectorContract
     /**
      * Check if the requested filter is filterable.
      *
+     * @param  mixed $resource
      * @param  string $attribute
      * @return boolean
      */
